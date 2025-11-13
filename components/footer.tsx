@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Facebook, Youtube, Mail, MessageCircle, MapPin, Trophy } from "lucide-react"
 
 export function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
       {/* Cricket field pattern overlay */}
@@ -39,7 +41,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-blue-600 hover:border-blue-600 transition-all duration-300"
+                className="text-white border-gray-600 hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 bg-transparent"
                 asChild
               >
                 <a
@@ -54,7 +56,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-red-600 hover:border-red-600 transition-all duration-300"
+                className="text-white border-gray-600 hover:bg-red-600 hover:border-red-600 transition-all duration-300 bg-transparent"
                 asChild
               >
                 <a
@@ -69,7 +71,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-green-600 hover:border-green-600 transition-all duration-300"
+                className="text-white border-gray-600 hover:bg-green-600 hover:border-green-600 transition-all duration-300 bg-transparent"
                 asChild
               >
                 <a
@@ -236,7 +238,7 @@ export function Footer() {
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              &copy; 2024 Central Illinois Cricket Association. All rights reserved.
+              &copy; {currentYear} Central Illinois Cricket Association. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm">
               <Link href="/rules" className="text-gray-400 hover:text-white transition-colors hover:underline">
