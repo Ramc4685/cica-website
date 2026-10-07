@@ -1,13 +1,29 @@
 # CI and automatic Namecheap deployment
 
 The live public website is https://cicainfo.com at `/home/cicanrkn/public_html`.
+Staging is https://staging.cicainfo.com at `/home/cicanrkn/staging_html`.
 The workflow `.github/workflows/namecheap.yml` checks pull requests and builds
 each push to `main`. It uses Node 22, pnpm 11.13.0, the frozen lockfile, TypeScript,
 ESLint, PHP form validation/persistence checks (without sending mail),
 the repository's Jest component/form tests, deployment regression tests, a static export, admin security tests against the
-built export, and local link/asset validation. Only a successful `main` run can
-deploy its exact artifact. Serialized deployment jobs skip superseded commits.
-Build jobs and pull requests never receive deployment credentials.
+built export, and local link/asset validation. Serialized deployment jobs skip
+superseded commits. Build jobs and pull requests never receive deployment credentials.
+
+## Release flow: staging, then approved production
+
+1. A push to `main` builds one artifact and deploys it to staging automatically.
+2. The production job then waits on the **production** environment's required
+   reviewer. Check https://staging.cicainfo.com, then approve the waiting run in
+   GitHub Actions (**Review deployments**) to promote that exact artifact. Rejecting
+   it, or leaving it, keeps production unchanged.
+3. To try a branch before merging, run the workflow manually on that branch
+   (**Actions → CI and Namecheap deployment → Run workflow**, or
+   `gh workflow run namecheap.yml --ref <branch>`). Manual runs deploy to staging
+   only; production deploys only from `main`.
+
+Staging is a shared preview: deploying a branch replaces whatever staging showed
+before. The installer adds a `noindex` header there, and staging forms save to
+`/home/cicanrkn/.cica-forms-staging` with `[STAGING]` email subjects.
 
 ## Activate once
 
@@ -21,12 +37,17 @@ Build jobs and pull requests never receive deployment credentials.
    verify identity. The OpenSSH known-hosts entry must identify
    `[server315.web-hosting.com]:21098`. Host-key checking must remain enabled.
 4. Create a GitHub environment named **production**, restrict its branches to
-   `main`, and enter the following secrets. For unattended deployment, leave
-   required reviewers off and require PR checks/review before merging instead.
-   Environment secrets are available for public repositories on GitHub Free;
-   other repository visibility/plans need eligibility verification.
-5. Push/merge the reviewed changes to `main`, then verify both Actions jobs and
-   the live commit recorded in `https://cicainfo.com/deployment.json`.
+   `main`, add the release approver as a **required reviewer**, and enter the
+   following secrets. Environment secrets are available for public repositories
+   on GitHub Free; other repository visibility/plans need eligibility verification.
+5. Create a GitHub environment named **staging** with no reviewers or branch
+   restriction, and enter the same five secrets there.
+6. In cPanel **Domains**, create `staging.cicainfo.com` with document root
+   `/home/cicanrkn/staging_html`. At GoDaddy, add an `A` record `staging` →
+   `192.64.118.48`, then run cPanel **SSL/TLS Status → Run AutoSSL** so staging
+   has trusted HTTPS (deployment verification requires it).
+7. Push/merge the reviewed changes to `main`, verify staging, approve production,
+   then verify the live commit recorded in `https://cicainfo.com/deployment.json`.
 
 | Production secret | Value |
 | --- | --- |
@@ -51,7 +72,9 @@ and no force pushes. v0 sync must obey the same protections before publishing.
 OpenSSH and rsync stage a complete validated artifact before changing live files.
 Strict SSH host-key checking and public-key authentication are mandatory. A
 private backup is saved outside the webroot at
-`/home/cicanrkn/.cica-backups/<sha>-<run>-<attempt>/public_html.tar.gz`.
+`/home/cicanrkn/.cica-backups/<sha>-<run>-<attempt>/public_html.tar.gz`
+(staging: `.cica-backups/staging-<sha>-<run>-<attempt>/`). Production and staging
+keep separate ownership manifests, so neither deployment touches the other's files.
 The script retires only files owned by a previous deployment manifest. First-run
 cleanup also removes all old `_next` and admin/admin-login exports, including
 flat HTML/text variants, so old credential-bearing browser bundles disappear.
