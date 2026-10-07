@@ -1,28 +1,46 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight, ArrowRight, ChevronsRight } from "lucide-react"
 import { Hero } from "@/components/hero"
-import { HomeTournamentTabs } from "@/components/home-tournament-tabs"
-import { SponsorSpotlight } from "@/components/sponsor-spotlight"
-import { PremiumSponsors } from "@/components/premium-sponsors"
-import { SponsorLogoStrip } from "@/components/sponsor-logo-strip"
-import { communityPhotos } from "@/lib/community-photos"
-export const metadata: Metadata = { alternates: { canonical: "https://cicainfo.com/" } }
-const photoById = (id:string) => communityPhotos.find(photo=>photo.id===id)!
-const familyPhoto = photoById("family-celebration")
-const fieldPhoto = photoById("community-on-field")
+import { SponsorBand } from "@/components/premium-sponsors"
+import { ChampionsShowcase } from "@/components/sections/champions-showcase"
+import { CompetitionCards } from "@/components/sections/competition-cards"
+import { CricketFaq } from "@/components/sections/cricket-faq"
+import { HowToJoin } from "@/components/sections/how-to-join"
+import { MetricsStrip } from "@/components/sections/metrics-strip"
+import { CapsuleLink } from "@/components/ui/capsule-link"
+import { aboutPhotoIds, communityPhotos, photoFocusStyle } from "@/lib/community-photos"
 
-const ways=[{number:"01",title:"Discover the game.",text:"New to the area or new to cricket? Start with our organizers. Ask about the teams, formats and opportunities that fit you.",href:"/get-involved/",label:"Find your place",logo:"main",photo:photoById("team-gathering"),style:"discover"},{number:"02",title:"Stay in the action.",text:"From indoor cricket to outdoor competitions, there is plenty to explore. Follow the game, discover our formats and celebrate CICA’s story.",href:"/tournaments/",label:"Explore cricket",logo:"cpl",photo:photoById("indoor-community"),style:"play"},{number:"03",title:"Bring people together.",text:"Community grows when people contribute. Talk with CICA about volunteering, helping at events or supporting local cricket.",href:"/sponsors/",label:"Support CICA",logo:"tournaments",photo:null,style:"support"}]
-export default function HomePage(){return <>
-<Hero/>
-<PremiumSponsors compact/>
-<section className="growlio-partner-strip" aria-label="CICA sponsors"><div className="page-shell"><p>Local names.<br/>Shared community spirit.</p><SponsorLogoStrip/><Link href="/sponsors/" aria-label="Explore CICA sponsors"><ArrowUpRight aria-hidden="true"/></Link></div></section>
-<section className="growlio-about" aria-labelledby="about-title"><div className="page-shell"><div className="growlio-about-top"><p className="eyebrow">ABOUT CICA</p><span>LOCAL ROOTS / SINCE 1998</span></div><h2 id="about-title">We believe cricket<br/>is about <em>more than<br/>the game.</em></h2><div className="growlio-about-bottom"><div className="about-emblem"><Image src="/images/cica-logo-main.webp" alt="" width={160} height={180}/><span>CRICKET.<br/>CONNECTION.<br/>COMMUNITY.</span></div><div><p>It&apos;s the friendships at the boundary. The excitement of a shared matchday. The people who turn a love of cricket into a community.</p><p>Since 1998, CICA has brought organized cricket to Bloomington–Normal and Central Illinois. Come get to know the association and the people behind it.</p><Link href="/about/" className="hero-cta light"><span className="cta-icon"><ChevronsRight aria-hidden="true"/></span><span className="cta-label">Get to know us</span></Link></div></div><div className="about-photo-pair"><figure><Image src={familyPhoto.src} width={familyPhoto.width} height={familyPhoto.height} alt={familyPhoto.alt} className="community-photo"/><figcaption>Shared moments. Lasting connections.</figcaption></figure><figure><Image src={fieldPhoto.src} width={fieldPhoto.width} height={fieldPhoto.height} alt={fieldPhoto.alt} className="community-photo"/><figcaption>The people who make the community.</figcaption></figure></div></div></section>
-<section className="growlio-services page-shell" aria-labelledby="ways-title"><div className="growlio-section-intro"><p className="eyebrow">A COMMUNITY TO CALL YOURS</p><h2 id="ways-title" className="section-heading">A place for the game.<br/>A place for <em>you.</em></h2><p>Whether you love playing, watching from the sidelines or helping things happen, there&apos;s a good first step.</p></div><div className="growlio-ways">{ways.map(w=><article key={w.number} className={`growlio-way ${w.style}`}><div className="way-copy"><p className="eyebrow">{w.number} / GET INVOLVED</p><h3>{w.title}</h3><p>{w.text}</p><Link href={w.href} className="text-link">{w.label}<ArrowUpRight size={20} aria-hidden="true"/></Link></div><div className={`way-art ${w.photo ? "has-community-photo" : ""}`}>{w.photo ? <Image src={w.photo.src} alt={w.photo.alt} width={w.photo.width} height={w.photo.height} className="way-community-photo"/> : <><div className="way-orbit" aria-hidden="true"/><Image src={`/images/cica-logo-${w.logo}.webp`} width={240} height={260} alt=""/></>}<span className="way-art-label">{w.style==="discover"?"YOUR NEXT CHAPTER":w.style==="play"?"FOR THE LOVE OF CRICKET":"BETTER, TOGETHER"}</span>{!w.photo&&<span className="way-spark" aria-hidden="true">✳</span>}</div></article>)}</div></section>
-<section className="growlio-tournaments page-shell" aria-labelledby="formats-title"><div className="growlio-section-intro"><p className="eyebrow">ON THE FIELD</p><h2 id="formats-title" className="section-heading">Different formats.<br/>The same <em>passion.</em></h2><p>Explore CICA&apos;s competitions and find your connection to the game. Organizers confirm current dates, registration and eligibility.</p></div><HomeTournamentTabs/><div className="centered-link"><a href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer" className="hero-cta"><span className="cta-icon"><ChevronsRight aria-hidden="true"/></span><span className="cta-label">Fixtures & scores</span></a></div></section>
-<section className="growlio-process" aria-labelledby="start-title"><div className="page-shell"><div className="growlio-section-intro"><p className="eyebrow">YOUR FIRST STEP</p><h2 id="start-title" className="section-heading">Good things start<br/>with a <em>connection.</em></h2><p>You don&apos;t need to know every rule or belong to a team to start a conversation.</p></div><div className="process-grid">{[{n:"01",title:"Find your interest.",text:"Playing, volunteering, cheering from the boundary, or supporting cricket — explore the ways to connect."},{n:"02",title:"Say hello.",text:"Tell our organizers a little about yourself and what you’re looking for. Ask your questions."},{n:"03",title:"Take the next step.",text:"Get the details for an opportunity that fits. Confirm arrangements directly with the organizers."}].map(s=><article key={s.n}><span>{s.n}</span><h3>{s.title}</h3><p>{s.text}</p></article>)}</div><Link href="/get-involved/" className="hero-cta light"><span className="cta-icon"><ChevronsRight aria-hidden="true"/></span><span className="cta-label">Let&apos;s connect</span></Link></div></section>
-<SponsorSpotlight compact/>
-<section className="faq-section page-shell" aria-labelledby="faq-title"><div><p className="eyebrow">A GOOD PLACE TO START</p><h2 id="faq-title" className="section-heading">New here?<br/><em>You&apos;re welcome.</em></h2><p>A few helpful answers before you take the first step.</p><Link className="text-link" href="/contact/">Have another question? <ArrowRight size={18} aria-hidden="true"/></Link></div><div className="faq-list"><details><summary>How do I get involved with CICA?</summary><p>Visit our <Link href="/get-involved/">Get involved page</Link> to explore playing, volunteering and supporting CICA. Our organizers can help you find the next step.</p></details><details><summary>Can I ask about cricket if I&apos;m new to the game?</summary><p>Absolutely. <Link href="/contact/">Contact the organizers</Link> with your experience and interests. They can explain current opportunities and what you might need.</p></details><details><summary>Where can I find fixtures and scores?</summary><p>Follow fixtures, teams and results on our <a href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">CricClubs portal</a>.</p></details><details><summary>How can I stay in touch?</summary><p><Link href="/join/">Request email updates</Link>, follow our social channels, or email <a href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>.</p></details></div></section>
-<section className="growlio-invitation page-shell"><p className="eyebrow">THE GAME IS BETTER TOGETHER</p><h2>Good cricket.<br/>Great company.</h2><Link href="/get-involved/" className="hero-cta"><span className="cta-icon"><ChevronsRight aria-hidden="true"/></span><span className="cta-label">Find your place</span></Link></section>
-</>}
+export const metadata: Metadata = { alternates: { canonical: "https://cicainfo.com/" } }
+
+const [familyPhoto, fieldPhoto] = aboutPhotoIds.map(id => communityPhotos.find(photo => photo.id === id)!)
+
+/** Growlio about anatomy: short line, small photo, centered "Our story", small photo, short line; then the mission line. */
+function AboutBand() {
+  return <section className="about-band" data-tone="ink" aria-labelledby="about-title">
+    <div className="page-shell">
+      <div className="about-anatomy">
+        <p className="about-line">Since 1998, organized cricket for <span className="whitespace-nowrap">Bloomington–Normal</span> and Central Illinois.</p>
+        <figure className="about-thumb"><Image src={familyPhoto.src} width={familyPhoto.width} height={familyPhoto.height} alt={familyPhoto.alt} sizes="160px" className="community-photo" style={photoFocusStyle(familyPhoto)} /></figure>
+        <h2 id="about-title" className="about-story">Our story</h2>
+        <figure className="about-thumb"><Image src={fieldPhoto.src} width={fieldPhoto.width} height={fieldPhoto.height} alt={fieldPhoto.alt} sizes="160px" className="community-photo" style={photoFocusStyle(fieldPhoto)} /></figure>
+        <p className="about-line">Friendships at the boundary, shared matchdays, and room to <Link href="/get-involved/">help bring people together</Link>.</p>
+      </div>
+      <p className="about-mission">We believe cricket is about <em>more than the game.</em></p>
+      <div className="about-cta"><CapsuleLink href="/about/" tone="cream">Get to know us</CapsuleLink></div>
+    </div>
+  </section>
+}
+
+export default function HomePage() {
+  return <>
+    <Hero />
+    <AboutBand />
+    <CompetitionCards variant="home" />
+    <HowToJoin />
+    <ChampionsShowcase variant="compact" headingId="recent-champions-title" />
+    <MetricsStrip />
+    <SponsorBand />
+    <CricketFaq tag="A good place to start" title={"New here?\n*You’re welcome.*"} />
+  </>
+}

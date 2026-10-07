@@ -124,4 +124,15 @@ describe('Hero community photos', () => {
     advancePhoto()
     expectPhoto(3)
   })
+
+  it('announces only user-initiated photo changes', () => {
+    renderPhotos()
+    const status = screen.getByText((_, element) => element?.getAttribute('aria-live') === 'polite')
+    expectPhoto(0)
+    advancePhoto()
+    expectPhoto(1)
+    expect(status).toBeEmptyDOMElement()
+    fireEvent.click(screen.getByRole('button', { name: 'Next hero photo' }))
+    expect(status).toHaveTextContent(`Photo 3 of ${heroPhotos.length}: ${heroPhotos[2].alt}`)
+  })
 })
