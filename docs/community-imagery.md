@@ -1,6 +1,6 @@
 # CICA community photography
 
-The owner supplied and approved CICA photographs from `/Users/ramc/Downloads/Cica_Photos` for publication on the website and Gallery on October 7, 2026. Originals remain unchanged. Only the ten selected photographs listed below were imported; unrelated documents, roster graphics, advertising material and video were not imported.
+The owner supplied and approved CICA photographs from `/Users/ramc/Downloads/Cica_Photos` for publication on the website and Gallery on October 7, 2026. Originals remain unchanged. Twelve selected photographs were imported: ten in the Gallery and two additional portraits for hero rotation. Unrelated documents, roster graphics, advertising material and video were not imported.
 
 ## Selected photograph manifest
 
@@ -18,15 +18,21 @@ The collection contains 57 JPEGs (22.54 MB) with no byte-identical duplicates. F
 | trophy-presentation | PHOTO-2025-02-23-16-13-38 2.jpg | 1200 × 675 | 188 KiB |
 | indoor-team-portrait | PHOTO-2025-04-20-16-12-49 2.jpg | 1200 × 675 | 252 KiB |
 | indoor-team-gathering | PHOTO-2025-04-20-16-12-50.jpg | 1200 × 675 | 184 KiB |
+| outdoor-bat-presentation (hero only) | PHOTO-2022-07-31-13-11-38.jpg | 1200 × 1600 | 263 KiB |
+| indoor-trophy-moment (hero only) | PHOTO-2023-03-05-12-44-23.jpg | 1200 × 1594 | 361 KiB |
 
-All full derivatives are `public/images/community/{id}.webp`. Gallery thumbnails are `public/images/community/{id}-gallery.webp`, with a maximum dimension of 640 pixels. Full photos have a maximum dimension of 1200 pixels, except the portrait hero, which preserves its original 1200 × 1600 composition. No photo is enlarged or permanently cropped.
+All full derivatives are `public/images/community/{id}.webp`. Gallery thumbnails are `public/images/community/{id}-gallery.webp`, with a maximum dimension of 640 pixels. Full photos have a maximum dimension of 1200 pixels, except the three portrait hero photographs, which fit within 1200 × 1600 while preserving their composition. No photo is enlarged or permanently cropped.
 
-The twenty derivatives total 2.65 MB. The hero is 232 KiB; all ten gallery thumbnails together total 557 KiB. WebP quality is 78 for full images and 76 for thumbnails. EXIF, XMP, IPTC, ICC and orientation metadata are absent from every public derivative, so original location and camera metadata are not published.
+The twenty-two photo derivatives total 3.29 MB. The initial hero is 232 KiB; the other hero photos load on demand as visitors rotate through them. All ten gallery thumbnails together total 557 KiB. WebP quality is 78 for full images and 76 for thumbnails. EXIF, XMP, IPTC, ICC and orientation metadata are absent from every public derivative, so original location and camera metadata are not published.
 
 ## Integration contract
 
 `lib/community-photos.ts` exports `communityPhotos`, including each photograph's `id`, `src`, `width`, `height`, `alt`, `caption`, `gallerySrc`, `galleryWidth` and `galleryHeight`. Use gallery sources for lazy-loaded thumbnails and full sources when visitors enlarge a photo. Preserve natural proportions in the lightbox; review responsive crops in composed feature panels.
 
-`heroPhoto` selects `outdoor-award`; the intended About pair is `family-celebration` and `community-on-field`. The hero's portrait composition works with centered cropping, keeping both cricketers and the trophy visible. A wide landscape crop should use a different supplied image rather than force this portrait into that shape.
+`heroPhotos` selects `outdoor-award`, `outdoor-bat-presentation` and `indoor-trophy-moment`; the intended About pair is `family-celebration` and `community-on-field`. The hero uses portrait compositions with centered cropping. Rotation retains the displayed frame until the requested frame loads, and already loaded frames can be revisited without waiting for another load event.
+
+## Premium sponsor logo
+
+The owner assigned GPT and Lumin Innovations to premium placements and supplied `/Users/ramc/Downloads/Long Logo 2.png` for Lumin Innovations. Its public derivative is `public/images/sponsors/lumin-innovations.webp` (1260 × 419, 14.5 KiB, quality 85). Original proportions and dark background are preserved. `lib/premium-sponsors.ts` controls names, optional logos, optional approved links and display order; the third space remains a sponsorship invitation.
 
 No external photographs or generated people are represented as CICA community photography. Decorative artwork remains distinct from these actual owner-supplied photographs.

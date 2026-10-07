@@ -124,5 +124,10 @@ export const communityPhotos: readonly CommunityPhoto[] = [
 ]
 
 export const heroPhoto = communityPhotos.find(photo => photo.id === "outdoor-award")!
+export const heroPhotos: readonly Pick<CommunityPhoto, "id" | "src" | "width" | "height" | "alt" | "caption">[] = [
+  heroPhoto,
+  { id: "outdoor-bat-presentation", src: "/images/community/outdoor-bat-presentation.webp", width: 1200, height: 1600, alt: "Two adults holding a cricket bat together on an outdoor field.", caption: "A shared love of the game." },
+  { id: "indoor-trophy-moment", src: "/images/community/indoor-trophy-moment.webp", width: 1200, height: 1594, alt: "Two cricketers holding a trophy with community members beside them indoors.", caption: "Celebrating together, on and off the field." },
+]
 export const aboutPhotoIds = ["family-celebration", "community-on-field"] as const
 export const communityFeaturePhotoId = "community-on-field"

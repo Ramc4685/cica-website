@@ -233,6 +233,21 @@ html[data-motion=paused] .hero-copy,html[data-motion=paused] .growlio-hero-image
 @media(max-width:760px){.growlio-hero-shell { min-height:0;padding-bottom:150px; }.logo-motion-ribbon { height:130px;left:-100px;right:-100px;bottom:20px; }.hero-motion-control { bottom:2px;right:0; }.motion-control { font-size:10px;padding:10px 13px; }}
 @media(prefers-reduced-motion:reduce){.motion-entered { animation:none; }.growlio-way:hover,.home-tournament-card:hover,.home-tournament-card:hover .tournament-art img,.growlio-way:hover .way-art .way-community-photo { transform:none; }}
 .site-motion-toolbar { display:flex;justify-content:flex-end;padding-bottom:8px;margin-top:-10px; }
+.growlio-partner-strip .sponsor-stream { display:block!important;overflow:hidden;min-width:0; }
+.sponsor-stream-track { display:flex;width:max-content;animation:sponsor-stream-slide 45s linear infinite;animation-play-state:paused; }
+.sponsor-stream[data-motion=running] .sponsor-stream-track { animation-play-state:running; }
+.sponsor-stream-set { display:flex;align-items:center;gap:26px;padding-right:26px; }
+.growlio-partner-strip .sponsor-stream img { flex-shrink:0;width:150px;max-width:150px;height:65px;border-radius:8px; }
+@keyframes sponsor-stream-slide { to { transform:translateX(-50%); } }
+.hero-rotating-photo { object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .8s cubic-bezier(.22,1,.36,1); }
+.hero-rotating-photo.is-visible { opacity:1; }
+.hero-photo-rotator .hero-image-brand { bottom:82px; }
+.hero-photo-controls { position:absolute;bottom:18px;left:28px;right:28px;z-index:6;display:flex;align-items:center;justify-content:space-between;color:#FAFADD; }
+.hero-photo-controls>span { background:#034F47;padding:8px 13px;border-radius:30px;font-size:11px; }
+.hero-photo-controls>div { display:flex;gap:8px; }
+.hero-photo-controls button { display:grid;place-items:center;width:44px;height:44px;border:1px solid #FAFADD;background:#034F47;color:#FAFADD;border-radius:50%; }
+.hero-photo-controls button:focus-visible { outline:3px solid #FAFADD;outline-offset:3px; }
+html[data-motion=paused] .hero-rotating-photo { transition:none; }
 @media(max-width:760px){.site-motion-toolbar { margin-top:-4px;padding-bottom:6px; }}
 
 /* Pausing also removes movement initiated by the site's intentional hover effects. */

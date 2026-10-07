@@ -1,5 +1,25 @@
 # UI verification
 
+## Rotating hero and premium sponsors
+
+The hero now cycles through three portrait photographs every six seconds, with
+manual previous/next controls. Regression tests verify that the previous photograph
+remains visible until its replacement loads, and returning to a cached photograph
+does not require another load event. The photo counter tracks the displayed frame.
+Global pause, reduced motion and hover/focus stop automatic photo changes.
+
+GPT and Lumin Innovations have owner-assigned premium placements near the top of
+Home and above the regular spotlight on Sponsors. The third placement invites an
+inquiry. Lumin's supplied logo preserves its proportions and dark background.
+Sponsor logo strips continue during card interaction and stop with the global pause
+control or reduced-motion preference. The regular spotlight still pauses while used.
+
+![Premium placements](cica-premium-sponsors-placements.jpg)
+
+The current suite has 41 passing Jest checks. Chrome checked Home and Sponsors at
+320, 390, 768, 1100 and 1440px without horizontal overflow or clipped headings.
+Physical-device performance and mail delivery remain separate release checks.
+
 ## Growlio photography and motion revision, October 7, 2026
 
 The current preview uses authentic CICA photographs, bold cream/green typography,
