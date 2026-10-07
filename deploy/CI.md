@@ -21,6 +21,12 @@ superseded commits. Build jobs and pull requests never receive deployment creden
    `gh workflow run namecheap.yml --ref <branch>`). Manual runs deploy to staging
    only; production deploys only from `main`.
 
+Content edits made through Pages CMS (`content/*.json` and `public/uploads`) are ordinary
+commits to `main` and follow this same staging, then Production-approval path; there is no
+fast lane. The `check` job fails the build on invalid content or an unsafe upload (wrong type,
+over 10 MB, outside `public/uploads/{champions,photos}`), naming the field or file. See
+[editing website content](../docs/content-editing.md).
+
 Staging is a shared preview: deploying a branch replaces whatever staging showed
 before. The installer adds a `noindex` header there, and staging forms save to
 `/home/cicanrkn/.cica-forms-staging` with `[STAGING]` email subjects.
