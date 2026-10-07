@@ -1,0 +1,184 @@
+{
+  "photos": [
+    {
+      "id": "outdoor-award",
+      "src": "/images/community/outdoor-award.webp",
+      "alt": "Two cricketers holding a trophy together on an outdoor cricket field.",
+      "caption": "A moment of recognition on the field.",
+      "objectPosition": "50% 35%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "outdoor-bat-presentation",
+      "src": "/images/community/outdoor-bat-presentation.webp",
+      "alt": "Two adults holding a cricket bat together on an outdoor field.",
+      "caption": "A shared love of the game.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "indoor-trophy-moment",
+      "src": "/images/community/indoor-trophy-moment.webp",
+      "alt": "Two cricketers holding a trophy with community members beside them indoors.",
+      "caption": "Celebrating together, on and off the field.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-teams",
+      "src": "/images/community/outdoor-teams.webp",
+      "alt": "Cricket teams standing together on an outdoor field beneath a blue sky.",
+      "caption": "Teams together on the outdoor field.",
+      "objectPosition": "50% 72%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "indoor-community",
+      "src": "/images/community/indoor-community.webp",
+      "alt": "A large group gathered around a trophy table inside an indoor cricket facility.",
+      "caption": "A community gathering around the trophy table.",
+      "objectPosition": "50% 72%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "family-celebration",
+      "src": "/images/community/family-celebration.webp",
+      "alt": "Adults and children gathered beside a table of cricket trophies indoors.",
+      "caption": "Sharing a celebration together.",
+      "objectPosition": "45% 40%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "team-gathering",
+      "src": "/images/community/team-gathering.webp",
+      "alt": "Cricketers posing together on grass with trees behind them.",
+      "caption": "Together beyond the boundary.",
+      "objectPosition": "45% 62%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "indoor-team-celebration",
+      "src": "/images/community/indoor-team-celebration.webp",
+      "alt": "Cricketers in yellow shirts posing with trophies inside a sports facility.",
+      "caption": "A team celebration indoors.",
+      "objectPosition": "50% 40%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "community-on-field",
+      "src": "/images/community/community-on-field.webp",
+      "alt": "A large group of players and community members gathered on an outdoor cricket field.",
+      "caption": "The community together on the field.",
+      "objectPosition": "50% 55%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "trophy-presentation",
+      "src": "/images/community/trophy-presentation.webp",
+      "alt": "Three adults standing behind a table of trophies at an indoor cricket facility.",
+      "caption": "Trophies and familiar faces.",
+      "objectPosition": "45% 40%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "indoor-team-portrait",
+      "src": "/images/community/indoor-team-portrait.webp",
+      "alt": "A cricket team posing with trophies on an indoor playing surface.",
+      "caption": "A team moment to remember.",
+      "objectPosition": "50% 52%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "indoor-team-gathering",
+      "src": "/images/community/indoor-team-gathering.webp",
+      "alt": "A group of cricketers gathered with trophies on an indoor field.",
+      "caption": "Sharing the game and its celebrations.",
+      "objectPosition": "50% 58%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "friends-at-the-ground",
+      "src": "/images/community/friends-at-the-ground.webp",
+      "alt": "Four cricket supporters posing together beside a cricket ground.",
+      "caption": "Friends sharing the cricket spirit.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-trophy-gathering",
+      "src": "/images/community/outdoor-trophy-gathering.webp",
+      "alt": "Three cricketers standing together with a trophy on an outdoor field.",
+      "caption": "Recognition shared on the field.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "indoor-blue-team",
+      "src": "/images/community/indoor-blue-team.webp",
+      "alt": "Cricketers in blue shirts posing with trophies on an indoor sports court.",
+      "caption": "A team celebration together.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "indoor-teams-together",
+      "src": "/images/community/indoor-teams-together.webp",
+      "alt": "Cricketers in blue and yellow shirts gathered with trophies indoors.",
+      "caption": "Many teams, a shared love of cricket.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-team-and-trophies",
+      "src": "/images/community/outdoor-team-and-trophies.webp",
+      "alt": "A cricket team posing with trophies on an outdoor field.",
+      "caption": "Team pride beyond the boundary.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-team-lineup",
+      "src": "/images/community/outdoor-team-lineup.webp",
+      "alt": "Cricketers standing together behind a row of trophies on grass.",
+      "caption": "Together for the game.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-red-team",
+      "src": "/images/community/outdoor-red-team.webp",
+      "alt": "Cricketers in red and blue shirts posing together on an outdoor field.",
+      "caption": "A shared team moment.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    },
+    {
+      "id": "outdoor-community-teams",
+      "src": "/images/community/outdoor-community-teams.webp",
+      "alt": "Two groups of cricketers posing together on a field under a blue sky.",
+      "caption": "Cricket brings people together.",
+      "objectPosition": "50% 50%",
+      "gallery": false,
+      "hero": true
+    }
+  ]
+}

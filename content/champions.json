@@ -1,0 +1,140 @@
+{
+  "recordsUpdated": "",
+  "competitions": [
+    {
+      "id": "mains",
+      "title": "CICA Mains",
+      "records": [
+        {
+          "season": 2024,
+          "champion": "BloomBoys"
+        },
+        {
+          "season": 2023,
+          "champion": "Bloom Bulls"
+        },
+        {
+          "season": 2022,
+          "champion": "Peoria Marvels"
+        },
+        {
+          "season": 2021,
+          "champion": "Moghals"
+        },
+        {
+          "season": 2019,
+          "champion": "Moghals"
+        },
+        {
+          "season": 2018,
+          "champion": "Hunters"
+        },
+        {
+          "season": 2017,
+          "champion": "BloomBoys"
+        },
+        {
+          "season": 2016,
+          "champion": "Bashers"
+        },
+        {
+          "season": 2015,
+          "champion": "Moghals"
+        },
+        {
+          "season": 2014,
+          "champion": "Bradley Bulls"
+        },
+        {
+          "season": 2013,
+          "champion": "Klasic"
+        },
+        {
+          "season": 2012,
+          "champion": "Sarkaar"
+        }
+      ]
+    },
+    {
+      "id": "cica-indoor",
+      "title": "CICA Indoor",
+      "records": [
+        {
+          "season": 2025,
+          "champion": "Hunters",
+          "runnerUp": "Bloom Bulls"
+        },
+        {
+          "season": 2024,
+          "champion": "Spartans",
+          "runnerUp": "Bloom Bulls"
+        },
+        {
+          "season": 2023,
+          "champion": "Raiders"
+        },
+        {
+          "season": 2021,
+          "champion": "Spartans"
+        },
+        {
+          "season": 2019,
+          "champion": "Hunters"
+        },
+        {
+          "season": 2018,
+          "champion": "Moghals"
+        },
+        {
+          "season": 2017,
+          "champion": "Spartans"
+        },
+        {
+          "season": 2016,
+          "champion": "Spartans"
+        },
+        {
+          "season": 2015,
+          "champion": "BCC"
+        }
+      ]
+    },
+    {
+      "id": "cpl-indoor",
+      "title": "CPL Indoor",
+      "records": [
+        {
+          "season": 2025,
+          "champion": "Techie Brains Legends",
+          "runnerUp": "Bloom Barista Bulls"
+        },
+        {
+          "season": 2023,
+          "champion": "Sysintelli Strikers",
+          "runnerUp": "Parke Regency Thalaivas"
+        }
+      ]
+    },
+    {
+      "id": "cpl-outdoor",
+      "title": "CPL Outdoor",
+      "records": [
+        {
+          "season": 2024,
+          "champion": "Techie Brains Legends",
+          "runnerUp": "Bloom Events Eagles"
+        }
+      ]
+    },
+    {
+      "id": "mini",
+      "title": "Mini Tournament",
+      "records": []
+    },
+    {
+      "id": "challengers",
+      "title": "Challengers",
+      "records": []
+    }
+  ]
+}
