@@ -1,6 +1,6 @@
 # CICA community photography
 
-The owner supplied and approved CICA photographs from `/Users/ramc/Downloads/Cica_Photos` for publication on the website and Gallery on October 7, 2026. Originals remain unchanged. Twenty selected photographs are available for hero rotation, including the ten photographs in the Gallery. Unrelated documents, roster graphics, advertising material and video were not imported.
+The owner supplied and approved CICA photographs (owner-supplied originals, kept offline) for publication on the website and Gallery on October 7, 2026. Originals remain unchanged. Twenty selected photographs are available for hero rotation, including the ten photographs in the Gallery. Unrelated documents, roster graphics, advertising material and video were not imported.
 
 ## Selected photograph manifest
 
@@ -43,6 +43,6 @@ Hero rotation should display the full photograph, including wide group photograp
 
 ## Premium sponsor logo
 
-The owner assigned GPT and Lumin Innovations to premium placements and supplied `/Users/ramc/Downloads/Long Logo 2.png` for Lumin Innovations. Its public derivative is `public/images/sponsors/lumin-innovations.webp` (1260 × 419, 14.5 KiB, quality 85). Original proportions and dark background are preserved. `lib/premium-sponsors.ts` controls names, optional logos, optional approved links and display order; the third space remains a sponsorship invitation.
+The owner assigned GPT and Lumin Innovations to premium placements and supplied the Lumin Innovations long logo (owner-supplied original, kept offline). Its public derivative is `public/images/sponsors/lumin-innovations.webp` (1260 × 419, 14.5 KiB, quality 85). Original proportions and dark background are preserved. `lib/premium-sponsors.ts` controls names, optional logos, optional approved links and display order; the third space remains a sponsorship invitation.
 
 No external photographs or generated people are represented as CICA community photography. Decorative artwork remains distinct from these actual owner-supplied photographs.

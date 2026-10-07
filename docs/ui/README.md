@@ -30,9 +30,12 @@ The current preview uses authentic CICA photographs, bold cream/green typography
 a moving curved ribbon of CICA, team and sponsor identities, a prominent sponsor
 spotlight, and a larger dark story/footer composition.
 
+Later superseded: the Growlio completion removed the rotating sponsor spotlight
+(sponsors are now listed on /sponsors and in the logo strip) and moved display
+type to Goudy Bookletter 1911 at its single loaded weight, 400.
+
 ![Current desktop](cica-growlio-motion-desktop.jpg)
 ![Current mobile](cica-growlio-motion-mobile.jpg)
-![Sponsor spotlight](cica-sponsor-spotlight-desktop.jpg)
 ![Mobile photo enlargement](cica-gallery-mobile.jpg)
 
 Chrome checked twelve public content routes at 320, 768 and 1100px, with no
