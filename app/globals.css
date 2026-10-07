@@ -197,6 +197,12 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
   .brand strong { font-size:21px; }
   .nav-cta { display:none!important; }
 }
+/* The 288px shell at 320px cannot hold the brand, motion control and toggle at the default gaps;
+   the toggle's padding already separates it from the motion control. */
+@media (max-width:360px) {
+  .nav-shell { gap:8px; }
+  .nav-actions { gap:0; }
+}
 
 /* ---------------------------------------------------------------------------
    Home hero
