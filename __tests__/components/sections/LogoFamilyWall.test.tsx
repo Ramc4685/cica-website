@@ -37,4 +37,12 @@ describe('LogoFamilyWall', () => {
     expect(source).toMatch(/<LogoFamilyWall \/>/)
     expect(source).not.toMatch(/community-on-field|bannerPhoto|communityPhotos/)
   })
+
+  it('loops the mobile rows without a seam and drifts tiles rather than their artwork', () => {
+    const css = readFileSync(path.join(process.cwd(), 'components/sections/logo-family-wall.module.css'), 'utf8')
+    expect(css).toMatch(/\.row \{[^}]*gap:0/)
+    expect(css).toMatch(/\.track,\.track\[data-copy\] \{[^}]*padding-right:12px/)
+    expect(css).not.toMatch(/\.tile img \{[^}]*animation/)
+    expect(css).not.toMatch(/\.tile img \{ animation/)
+  })
 })
