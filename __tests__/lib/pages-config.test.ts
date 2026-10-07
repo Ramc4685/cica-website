@@ -72,8 +72,8 @@ describe('.pages.yml', () => {
   it('maps uploads to the two allowed folders with image extensions only', () => {
     const media = Array.isArray(config.media) ? config.media : [config.media]
     const byInput = Object.fromEntries(media.map((item: { input: string }) => [item.input, item]))
-    expect(byInput['public/uploads/champions'].output).toBe('/uploads/champions')
-    expect(byInput['public/uploads/photos'].output).toBe('/uploads/photos')
+    expect(byInput['content/uploads/champions'].output).toBe('/uploads/champions')
+    expect(byInput['content/uploads/photos'].output).toBe('/uploads/photos')
     for (const item of media) {
       expect([...item.extensions].sort()).toEqual(['jpeg', 'jpg', 'png', 'webp'])
     }
@@ -84,10 +84,10 @@ describe('.pages.yml', () => {
     const champions = declaredFieldNamed(entry('champions.json').fields, 'photo').fields!.find((f: Field) => f.name === 'src') as Field
     expect(champions.type).toBe('image')
     const mediaNames = Object.fromEntries((config.media as { name: string; input: string }[]).map(item => [item.input, item.name]))
-    expect(champions.options?.media).toBe(mediaNames['public/uploads/champions'])
+    expect(champions.options?.media).toBe(mediaNames['content/uploads/champions'])
     const photoSrc = entry('photos.json').fields[0].fields.find((f: Field) => f.name === 'src') as Field
     expect(photoSrc.type).toBe('image')
-    expect(photoSrc.options?.media).toBe(mediaNames['public/uploads/photos'])
+    expect(photoSrc.options?.media).toBe(mediaNames['content/uploads/photos'])
     expect(config.settings?.commit?.identity).not.toBe('user')
   })
 

@@ -67,4 +67,18 @@ if (process.env.CICA_TEST_EXPORT_DIR) {
       }
     }
   })
+
+  test("export ships no original uploads (their EXIF metadata must not be public)", async () => {
+    const exportRoot = path.resolve(root, process.env.CICA_TEST_EXPORT_DIR)
+    await assert.rejects(access(path.join(exportRoot, "uploads")), { code: "ENOENT" })
+    const pending = [exportRoot]
+    while (pending.length) {
+      const directory = pending.pop()
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const file = path.join(directory, entry.name)
+        if (entry.isDirectory()) pending.push(file)
+        else if (/(?:^|\/)uploads\//.test(path.relative(exportRoot, file))) assert.fail(`Original upload in export: ${path.relative(exportRoot, file)}`)
+      }
+    }
+  })
 }

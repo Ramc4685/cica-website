@@ -6,13 +6,13 @@
 media:
   - name: champion-photos
     label: Champion team photos
-    input: public/uploads/champions
+    input: content/uploads/champions
     output: /uploads/champions
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: community-photos
     label: Community photos
-    input: public/uploads/photos
+    input: content/uploads/photos
     output: /uploads/photos
     rename: safe
     extensions: [jpg, jpeg, png, webp]

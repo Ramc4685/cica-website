@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2>Photos and organizer editing</h2>
-            <p>Organizers publish team and community photos with the team’s consent. To have a photo removed, email organizers@cicainfo.com. Invited organizers edit this website’s champions, photos and tournament details through Pages CMS, an external editing service that holds their sign-in email; this website does not.</p>
+            <p>Organizers publish team and community photos with the team’s consent. Published photos are resized copies with embedded camera and location details removed. To have a photo removed, email organizers@cicainfo.com. Invited organizers edit this website’s champions, photos and tournament details through Pages CMS, an external editing service that holds their sign-in email; this website does not.</p>
           </section>
           <section>
             <h2>Children</h2>

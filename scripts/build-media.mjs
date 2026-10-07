@@ -1,7 +1,7 @@
-import { mkdir, open, readdir, readFile, stat, writeFile } from "node:fs/promises"
+import { mkdir, open, readFile, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
 import sharp from "sharp"
-import { checkUpload, collectImageSources } from "./media-checks.mjs"
+import { checkUpload, checkUploadTree, collectImageSources, derivativeName } from "./media-checks.mjs"
 
 const root = process.cwd()
 const publicDir = path.join(root, "public")
@@ -10,21 +10,8 @@ const manifestFile = path.join(root, "lib/generated/media-manifest.json")
 const readJson = async file => JSON.parse(await readFile(path.join(root, file), "utf8"))
 const errors = []
 
-// Every file in public/uploads must be a valid image, including uploads not yet referenced by content.
-for (const folder of ["champions", "photos"]) {
-  const dir = path.join(publicDir, "uploads", folder)
-  for (const entry of await readdir(dir, { withFileTypes: true }).catch(() => [])) {
-    if (entry.name === ".gitkeep") continue
-    if (!entry.isFile()) { errors.push(`uploads/${folder}/${entry.name}: only image files are allowed here`); continue }
-    const file = path.join(dir, entry.name)
-    const handle = await open(file)
-    const head = Buffer.alloc(16)
-    await handle.read(head, 0, 16, 0)
-    await handle.close()
-    const problem = checkUpload({ name: entry.name, size: (await stat(file)).size, head })
-    if (problem) errors.push(`uploads/${folder}/${problem}`)
-  }
-}
+// Originals live in content/uploads (never published); every file there must be a valid image, referenced or not.
+errors.push(...await checkUploadTree(root))
 
 // Every image referenced by content must exist and be valid; build derivatives and the manifest.
 const sources = collectImageSources({ champions: await readJson("content/champions.json"), photos: await readJson("content/photos.json") })
@@ -32,11 +19,14 @@ await mkdir(outDir, { recursive: true })
 await mkdir(path.dirname(manifestFile), { recursive: true })
 const manifest = {}
 for (const src of sources) {
-  const file = path.join(publicDir, src)
-  if (!file.startsWith(publicDir + path.sep)) { errors.push(`${src}: invalid path`); continue }
+  // /uploads/* originals are kept outside public/ so they never ship; everything else is a committed site image.
+  const uploaded = src.startsWith("/uploads/")
+  const base = uploaded ? path.join(root, "content") : publicDir
+  const file = path.join(base, src)
+  if (!file.startsWith(base + path.sep)) { errors.push(`${src}: invalid path`); continue }
   const info = await stat(file).catch(() => null)
   if (!info) { errors.push(`${src}: referenced in content but the file is missing`); continue }
-  if (!src.startsWith("/uploads/")) {
+  if (!uploaded) {
     // Committed site images are not user uploads, but still must be readable images.
     const handle = await open(file)
     const head = Buffer.alloc(16)
@@ -45,9 +35,8 @@ for (const src of sources) {
     const problem = checkUpload({ name: path.basename(file), size: info.size, head })
     if (problem) { errors.push(`${src}: ${problem}`); continue }
   }
-  const base = src.replace(/^\//, "").replace(/[/.]/g, "-")
   const variant = async max => {
-    const name = `${base}-${max}.webp`
+    const name = derivativeName(src, max)
     const target = path.join(outDir, name)
     const existing = await stat(target).catch(() => null)
     if (existing && existing.mtimeMs >= info.mtimeMs) {

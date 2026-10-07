@@ -25,7 +25,7 @@ If a build fails, the Actions log names the content field or upload to fix, for 
 
 ### What the build enforces
 
-Uploads are JPG, PNG or WebP only, checked by file signature, no larger than 10 MB, and only in `public/uploads/champions` or `public/uploads/photos`. SVG, HEIC and renamed files are rejected. Links must start with `https://`. Text fields have length limits. Unknown keys are rejected. Text is rendered as plain text, never as HTML.
+Uploads are JPG, PNG or WebP only, checked by file signature, no larger than 10 MB, and only in `content/uploads/champions` or `content/uploads/photos`; any other file or folder under `content/uploads`, or any `public/uploads` folder, fails the build. Originals are kept out of the published site, which serves only resized WebP copies with camera and location metadata removed. SVG, HEIC and renamed files are rejected. Links must start with `https://`. Text fields have length limits. Unknown keys are rejected. Text is rendered as plain text, never as HTML.
 
 ### Notes behind the FAQ answers
 

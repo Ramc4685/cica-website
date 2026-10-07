@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Organizers can update champions (with optional team photos), community photos, tournament details, announcements, events and FAQ through Pages CMS; uploads are validated and optimized at build, and edits go live after the owner approves the production deploy.
+- Organizers can update champions (with optional team photos), community photos, tournament details, announcements, events and FAQ through Pages CMS; uploads are validated and optimized at build (originals stay unpublished; only metadata-free WebP copies ship), and edits go live after the owner approves the production deploy.
 - Remove the retired Google Apps Script form handlers, their live-endpoint test scripts, handler tests and Sheet templates now that the web apps are undeployed.
 - Add a staging site at staging.cicainfo.com: every `main` build deploys there first, and production deploys the same artifact only after an approver signs off. Staging forms keep separate records and `[STAGING]` notifications.
 - Add bylaws and indoor rules pages reproducing the official documents verbatim, with a sticky contents list, print and PDF copies.
