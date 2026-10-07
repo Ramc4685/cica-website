@@ -95,7 +95,6 @@ function ChampionPhotos({ competition }: { competition: Competition }) {
       const { gallery, full } = mediaFor(record.photo!.src)
       return <li key={record.season}>
         <figure className={styles.photo} data-champion-photo>
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export; derivatives are pre-sized by scripts/build-media.mjs */}
           <img src={gallery.src} srcSet={`${gallery.src} ${gallery.width}w, ${full.src} ${full.width}w`} sizes="(max-width: 700px) 100vw, 33vw"
             width={gallery.width} height={gallery.height} alt={record.photo!.alt} loading="lazy" decoding="async" />
           <figcaption>{record.season} champions: {record.champion}</figcaption>
