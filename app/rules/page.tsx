@@ -15,9 +15,9 @@ export default function RulesPage() {
         </p>
 
         <div className="mb-8 text-center">
-          <Button size="lg" asChild>
+          <Button size="lg" asChild className="h-auto max-w-full whitespace-normal text-center">
             <Link href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-5 w-5 mr-2" />
+              <ExternalLink className="h-5 w-5 mr-2 shrink-0" />
               Visit Official Tournament Website
             </Link>
           </Button>
@@ -33,7 +33,7 @@ export default function RulesPage() {
               Drive folder. Please refer to these documents for detailed information about tournament formats, player
               eligibility, and match regulations.
             </p>
-            <Button asChild className="w-full sm:w-auto">
+            <Button asChild className="h-auto w-full whitespace-normal text-center sm:w-auto">
               <Link
                 href="https://drive.google.com/drive/u/1/folders/16mFxdlNfcbK8_1_z5CNhLpFD5WPh4Asy"
                 target="_blank"
@@ -47,7 +47,7 @@ export default function RulesPage() {
         </Card>
 
         <Tabs defaultValue="general" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+          <TabsList className="grid h-auto w-full grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="general">General Rules</TabsTrigger>
             <TabsTrigger value="indoor">Indoor Format</TabsTrigger>
             <TabsTrigger value="outdoor">Outdoor Format</TabsTrigger>

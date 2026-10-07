@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Trophy } from "lucide-react"
+import { Trophy } from "lucide-react"
 import { getNewsItems } from "@/lib/content-data"
 
 const newsItems = getNewsItems()
@@ -52,9 +52,6 @@ export function LatestNews() {
 
                 <CardContent className="pt-0">
                   <p className="text-gray-600 text-sm leading-relaxed mb-4">{item.excerpt}</p>
-                  <Button variant="ghost" className="p-0 h-auto text-green-600 hover:text-green-700">
-                    Read More <ArrowRight className="h-4 w-4 ml-1" />
-                  </Button>
                 </CardContent>
               </Card>
             )
@@ -62,15 +59,10 @@ export function LatestNews() {
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline" className="hover:bg-green-600 hover:text-white transition-colors">
-            View All News & Announcements
+          <Button asChild size="lg" variant="outline" className="h-auto max-w-full whitespace-normal text-center hover:bg-green-600 hover:text-white transition-colors">
+            <a href="https://www.facebook.com/cicacric/" target="_blank" rel="noopener noreferrer">Follow Current News & Announcements</a>
           </Button>
-          <p className="text-sm text-gray-500 mt-2">
-            News content can be managed through the{" "}
-            <a href="/admin" className="text-blue-600 hover:underline">
-              Admin Panel
-            </a>
-          </p>
+
         </div>
       </div>
     </section>

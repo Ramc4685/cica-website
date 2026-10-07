@@ -17,13 +17,10 @@ export default function GalleryPage() {
             <Camera className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h2 className="text-2xl font-semibold mb-4">Event Photos & Highlights</h2>
             <p className="text-gray-600 mb-6">
-              Our complete photo collection is hosted on Google Drive, featuring high-quality images from tournaments,
-              award ceremonies, and community events. Browse through albums organized by tournament and year.
+              Find CICA photos and highlights on our Facebook page, including updates from tournaments,
+              award ceremonies, and community events.
             </p>
-            <Button size="lg">
-              <ExternalLink className="h-5 w-5 mr-2" />
-              View Full Gallery on Google Drive
-            </Button>
+            <Button asChild size="lg" className="whitespace-normal h-auto"><a href="https://www.facebook.com/cicacric/" target="_blank" rel="noopener noreferrer"><ExternalLink className="h-5 w-5 mr-2 shrink-0" />View Photos & Highlights on Facebook</a></Button>
           </CardContent>
         </Card>
 

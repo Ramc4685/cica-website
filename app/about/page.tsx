@@ -1,6 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Trophy, Target, History, Heart, ExternalLink, FileText } from "lucide-react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "About CICA - Our Mission, History and Values",
+  description: "Learn about the Central Illinois Cricket Association's mission to promote cricket in Bloomington/Normal and throughout Central Illinois since 1998.",
+  keywords: "CICA history, cricket Illinois, cricket mission, cricket association, Central Illinois sports, cricket community, cricket tournaments",
+  openGraph: {
+    title: "About the Central Illinois Cricket Association",
+    description: "Promoting cricket in Central Illinois since 1998 through tournaments, community engagement, and player development",
+    images: ["/images/cica-logo-main.jpg"],
+  },
+}
 
 export default function AboutPage() {
   return (

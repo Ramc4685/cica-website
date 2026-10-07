@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cicainfo.com"),
   title: "Central Illinois Cricket Association - CICA",
   description:
     "Promoting cricket and developing the sport in Bloomington/Normal, Illinois since 1998. Join our tournaments, events, and cricket community.",
@@ -30,9 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+          <Navigation />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
       </body>
     </html>
   )

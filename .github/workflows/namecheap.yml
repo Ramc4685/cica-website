@@ -1,0 +1,90 @@
+name: CI and Namecheap deployment
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Typecheck and static export
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # This job runs Jest and static checks; do not download unused Cypress binaries.
+      CYPRESS_INSTALL_BINARY: '0'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 11.13.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - name: Component and form regression tests
+        run: pnpm test --runInBand
+      - name: Deployment regression checks
+        run: node --test deploy/tests/*.test.mjs
+      - run: pnpm build:namecheap
+      - name: Verify disabled admin in built export
+        run: CICA_TEST_EXPORT_DIR=out node --test tests/admin-security.test.mjs
+      - name: Validate and package export
+        run: |
+          cp deploy/namecheap.htaccess out/.htaccess
+          node deploy/prepare-release.mjs out "$GITHUB_SHA"
+          tar -czf cica-site.tar.gz -C out .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cica-site-${{ github.sha }}
+          path: cica-site.tar.gz
+          retention-days: 14
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy verified export
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://cicainfo.com
+    # Never cancel a deployment after it starts writing the document root.
+    concurrency:
+      group: cica-namecheap-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Skip superseded commits
+        id: current
+        run: |
+          latest=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'deploy=false' >> "$GITHUB_OUTPUT"
+            echo 'A newer main commit will deploy; skipping this older build.'
+          fi
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        if: steps.current.outputs.deploy == 'true'
+        with:
+          name: cica-site-${{ github.sha }}
+          path: artifact
+      - name: Deploy through verified SSH
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          NAMECHEAP_SSH_HOST: ${{ secrets.NAMECHEAP_SSH_HOST }}
+          NAMECHEAP_SSH_USER: ${{ secrets.NAMECHEAP_SSH_USER }}
+          NAMECHEAP_SSH_PORT: ${{ secrets.NAMECHEAP_SSH_PORT }}
+          NAMECHEAP_SSH_PRIVATE_KEY: ${{ secrets.NAMECHEAP_SSH_PRIVATE_KEY }}
+          NAMECHEAP_SSH_KNOWN_HOSTS: ${{ secrets.NAMECHEAP_SSH_KNOWN_HOSTS }}
+        run: bash deploy/deploy-namecheap.sh
