@@ -1,12 +1,52 @@
-import Link from "next/link"
-import { ArrowUpRight, HeartHandshake, Trophy, Users, Mail, MessageCircle } from "lucide-react"
+import { PathwayCards } from "@/components/sections/pathway-cards"
+import { CapsuleLink } from "@/components/ui/capsule-link"
+import { PageHero } from "@/components/ui/page-hero"
+import { SectionIntro } from "@/components/ui/section-intro"
+import { communityPhotos } from "@/lib/community-photos"
 import { communityLinks } from "@/lib/content"
 import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
+
 export const metadata = pageMetadata("Get involved", "Find your place in CICA: ask about playing cricket, volunteer, watch a match, support the association or request community updates.", "/get-involved/")
-const pathways = [
-  { icon: Trophy, title: "Play cricket", description: "New to the area, looking for a team, or bringing a team of your own? Tell the organizers about your experience and what you’re looking for. They can explain current opportunities, eligibility and registration.", href:"/contact/", cta:"Ask about playing" },
-  { icon: HeartHandshake, title: "Lend a hand", description: "A good cricket day takes people behind the scenes. Ask about helping with events, matchday coordination or community activities. Opportunities depend on the current calendar.", href:"/contact/", cta:"Talk about volunteering" },
-  { icon: Users, title: "Come along & watch", description: "Bring your curiosity and share the matchday atmosphere. Check fixtures on CricClubs, then confirm the venue, timing and spectator arrangements with an organizer before visiting.", href:"/tournaments/", cta:"Explore tournaments" },
-  { icon: HeartHandshake, title: "Support the community", description: "Connect your business or organization with local cricket. Speak with CICA about sponsorship and the ways you could support its tournaments and community.", href:"/sponsors/", cta:"Explore sponsorship" },
-]
-export default function GetInvolvedPage(){return <><header className="page-hero"><div className="page-shell"><p className="eyebrow">There’s a place for you here</p><h1>Come for the cricket.<br />Stay for the community.</h1><p>Whether you want to play, help out, cheer from the boundary or simply keep in touch, let’s find your next step.</p></div></header><section className="page-shell py-16 md:py-24"><div className="grid gap-8 md:grid-cols-2">{pathways.map(({icon:Icon,title,description,href,cta})=><article key={title} className="editorial-panel flex flex-col items-start"><Icon size={30} aria-hidden="true"/><h2 className="text-3xl font-semibold mt-6">{title}</h2><p className="mt-5 leading-relaxed flex-1">{description}</p><Link href={href} className="text-link mt-7">{cta} <ArrowUpRight size={18}/></Link></article>)}</div><div className="grid gap-10 lg:grid-cols-2 mt-16 border-t pt-12"><div><Mail aria-hidden="true" size={26}/><h2 className="text-2xl font-semibold mt-5">Request email updates</h2><p className="mt-4 leading-relaxed">Leave your details for community updates. This is an updates request, separate from team or tournament registration.</p><Link href="/join/" className="premium-button mt-6">Request updates <ArrowUpRight size={18}/></Link></div><div><MessageCircle aria-hidden="true" size={26}/><h2 className="text-2xl font-semibold mt-5">Join the conversation</h2><p className="mt-4 leading-relaxed">Our WhatsApp community is another way to connect. WhatsApp’s group privacy settings apply, and your profile or phone number may be visible to others. If the invitation is unavailable, contact an organizer.</p><a href={communityLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="premium-button secondary mt-6">Open WhatsApp community <ArrowUpRight size={18}/></a></div></div></section></>}
+
+const heroPhoto = communityPhotos.find(photo => photo.id === "family-celebration") ?? communityPhotos[0]
+
+export default function GetInvolvedPage() {
+  return <>
+    <PageHero tag="There’s a place for you here" title={"Come for the cricket.\nStay for the *community.*"}
+      intro="Whether you want to play, help out, cheer from the boundary or simply keep in touch, let’s find your next step."
+      image={heroPhoto} />
+
+    <PathwayCards introVariant="label" className={s.flushTop} />
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="where-we-play-link-title">
+      <div className={`${s.card} ${s.bandGrid}`}>
+        <div>
+          <h2 id="where-we-play-link-title" className={s.cardTitle}>Where we play</h2>
+          <p className={s.body}>See the grounds and indoor courts CICA uses, then confirm the venue for each match with an organizer or on CricClubs before you travel.</p>
+        </div>
+        <div className={s.actions}>
+          <CapsuleLink href="/tournaments/#where-we-play" variant="outline">See the venues</CapsuleLink>
+        </div>
+      </div>
+    </section>
+
+    <section className={s.band} data-tone="green" aria-labelledby="stay-in-touch-title">
+      <div className="page-shell">
+        <SectionIntro tag="Stay in touch" title={"Keep the community\n*close.*"} tone="dark" id="stay-in-touch-title" reveal />
+        <div className={s.bandColumns}>
+          <article className={s.bandCard} aria-labelledby="updates-card-title">
+            <h3 id="updates-card-title" className={s.cardTitle}>Request email updates</h3>
+            <p className={s.bandBody}>Leave your details for community updates. This is an updates request, separate from team or tournament registration.</p>
+            <CapsuleLink href="/join/" tone="cream">Request updates</CapsuleLink>
+          </article>
+          <article className={s.bandCard} aria-labelledby="whatsapp-card-title">
+            <h3 id="whatsapp-card-title" className={s.cardTitle}>Join the conversation</h3>
+            <p className={s.bandBody}>Our WhatsApp community is another way to connect. WhatsApp’s group privacy settings apply, and your profile or phone number may be visible to others. If the invitation is unavailable, contact an organizer.</p>
+            <CapsuleLink href={communityLinks.whatsapp} tone="cream" variant="outline" external>Open WhatsApp community</CapsuleLink>
+          </article>
+        </div>
+      </div>
+    </section>
+  </>
+}

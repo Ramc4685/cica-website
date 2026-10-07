@@ -1,0 +1,11 @@
+.grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;margin:0;padding:0;list-style:none; }
+.card { display:flex;flex-direction:column;align-items:flex-start;height:100%;padding:36px;border-radius:32px;background:var(--cica-paper);box-shadow:inset 0 0 0 1px var(--cica-hairline); }
+.card[data-venue-type=outdoor] { background:var(--cica-tint-green);box-shadow:none; }
+.card :global(.tag-row) { margin-bottom:14px; }
+.name { margin:0 0 22px;font-family:var(--font-display),Georgia,serif;font-size:var(--step-h3);font-weight:400;line-height:1.05;letter-spacing:-.015em; }
+.facts { display:grid;gap:14px;margin:0 0 28px; }
+.facts dt { font-size:13px;font-weight:600;color:var(--cica-green-soft); }
+.facts dd { margin:2px 0 0;font-size:16px;line-height:1.55; }
+.pending { color:var(--cica-green-soft); }
+.card :global(.capsule) { margin-top:auto; }
+@media (max-width:760px) { .card { padding:26px 22px;border-radius:26px; } }

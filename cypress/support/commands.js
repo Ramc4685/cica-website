@@ -24,3 +24,8 @@ Cypress.Commands.add('submitFormAndWait', (submitButtonText) => {
 Cypress.Commands.add('checkForToast', (messageRegex) => {
   cy.get('body').should('contain.text', messageRegex);
 });
+
+// Stub the same-origin PHP handler so specs never depend on a live backend (use test:e2e:php for the real one).
+Cypress.Commands.add('stubFormSubmit', (statusCode, body, headers = {}) => {
+  cy.intercept('POST', '**/forms/submit.php', { statusCode, body, headers }).as('formSubmission');
+});

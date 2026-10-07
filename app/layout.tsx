@@ -5,6 +5,8 @@ import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { MotionProvider } from "@/components/site-motion"
+import { communityLinks } from "@/lib/content"
+import { siteUrl } from "@/lib/site-metadata"
 
 const display = Goudy_Bookletter_1911({ subsets: ["latin"], weight: "400", variable: "--font-display", display: "swap" })
 const body = Inter_Tight({ subsets: ["latin"], variable: "--font-body", display: "swap" })
@@ -46,7 +48,21 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  alternates: { canonical: "https://cicainfo.com/" }
+}
+
+// Facts already published on the site: name, founding year, crest, area and official channels.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SportsOrganization",
+  name: "Central Illinois Cricket Association",
+  alternateName: "CICA",
+  url: `${siteUrl}/`,
+  foundingDate: "1998",
+  sport: "Cricket",
+  logo: `${siteUrl}/images/cica-logo-main.webp`,
+  email: communityLinks.email.replace(/^mailto:/, ""),
+  areaServed: "Bloomington–Normal, Illinois",
+  sameAs: [communityLinks.facebook, communityLinks.youtube, communityLinks.scores],
 }
 
 export default function RootLayout({
@@ -57,12 +73,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${display.variable} ${body.variable}`}>
-          <MotionProvider>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }} />
+        <MotionProvider>
           <a href="#main-content" className="skip-link">Skip to content</a>
           <Navigation />
-          <main id="main-content" className="min-h-screen" tabIndex={-1}>{children}</main>
+          <main id="main-content" tabIndex={-1}>{children}</main>
           <Footer />
-          </MotionProvider>
+        </MotionProvider>
       </body>
     </html>
   )

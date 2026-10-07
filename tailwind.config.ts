@@ -1,6 +1,8 @@
 import type { Config } from 'tailwindcss'
+import defaultColors from 'tailwindcss/colors'
 
-// all in fixtures is set to tailwind v3 as interims solutions
+// Brand tokens live once in app/globals.css (:root, HSL channels) and are exposed here.
+const brand = (name: string) => `hsl(var(--cica-${name}-hsl) / <alpha-value>)`
 
 const config: Config = {
   darkMode: ['class'],
@@ -12,7 +14,26 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+        sans: ['var(--font-body)', 'Arial', 'sans-serif'],
+      },
+      fontSize: {
+        hero: ['var(--step-hero)', { lineHeight: '0.88', letterSpacing: '-0.02em' }],
+        h2: ['var(--step-h2)', { lineHeight: '1', letterSpacing: '-0.02em' }],
+        h3: ['var(--step-h3)', { lineHeight: '1.05', letterSpacing: '-0.015em' }],
+        footer: ['var(--step-footer)', { lineHeight: '0.9', letterSpacing: '-0.02em' }],
+      },
       colors: {
+        cream: brand('cream'),
+        // Keep Tailwind's numbered greens (still used by form states) beside the brand green.
+        green: { ...defaultColors.green, DEFAULT: brand('green') },
+        ink: brand('ink'),
+        paper: brand('paper'),
+        mint: brand('mint'),
+        'mint-deep': brand('mint-deep'),
+        ball: brand('ball'),
+        pitch: brand('pitch'),
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

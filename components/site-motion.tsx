@@ -12,6 +12,16 @@ interface SiteMotionState {
   ready: boolean
 }
 const SiteMotionContext = createContext<SiteMotionState | null>(null)
+const STORAGE_KEY = "cica-motion"
+/** Elements that reveal once as they scroll into view (see globals.css "Motion"). */
+const REVEAL_TARGETS = "main > section, main > div > section, .reveal-heading"
+
+function readStoredPause() {
+  try { return window.localStorage.getItem(STORAGE_KEY) === "paused" } catch { return false }
+}
+function storePause(paused: boolean) {
+  try { window.localStorage.setItem(STORAGE_KEY, paused ? "paused" : "running") } catch { /* storage blocked: keep the in-memory choice */ }
+}
 
 export function MotionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
@@ -21,7 +31,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)")
     setReducedMotion(preference.matches)
-    setPaused(preference.matches)
+    setPaused(preference.matches || readStoredPause())
     setReady(true)
     const update = (event: MediaQueryListEvent) => {
       setReducedMotion(event.matches)
@@ -37,19 +47,33 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   }, [motionEnabled])
   useEffect(() => {
     if (!motionEnabled) return
-    const sections = document.querySelectorAll<HTMLElement>("main > section, main > div > section")
+    const targets = [...document.querySelectorAll<HTMLElement>(REVEAL_TARGETS)]
+      .filter(target => !target.classList.contains("motion-entered") && !target.classList.contains("motion-static"))
+    const seen = new WeakSet<Element>()
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
+        const target = entry.target
+        // Anything already on screen at hydration stays put, so server-rendered text never flashes away.
+        if (!seen.has(target)) {
+          seen.add(target)
+          if (entry.isIntersecting && !target.classList.contains("motion-waiting")) {
+            target.classList.add("motion-static")
+            observer.unobserve(target)
+            return
+          }
+          target.classList.add("motion-waiting")
+        }
         if (entry.isIntersecting) {
-          entry.target.classList.add("motion-entered")
-          observer.unobserve(entry.target)
+          target.classList.replace("motion-waiting", "motion-entered")
+          observer.unobserve(target)
         }
       })
     }, { threshold: 0.08 })
-    sections.forEach(section => observer.observe(section))
+    targets.forEach(target => observer.observe(target))
     return () => observer.disconnect()
   }, [motionEnabled, pathname])
-  return <SiteMotionContext.Provider value={{ motionEnabled, paused, toggleMotion: () => setPaused(value => !value), reducedMotion, ready }}>{children}</SiteMotionContext.Provider>
+  const toggleMotion = () => setPaused(value => { storePause(!value); return !value })
+  return <SiteMotionContext.Provider value={{ motionEnabled, paused, toggleMotion, reducedMotion, ready }}>{children}</SiteMotionContext.Provider>
 }
 
 export function useSiteMotion() {
@@ -58,7 +82,17 @@ export function useSiteMotion() {
   return state
 }
 
-export function MotionControl({ className = "" }: { className?: string }) {
+/**
+ * Global pause/resume control for site motion (WCAG 2.2.2).
+ * `compact` renders a 44px icon button with a tooltip; the label stays available to assistive tech.
+ */
+export function MotionControl({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   const { paused, toggleMotion, ready, reducedMotion } = useSiteMotion()
-  return <button type="button" className={`motion-control ${className}`} onClick={toggleMotion} disabled={!ready || reducedMotion} aria-label={reducedMotion ? "Motion disabled by your reduced motion preference" : paused ? "Resume motion across the site" : "Pause motion across the site"}>{paused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}<span>{reducedMotion ? "Reduced motion" : paused ? "Resume motion" : "Pause motion"}</span></button>
+  const label = reducedMotion ? "Motion off (reduced motion preference)" : "Pause site motion"
+  const visibleText = reducedMotion ? "Reduced motion" : paused ? "Resume motion" : "Pause motion"
+  return <button type="button" className={`motion-control ${className}`} data-compact={compact || undefined} onClick={toggleMotion}
+    disabled={!ready || reducedMotion} aria-pressed={paused} aria-label={label} title={compact ? visibleText : undefined}>
+    {paused ? <Play size={compact ? 17 : 15} aria-hidden="true" /> : <Pause size={compact ? 17 : 15} aria-hidden="true" />}
+    {!compact && <span aria-hidden="true">{visibleText}</span>}
+  </button>
 }

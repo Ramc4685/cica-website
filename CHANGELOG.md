@@ -2,12 +2,19 @@
 
 ## Unreleased
 
+- Add bylaws and indoor rules pages reproducing the official documents verbatim, with a sticky contents list, print and PDF copies.
+- Rebuild the home page and site chrome in the Growlio style: tag-dot intros, capsule CTAs, soft cards, Goudy display type at its loaded 400 weight and a footer call to action that never links to its own page.
+- Unify the join, contact and sponsor forms in one restyled form with stronger focus rings, a capsule submit button and a no-JavaScript POST fallback.
+- Move champions, season and premium-sponsor data into typed modules; unconfirmed results, venues, tier benefits and registration show honest "to be confirmed" states instead of invented facts.
+- Meet WCAG AA text contrast on every competition card, add context to repeated link text, and provide a no-JavaScript mobile menu.
+- Add app icons, a web manifest and sitemap dates; harden the Namecheap deploy checks and unify Cypress e2e specs.
+- Remove the old sponsor spotlight, unused shadcn UI primitives and the legacy editorial panels.
 - Rotate twenty authentic community hero photos in full-frame layouts with load-safe fades and manual controls; reserve premium sponsor placements for GPT and Lumin Innovations, with an additional sponsorship invitation.
 - Keep sponsor logo strips moving during card interaction while preserving the global Pause control and reduced-motion preference.
 
-- Match the Growlio reference more closely with bold green typography, a curved team ribbon, dark story sections and a large footer composition.
+- Match the Growlio reference more closely with a curved team ribbon, dark story sections and a large footer composition.
 - Add authentic owner-supplied community photography to the homepage and a ten-photo gallery with keyboard-accessible enlargement.
-- Animate CICA, team and sponsor identities along the hero ribbon, add prominent sponsor spotlights, and provide a site-wide pause control and reduced-motion support.
+- Animate CICA, team and sponsor identities along the hero ribbon and provide a site-wide pause control and reduced-motion support.
 
 - Redesign the public website around CICA branding, warm editorial typography, clearer participation paths and accessible motion.
 - Replace sample news, endorsements and unverified counters with authentic community links; preserve leadership and champions archives.
@@ -16,6 +23,8 @@
 - Move all three forms to a same-origin Namecheap PHP handler with private records, organizer notifications, server validation and submission limits.
 - Improve form accessibility, international name support, optional phone fields and persistent success/failure feedback.
 - Add a working lint gate and PHP backend regression checks to CI.
+
+## 2026-10-07 (PR #4, consolidated auto-deploy)
 
 - Add an optional static build for Namecheap cPanel hosting, with directory routes and Apache response headers.
 - Use cicainfo.com for absolute social preview image URLs.

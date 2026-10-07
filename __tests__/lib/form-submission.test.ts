@@ -4,15 +4,36 @@ import { submitForm, phoneField, nameField, UNCERTAIN_SUBMISSION } from '@/lib/f
 
 describe('request submission boundary', () => {
   afterEach(() => jest.useRealTimers());
+  const headers = (values: Record<string, string> = {}) => ({ get: (name: string) => values[name] ?? null });
   it.each([
-    { ok: false, json: async () => ({ success: true }) },
-    { ok: true, json: async () => { throw new Error('invalid JSON'); } },
-    { ok: true, json: async () => ({ success: false }) },
-    { ok: true, json: async () => ({ success: 'true' }) },
-    { ok: true, json: async () => null },
-  ])('requires an HTTP success and explicit boolean success', async response => {
+    { status: 503, ok: false, headers: headers(), json: async () => ({ success: false, message: 'busy' }) },
+    { status: 200, ok: true, headers: headers(), json: async () => { throw new Error('invalid JSON'); } },
+    { status: 200, ok: true, headers: headers(), json: async () => ({ success: false }) },
+    { status: 200, ok: true, headers: headers(), json: async () => ({ success: 'true' }) },
+    { status: 200, ok: true, headers: headers(), json: async () => null },
+  ])('treats 5xx and malformed success bodies as uncertain', async response => {
     global.fetch = jest.fn().mockResolvedValue(response);
-    await expect(submitForm('contact', {})).rejects.toThrow(UNCERTAIN_SUBMISSION);
+    await expect(submitForm('contact', {})).rejects.toMatchObject({ message: UNCERTAIN_SUBMISSION, uncertain: true });
+  });
+  it('treats network failures as uncertain', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new TypeError('network'));
+    await expect(submitForm('contact', {})).rejects.toMatchObject({ message: UNCERTAIN_SUBMISSION, uncertain: true });
+  });
+  it('surfaces the server message for definite 4xx rejections', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ status: 422, ok: false, headers: headers(), json: async () => ({ success: false, message: 'Enter a valid email address.' }) });
+    await expect(submitForm('contact', {})).rejects.toMatchObject({ message: 'Enter a valid email address.', uncertain: false });
+  });
+  it('uses a generic definite message when a 4xx body is not JSON', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ status: 403, ok: false, headers: headers(), json: async () => { throw new Error('html'); } });
+    await expect(submitForm('contact', {})).rejects.toMatchObject({ uncertain: false });
+  });
+  it('reports the Retry-After wait for 429', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ status: 429, ok: false, headers: headers({ 'Retry-After': '600' }), json: async () => ({ success: false, message: 'Too many' }) });
+    await expect(submitForm('contact', {})).rejects.toMatchObject({ message: expect.stringContaining('10 minutes'), uncertain: false, retryAfterSeconds: 600 });
+  });
+  it('returns the reference on success', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ status: 200, ok: true, headers: headers(), json: async () => ({ success: true, reference: 'abc123' }) });
+    await expect(submitForm('contact', {})).resolves.toEqual({ reference: 'abc123' });
   });
   it('terminates a stalled request without encouraging an unsafe retry', async () => {
     jest.useFakeTimers();

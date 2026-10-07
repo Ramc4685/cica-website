@@ -109,3 +109,50 @@ test('installer refuses an unsafe previous manifest before touching the live sit
   assert.notEqual(result.status, 0)
   assert.equal(await readFile(path.join(target, 'index.html'), 'utf8'), 'old')
 })
+
+test('installer merges an existing cPanel PHP handler block into the new .htaccess', async t => {
+  const account = await fixture(t)
+  const release = `${'d'.repeat(40)}-4-1`
+  const target = path.join(account, 'public_html')
+  const stage = path.join(account, '.cica-deploy', release, 'site')
+  await mkdir(target)
+  await mkdir(stage, { recursive: true })
+  const cpanel = '# php -- BEGIN cPanel-generated handler, do not edit\n<IfModule mime_module>\n  AddHandler application/x-httpd-ea-php82___lsphp .php .php8 .phtml\n</IfModule>\n# php -- END cPanel-generated handler, do not edit\n'
+  await writeFile(path.join(target, '.htaccess'), `${cpanel}Options +Indexes\n`)
+  const managed = ['index.html', '.htaccess', 'deployment.json']
+  await writeFile(path.join(stage, 'index.html'), 'new')
+  await writeFile(path.join(stage, 'deployment.json'), 'new')
+  await writeFile(path.join(stage, '.htaccess'), 'Options -Indexes\n')
+  await writeFile(path.join(stage, '.cica-manifest'), `${managed.join('\n')}\n`)
+  const source = await readFile(new URL('../install-release.sh', import.meta.url), 'utf8')
+  const script = path.join(account, 'install-test.sh')
+  await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
+  const result = spawnSync('bash', [script, release], { encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stderr)
+  const merged = await readFile(path.join(target, '.htaccess'), 'utf8')
+  assert.match(merged, /^Options -Indexes$/m)
+  assert.doesNotMatch(merged, /Options \+Indexes/)
+  assert.ok(merged.includes(cpanel), 'cPanel block preserved verbatim')
+  assert.equal(merged.split('BEGIN cPanel-generated handler').length - 1, 1)
+})
+
+test('namecheap.htaccess canonicalizes the host, sets HSTS, caching and compression', async () => {
+  const rules = await readFile(new URL('../namecheap.htaccess', import.meta.url), 'utf8')
+  for (const expected of [
+    /RewriteRule \^ https:\/\/cicainfo\.com%\{REQUEST_URI\} \[L,R=301\]/,
+    /!\^\/\\\.well-known\//,
+    /Strict-Transport-Security/,
+    /max-age=31536000, immutable" env=CICA_IMMUTABLE/,
+    /max-age=2592000/,
+    /no-cache/,
+    /DEFLATE text\/html/,
+    /ErrorDocument 404 \/404\.html/,
+    /X-Frame-Options/,
+  ]) assert.match(rules, expected)
+})
+
+test('deploy smoke test asserts the PHP forms handler answers GET with a JSON 405', async () => {
+  const script = await readFile(new URL('../deploy-namecheap.sh', import.meta.url), 'utf8')
+  assert.match(script, /forms\/submit\.php/)
+  assert.match(script, /405 application\/json/)
+})

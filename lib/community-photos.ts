@@ -8,11 +8,17 @@ export interface CommunityPhoto {
   gallerySrc: string
   galleryWidth: number
   galleryHeight: number
+  /** CSS object-position focal point that keeps faces in frame when the photo is cropped with object-fit: cover. */
+  objectPosition: string
 }
+
+/** Inline style for a cover-cropped community photo; pair with the `.community-photo` class. */
+export const photoFocusStyle = (photo: Pick<CommunityPhoto, "objectPosition">) => ({ objectPosition: photo.objectPosition })
 
 export const communityPhotos: readonly CommunityPhoto[] = [
   {
     "id": "outdoor-award",
+    "objectPosition": "50% 35%",
     "src": "/images/community/outdoor-award.webp",
     "width": 1200,
     "height": 1600,
@@ -24,6 +30,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "outdoor-teams",
+    "objectPosition": "50% 72%",
     "src": "/images/community/outdoor-teams.webp",
     "width": 1024,
     "height": 768,
@@ -35,6 +42,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "indoor-community",
+    "objectPosition": "50% 72%",
     "src": "/images/community/indoor-community.webp",
     "width": 1200,
     "height": 904,
@@ -46,6 +54,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "family-celebration",
+    "objectPosition": "45% 40%",
     "src": "/images/community/family-celebration.webp",
     "width": 1200,
     "height": 904,
@@ -57,6 +66,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "team-gathering",
+    "objectPosition": "45% 62%",
     "src": "/images/community/team-gathering.webp",
     "width": 1200,
     "height": 675,
@@ -68,6 +78,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "indoor-team-celebration",
+    "objectPosition": "50% 40%",
     "src": "/images/community/indoor-team-celebration.webp",
     "width": 1200,
     "height": 900,
@@ -79,6 +90,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "community-on-field",
+    "objectPosition": "50% 55%",
     "src": "/images/community/community-on-field.webp",
     "width": 1200,
     "height": 507,
@@ -90,6 +102,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "trophy-presentation",
+    "objectPosition": "45% 40%",
     "src": "/images/community/trophy-presentation.webp",
     "width": 1200,
     "height": 675,
@@ -101,6 +114,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "indoor-team-portrait",
+    "objectPosition": "50% 52%",
     "src": "/images/community/indoor-team-portrait.webp",
     "width": 1200,
     "height": 675,
@@ -112,6 +126,7 @@ export const communityPhotos: readonly CommunityPhoto[] = [
   },
   {
     "id": "indoor-team-gathering",
+    "objectPosition": "50% 58%",
     "src": "/images/community/indoor-team-gathering.webp",
     "width": 1200,
     "height": 675,
