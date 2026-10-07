@@ -1,9 +1,12 @@
-import Link from "next/link"
 import Image from "next/image"
-import { ArrowUpRight, Camera } from "lucide-react"
 import { CommunityGallery } from "@/components/community-gallery"
+import { CapsuleLink } from "@/components/ui/capsule-link"
+import { PageHero } from "@/components/ui/page-hero"
+import { SectionIntro } from "@/components/ui/section-intro"
 import { communityLinks } from "@/lib/content"
 import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
+import styles from "./gallery.module.css"
 
 export const metadata = pageMetadata("Community moments", "Explore real CICA team photographs, cricket celebrations and community moments from Central Illinois.", "/gallery/")
 
@@ -19,49 +22,53 @@ const logos = [
 
 export default function GalleryPage() {
   return <>
-    <header className="page-hero">
-      <div className="page-shell">
-        <p className="eyebrow">Community moments</p>
-        <h1>More than<br />a matchday.</h1>
-        <p>The teams, the celebrations, and the people who make CICA feel like a community.</p>
-      </div>
-    </header>
-    <div className="page-shell py-16 md:py-24">
-      <section aria-labelledby="photos-heading">
-        <div className="mb-10 max-w-3xl">
-          <p className="eyebrow">Our people. Our game.</p>
-          <h2 id="photos-heading" className="section-heading">This is CICA.</h2>
-          <p className="mt-4 leading-relaxed">A few moments from our community collection. Select a photograph to see it in full.</p>
-        </div>
-        <CommunityGallery />
-      </section>
-      <section className="mt-16 border-t border-[#b6bea3] pt-10" aria-labelledby="channels-heading">
-        <h2 id="channels-heading" className="text-2xl font-semibold">Keep exploring.</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed">Find more community posts on Facebook and available cricket videos on YouTube. Some Facebook content may require you to sign in.</p>
-        <div className="mt-6 flex flex-wrap gap-x-8 gap-y-5">
-          <a href={communityLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-link">CICA on Facebook <ArrowUpRight size={18} /></a>
-          <a href={communityLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-link">CICA on YouTube <ArrowUpRight size={18} /></a>
-        </div>
-      </section>
-      <section className="mt-20" aria-labelledby="identity-heading">
-        <p className="eyebrow">Our visual identity</p>
-        <h2 id="identity-heading" className="section-heading">One association.<br />Many ways to play.</h2>
-        <p className="mb-8 max-w-2xl leading-relaxed">The CICA logo family, from the association identity to its tournament artwork.</p>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {logos.map(logo => <figure key={logo.id} className="editorial-panel text-center">
-            <Image src={`/images/cica-logo-${logo.id}.webp`} width={160} height={160} alt="" className="mx-auto h-36 w-full object-contain" />
-            <figcaption className="mt-5 text-sm font-semibold">{logo.name}</figcaption>
-          </figure>)}
-        </div>
-      </section>
-      <div className="mt-14 flex items-start gap-5 border-t border-[#b6bea3] pt-10">
-        <Camera className="shrink-0" size={28} aria-hidden="true" />
+    <PageHero tag="Community moments" title={"More than\na *matchday.*"}
+      intro="The teams, the celebrations, and the people who make CICA feel like a community." />
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="photos-heading">
+      <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading"
+        subtitle="A few moments from our community collection. Select a photograph to see it in full." reveal />
+      <CommunityGallery />
+    </section>
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="channels-heading">
+      <div className={`${s.card} ${s.bandGrid}`}>
         <div>
-          <h2 className="text-2xl font-semibold">Have a CICA moment to share?</h2>
-          <p className="mt-4 max-w-2xl leading-relaxed">Contact the organizers about sharing photos or a community story. Please only share material you have permission to publish, including permission from the people pictured.</p>
-          <Link href="/contact/" className="text-link mt-5 inline-flex">Share with the organizers <ArrowUpRight size={18} /></Link>
+          <h2 id="channels-heading" className={s.cardTitle}>Keep exploring.</h2>
+          <p className={s.body}>Find more community posts on Facebook and available cricket videos on YouTube. Some Facebook content may require you to sign in.</p>
+        </div>
+        <div className={s.actions}>
+          <CapsuleLink href={communityLinks.facebook} variant="outline" external>Facebook</CapsuleLink>
+          <CapsuleLink href={communityLinks.youtube} variant="outline" external>YouTube</CapsuleLink>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="identity-heading">
+      <SectionIntro tag="Our visual identity" title={"One association.\nMany ways to *play.*"} id="identity-heading"
+        subtitle="The CICA logo family, from the association identity to its tournament artwork." reveal />
+      <ul className={styles.logos}>
+        {logos.map(logo => <li key={logo.id}>
+          <figure className={styles.logo}>
+            <Image src={`/images/cica-logo-${logo.id}.webp`} width={160} height={160} alt="" />
+            <figcaption>{logo.name}</figcaption>
+          </figure>
+        </li>)}
+      </ul>
+    </section>
+
+    <section className={s.band} data-tone="green" aria-labelledby="share-heading">
+      <div className="page-shell">
+        <div className={s.bandGrid}>
+          <SectionIntro tag="Share a moment" title={"Have a CICA moment\nto *share?*"} align="start" tone="dark" id="share-heading" reveal />
+          <div>
+            <p className={s.bandBody}>Contact the organizers about sharing photos or a community story. Please only share material you have permission to publish, including permission from the people pictured.</p>
+            <div className={s.actions}>
+              <CapsuleLink href="/contact/" tone="cream">Share with the organizers</CapsuleLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </>
 }

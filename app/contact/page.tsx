@@ -1,4 +1,5 @@
 import { CommunityForm, type CommunityField } from "@/components/community-form"
+import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { pageMetadata } from "@/lib/site-metadata"
 
@@ -24,8 +25,9 @@ export default function ContactPage() {
         <p className="mt-5 text-[color:var(--cica-green-soft)]">Ask about playing, watching cricket with family, volunteering, or a tournament. The organizers can help you find your next step.</p>
         <a className="mt-6 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>
         <div className="mt-8 border-t border-[color:var(--cica-hairline)] pt-6">
-          <p className="text-sm text-[color:var(--cica-green-soft)]">Central Illinois Cricket Association</p>
-          <p className="mt-2">Serving the cricket community in Central Illinois.</p>
+          <p className="tag-row">Where we play</p>
+          <p className="text-[color:var(--cica-green-soft)]">See the grounds and indoor courts CICA uses, and confirm the venue for each match before you travel.</p>
+          <CapsuleLink href="/tournaments/#where-we-play" variant="outline" className="mt-5">See the venues</CapsuleLink>
         </div>
       </aside>
       <CommunityForm kind="contact" fields={fields} tag="Let us know" title="Send us a message" submitLabel="Send message"

@@ -1,10 +1,12 @@
 import { CommunityForm, type CommunityField } from "@/components/community-form"
-import { PremiumSponsors } from "@/components/premium-sponsors"
-import { SponsorSpotlight } from "@/components/sponsor-spotlight"
+import { SponsorTiers } from "@/components/sections/sponsor-tiers"
+import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { communityLinks } from "@/lib/content"
 import { sponsorTiers } from "@/lib/season"
 import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
+import { SponsorList } from "./sponsor-list"
 
 export const metadata = pageMetadata("Support local cricket", "Connect with CICA about sponsoring cricket tournaments and supporting the Central Illinois community.", "/sponsors/")
 
@@ -26,11 +28,13 @@ const fields: readonly CommunityField[] = [
 export default function SponsorsPage() {
   return <>
     <PageHero tag="Community partnerships" title="Support the moments that *bring us together.*"
-      intro="Help cricket thrive in Central Illinois. Let us explore a partnership that makes sense for your organization and our community." />
-    <PremiumSponsors />
-    <SponsorSpotlight />
-    {/* PHASE 3 SLOT: insert <SponsorTiers /> ("Ways to partner") and owner-approved sponsor links here.
-        Each tier's "Ask about this tier" CTA should link to /sponsors/?interest=<tier.id>#sponsor-form. */}
+      intro="Help cricket thrive in Central Illinois. Let us explore a partnership that makes sense for your organization and our community.">
+      <div className={s.actions + " " + s.heroActions}>
+        <CapsuleLink href="#sponsor-form">Start a conversation</CapsuleLink>
+      </div>
+    </PageHero>
+    <SponsorList />
+    <SponsorTiers />
     <div className="page-shell grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
       <aside className="editorial-panel h-fit p-6 sm:p-8">
         <p className="tag-row">Built around community</p>

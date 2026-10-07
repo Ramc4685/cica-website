@@ -1,6 +1,9 @@
-import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { CapsuleLink } from "@/components/ui/capsule-link"
+import { PageHero } from "@/components/ui/page-hero"
+import { SectionIntro } from "@/components/ui/section-intro"
 import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
+import styles from "./board.module.css"
 export const metadata = pageMetadata("Our leadership", "Meet CICA’s directors and organizing team, supporting cricket and community in Central Illinois.", "/board/")
 
 /** Season the roles and bios below were last confirmed for. */
@@ -48,4 +51,60 @@ const boardMembers = [
   }
 ]
 
-export default function BoardPage(){return <><header className="page-hero"><div className="page-shell"><p className="eyebrow">Our leadership</p><h1>The people<br />behind the game.</h1><p>Meet the directors and organizers who help bring CICA’s community together.</p></div></header><section className="page-shell py-16 md:py-24 space-y-8">{boardMembers.map(member=><article key={member.name} className="editorial-panel grid gap-8 md:grid-cols-[220px_1fr]"><div><div aria-hidden="true" className="w-24 h-24 rounded-full bg-[#eae7da] text-[#172d43] flex items-center justify-center text-3xl font-semibold mb-6">{member.name.split(" ").map(n=>n[0]).join("")}</div><p className="eyebrow">{member.role}</p><p className="sr-only">As of the {asOfSeason} season</p><h2 className="text-2xl font-semibold">{member.name}</h2><p className="mt-3">{member.playerRole}</p></div><div><p className="text-lg leading-relaxed">{member.bio}</p><div className="flex flex-wrap gap-2 mt-5">{member.specialties.map(s=><span key={s} className="rounded-full border px-3 py-1 text-sm">{s}</span>)}</div><details className="mt-7 border-t pt-5"><summary className="cursor-pointer font-semibold py-2">Community contributions</summary><ul className="list-disc pl-5 mt-4 space-y-2 leading-relaxed">{member.achievements.map(a=><li key={a}>{a}</li>)}</ul></details></div></article>)}<div className="pt-8 text-center"><h2 className="section-heading">You can help shape what comes next.</h2><p className="mt-5">Interested in volunteering or helping with a tournament? Start a conversation.</p><Link href="/get-involved/" className="premium-button inline-flex mt-7">Get involved <ArrowUpRight size={18}/></Link></div></section></>}
+export default function BoardPage() {
+  return <>
+    <PageHero tag="Our leadership" title={"The people\nbehind the *game.*"}
+      intro="Meet the directors and organizers who help bring CICA’s community together." />
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-label="Directors and organizers">
+      <p className={styles.season}>Roles listed for the {asOfSeason} season.</p>
+      <ul className={styles.list}>
+        {boardMembers.map(member => <li key={member.name}>
+          <article className={styles.member} aria-labelledby={`member-${slug(member.name)}`}>
+            <div className={styles.identity}>
+              <span className={styles.monogram} aria-hidden="true">{initials(member.name)}</span>
+              <div>
+                <p className="tag-row">{member.role}</p>
+                <h2 id={`member-${slug(member.name)}`} className={styles.name}>{member.name}</h2>
+                <p className={styles.playerRole}>{member.playerRole}</p>
+              </div>
+            </div>
+            <div className={styles.detail}>
+              <p className={styles.bio}>{member.bio}</p>
+              <ul className={styles.specialties} aria-label="Focus areas">
+                {member.specialties.map(item => <li key={item}>{item}</li>)}
+              </ul>
+              <details className={styles.contributions}>
+                <summary>Community contributions</summary>
+                <ul>{member.achievements.map(item => <li key={item}>{item}</li>)}</ul>
+              </details>
+            </div>
+          </article>
+        </li>)}
+      </ul>
+    </section>
+
+    <section className={s.band} data-tone="green" aria-labelledby="board-help-title">
+      <div className="page-shell">
+        <div className={s.bandGrid}>
+          <SectionIntro tag="Lend a hand" title={"You can help shape\nwhat comes *next.*"} align="start" tone="dark" id="board-help-title" reveal />
+          <div>
+            <p className={s.bandBody}>Interested in volunteering or helping with a tournament? Start a conversation with the organizers.</p>
+            <div className={s.actions}>
+              <CapsuleLink href="/get-involved/" tone="cream">Get involved</CapsuleLink>
+              <CapsuleLink href="/bylaws/" tone="cream" variant="outline">Read the bylaws</CapsuleLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </>
+}
+
+function initials(name: string) {
+  return name.split(" ").map(part => part[0]).join("")
+}
+
+function slug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+}
