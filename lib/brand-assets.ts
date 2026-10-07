@@ -3,10 +3,10 @@ export const cplTeams = [
   { id: "archrivals", name: "RCS Archrivals" },
   { id: "bloom-barista-bulls", name: "Bloom Barista Bulls" },
   { id: "bloom-events-eagles", name: "Bloom Events Eagles" },
-  { id: "my-craft-barn-challangers", name: "My Craft Barn Challangers" },
+  { id: "my-craft-barn-challengers", name: "My Craft Barn Challengers" },
   { id: "gnr-systems-lions", name: "GNR Systems Lions" },
   { id: "gpt-shers", name: "GPT Shers" },
-  { id: "techie-brains-legends", name: "Techie Brain Legends" },
+  { id: "techie-brains-legends", name: "Techie Brains Legends" },
   { id: "parke-regency-thalaivas", name: "Parke Regency Thalaivas" },
 ] as const
 export const cplSponsors = [

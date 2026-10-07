@@ -27,13 +27,13 @@ The source filenames and artwork were visually inspected. Each original/transfor
 | RCS Archrivals | Archrivals.jpg | archrivals.webp |
 | Bloom Barista Bulls | BBB.jpg | bloom-barista-bulls.webp |
 | Bloom Events Eagles | BloomEvents.jpg | bloom-events-eagles.webp |
-| My Craft Barn Challangers | Challangers.jpg | my-craft-barn-challangers.webp |
+| My Craft Barn Challengers | Challengers.jpg | my-craft-barn-challengers.webp |
 | GNR Systems Lions | GNR Lions.jpg | gnr-systems-lions.webp |
 | GPT Shers | GPTShers.jpg | gpt-shers.webp |
-| Techie Brain Legends | TechieBrains.jpg | techie-brains-legends.webp |
+| Techie Brains Legends | TechieBrains.jpg | techie-brains-legends.webp |
 | Parke Regency Thalaivas | Thalaivas.jpg | parke-regency-thalaivas.webp |
 
-Team spelling follows supplied artwork, including “Challangers.” Display identifies the supplied CPL team collection; current teams, registration and fixtures remain the organizers’ / CricClubs’ responsibility.
+Team names use one canonical title-case spelling across the site (artwork filenames may differ). Display identifies the supplied CPL team collection; current teams, registration and fixtures remain the organizers’ / CricClubs’ responsibility.
 
 ## CPL sponsor artwork
 
