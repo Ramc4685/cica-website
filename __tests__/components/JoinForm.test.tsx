@@ -124,10 +124,10 @@ describe('Join CICA Form', () => {
       expect(screen.getByText('Thank you for subscribing!')).toBeInTheDocument();
     });
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    const [url, request] = (global.fetch as jest.Mock).mock.calls[0];
+    expect(url).toBe('/forms/submit.php');
     expect(request.method).toBe('POST');
-    expect(request.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
-    expect(request.mode).not.toBe('no-cors');
-    expect(JSON.parse(request.body)).toEqual({ name: 'Test User', email: 'user@example.com', phone: '123-456-7890' });
+    expect(request.headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(JSON.parse(request.body)).toEqual({ type: 'updates', website: '', name: 'Test User', email: 'user@example.com', phone: '123-456-7890' });
   });
 });

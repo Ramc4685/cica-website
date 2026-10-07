@@ -133,19 +133,18 @@ describe('Sponsor Form', () => {
     // Verify form submission API was called
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+      expect(global.fetch).toHaveBeenCalledWith('/forms/submit.php', expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          'Content-Type': 'text/plain;charset=UTF-8',
+          'Content-Type': 'application/json',
         }),
         body: expect.any(String),
       }));
     });
 
     const request = (global.fetch as jest.Mock).mock.calls[0][1];
-    expect(request.mode).not.toBe('no-cors');
     expect(JSON.parse(request.body)).toEqual({
-      fullName: 'Test Sponsor', company: 'Test Company LLC', email: 'sponsor@example.com',
+      type: 'sponsor', website: '', fullName: 'Test Sponsor', company: 'Test Company LLC', email: 'sponsor@example.com',
       phone: '123-456-7890', interest: 'Tournament Sponsorship',
       message: 'This is a test message for the sponsor form.',
     });

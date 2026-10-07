@@ -10,34 +10,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, CheckCircle, BellRing } from "lucide-react"
 import { toast } from "sonner"
+import { nameField, emailField, phoneField, submitForm, UNCERTAIN_SUBMISSION } from "@/lib/form-submission"
 
-// Form validation schema using Zod
+// Limits mirror public/forms/submit.php so the server accepts anything the form allows.
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Name is required" })
-    .max(100, { message: "Name must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s\-']+$/, { 
-      message: "Name can only contain letters, spaces, hyphens, and apostrophes" 
-    }),
-  email: z
-    .string()
-    .email({ message: "Invalid email address" })
-    .max(100, { message: "Email must be less than 100 characters" }),
-  phone: z
-    .string()
-    .min(1, { message: "Phone number is required" })
-    .refine(
-      (val) => /^\+?[0-9\s\-\(\)]+$/.test(val), 
-      { message: "Phone number can only contain numbers, spaces, and these symbols: + - ( )" }
-    ),
+  website: z.string().max(200),
+  name: nameField("Name"),
+  email: emailField,
+  phone: phoneField.refine((val) => val.trim() !== "", "Phone number is required"),
 });
 
 // Define the form data type
 type FormValues = z.infer<typeof formSchema>;
-
-// Form submission handler URL (Google Apps Script Web App URL)
-const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbxQb0XmO55sW7bJQYz1FKcoewJ-Udh-vCcneMeXs_McXY9QhrigyzMwYbpNJkOCYIJ8/exec"
 
 export default function JoinPage() {
   // React Hook Form with Zod validation
@@ -49,6 +33,7 @@ export default function JoinPage() {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      website: "",
       name: "",
       email: "",
       phone: "",
@@ -60,47 +45,20 @@ export default function JoinPage() {
 
   // Form submission handler
   const onSubmit = async (data: FormValues) => {
+    setSubmissionError(null)
     try {
-      setSubmissionError(null)
-      
-      // Send form data to Google Apps Script
-      const response = await fetch(FORM_SUBMISSION_URL, {
-        method: "POST",
-        headers: {
-          // Apps Script does not serve CORS preflight; send JSON as a simple request.
-          "Content-Type": "text/plain;charset=UTF-8",
-        },
-        body: JSON.stringify(data),
-        // Timeout after 8 seconds
-        signal: AbortSignal.timeout(8000)
-      })
+      await submitForm("updates", data)
+      setSubmitSuccess(true)
+      reset()
+      toast.success("Thank you for joining! You'll receive updates from CICA.")
 
-      const result = await response.json()
-
-      if (result.success) {
-        setSubmitSuccess(true)
-        reset()
-        toast.success("Thank you for joining! You'll receive updates from CICA.")
-        
-        // Reset success message after 5 seconds
-        setTimeout(() => {
-          setSubmitSuccess(false)
-        }, 5000)
-      } else {
-        setSubmissionError(result.message || "Something went wrong with your submission. Please try again.")
-        toast.error(result.message || "Something went wrong with your submission. Please try again.")
-      }
-    } catch (error: any) {
-      console.error("Form submission error:", error)
-      
-      // Handle timeout separately
-      if (error.name === 'TimeoutError' || error.name === 'AbortError') {
-        setSubmissionError("Request timed out. Please check your internet connection and try again.")
-        toast.error("Request timed out. Please check your internet connection and try again.")
-      } else {
-        setSubmissionError("An unexpected error occurred. Please try again later.")
-        toast.error("An unexpected error occurred. Please try again later.")
-      }
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false)
+      }, 5000)
+    } catch {
+      setSubmissionError(UNCERTAIN_SUBMISSION)
+      toast.error(UNCERTAIN_SUBMISSION)
     }
   }
 
@@ -127,6 +85,11 @@ export default function JoinPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Honeypot: people never see this field; submit.php rejects requests that fill it. */}
+                <div hidden aria-hidden="true">
+                  <label htmlFor="website">Website</label>
+                  <input id="website" tabIndex={-1} autoComplete="off" {...register("website")} />
+                </div>
                 {submitSuccess ? (
                   <div className="rounded-lg bg-green-50 p-6 text-center">
                     <div className="flex justify-center mb-4">

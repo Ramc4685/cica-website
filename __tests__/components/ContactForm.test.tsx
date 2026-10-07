@@ -17,15 +17,10 @@ jest.mock('sonner', () => ({
 // Mock fetch for form submission
 global.fetch = jest.fn(() =>
   Promise.resolve({
+    ok: true,
     json: () => Promise.resolve({ success: true }),
   })
 ) as jest.Mock;
-
-// Mock AbortSignal.timeout
-Object.defineProperty(AbortSignal, "timeout", {
-  configurable: true,
-  value: jest.fn(() => new AbortController().signal),
-});
 
 describe('Contact Form', () => {
   beforeEach(() => {
@@ -63,7 +58,7 @@ describe('Contact Form', () => {
       expect(screen.getByText(/Message must be at least 10 characters/i)).toBeInTheDocument();
     });
   });
-  it('submits readable JSON in a simple request without a CORS preflight', async () => {
+  it('submits JSON to the same-origin form handler', async () => {
     render(<ContactPage />);
     const fields = [
       [/First Name/i, 'Test'], [/Last Name/i, 'User'], [/Email/i, 'contact@example.com'],
@@ -77,15 +72,31 @@ describe('Contact Form', () => {
       fireEvent.click(screen.getByRole('button', { name: /Send Message/i }));
     });
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
-    const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    const [url, request] = (global.fetch as jest.Mock).mock.calls[0];
+    expect(url).toBe('/forms/submit.php');
     expect(request.method).toBe('POST');
-    expect(request.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
-    expect(request.mode).not.toBe('no-cors');
+    expect(request.headers).toEqual({ 'Content-Type': 'application/json' });
     expect(JSON.parse(request.body)).toEqual({
-      firstName: 'Test', lastName: 'User', email: 'contact@example.com', phone: '123-456-7890',
+      type: 'contact', website: '', firstName: 'Test', lastName: 'User', email: 'contact@example.com', phone: '123-456-7890',
       subject: 'Tournament inquiry', message: 'Please share information about joining the next tournament.',
     });
     expect(screen.getByText(/Your message has been sent successfully/i)).toBeInTheDocument();
   });
 
+  it('warns against resubmitting when the handler cannot confirm the save', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false, json: async () => ({ success: false }) });
+    render(<ContactPage />);
+    const fields = [
+      [/First Name/i, 'Test'], [/Last Name/i, 'User'], [/Email/i, 'contact@example.com'],
+      [/Subject/i, 'Tournament inquiry'], [/Message/i, 'Please share information about the next tournament.'],
+    ] as const;
+    for (const [label, value] of fields) {
+      fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    }
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Send Message/i }));
+    });
+    expect(await screen.findByText(/It may already have been saved/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Your message has been sent successfully/i)).not.toBeInTheDocument();
+  });
 });
