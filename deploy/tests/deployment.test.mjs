@@ -91,6 +91,41 @@ test('installer removes old browser bundles, preserves hosting files, and normal
   }
 })
 
+test('installer keeps the cPanel MultiPHP handler block when replacing .htaccess', async t => {
+  const account = await fixture(t)
+  const target = path.join(account, 'public_html')
+  const handler = [
+    '# php -- BEGIN cPanel-generated handler, do not edit',
+    '<IfModule mime_module>',
+    '  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml',
+    '</IfModule>',
+    '# php -- END cPanel-generated handler, do not edit',
+  ].join('\n')
+  await mkdir(target)
+  await writeFile(path.join(target, '.htaccess'), `Options -Indexes\n\n${handler}\n`)
+  const source = await readFile(new URL('../install-release.sh', import.meta.url), 'utf8')
+  const script = path.join(account, 'install-test.sh')
+  await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
+  const install = async (release, htaccess) => {
+    const stage = path.join(account, '.cica-deploy', release, 'site')
+    await mkdir(stage, { recursive: true })
+    for (const file of ['index.html', 'deployment.json']) await writeFile(path.join(stage, file), 'new')
+    await writeFile(path.join(stage, '.htaccess'), htaccess)
+    await writeFile(path.join(stage, '.cica-manifest'), 'index.html\ndeployment.json\n.htaccess\n')
+    const result = spawnSync('bash', [script, release], { encoding: 'utf8' })
+    assert.equal(result.status, 0, result.stderr)
+    return readFile(path.join(target, '.htaccess'), 'utf8')
+  }
+
+  const first = await install(`${'d'.repeat(40)}-4-1`, 'DirectoryIndex index.html\n')
+  assert.ok(first.startsWith('DirectoryIndex index.html\n'))
+  assert.ok(first.includes(handler))
+  assert.equal(first.split('# php -- BEGIN').length, 2)
+  // A repeat release must not stack a second copy of the block.
+  const second = await install(`${'e'.repeat(40)}-5-1`, 'DirectoryIndex index.html\n')
+  assert.equal(second, first)
+})
+
 test('installer refuses an unsafe previous manifest before touching the live site', async t => {
   const account = await fixture(t)
   const release = `${'b'.repeat(40)}-2-1`

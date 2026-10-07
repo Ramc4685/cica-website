@@ -50,6 +50,18 @@ tar -czf "$backup/public_html.tar.gz" -C "$target" .
 chmod 600 "$backup/public_html.tar.gz"
 if [[ -f "$manifest" ]]; then cp "$manifest" "$backup/previous-manifest"; fi
 
+# cPanel MultiPHP Manager keeps the web PHP version as a generated handler block
+# in public_html/.htaccess. Carry a complete block forward so releases never reset PHP.
+php_handler=''
+if [[ -f "$target/.htaccess" && ! -L "$target/.htaccess" ]]; then
+  php_handler=$(awk '
+    /^# php -- BEGIN cPanel-generated handler/ { keep = 1; block = "" }
+    keep { block = block $0 "\n" }
+    keep && /^# php -- END cPanel-generated handler/ { keep = 0; done = block }
+    END { printf "%s", done }
+  ' "$target/.htaccess")
+fi
+
 rollback() {
   trap - ERR
   set +e
@@ -100,6 +112,9 @@ for owned in _next admin admin-login admin.html admin.txt admin-login.html admin
 done
 cp -R "$stage/." "$target/"
 rm -- "$target/.cica-manifest"
+if [[ -n "$php_handler" ]] && ! grep -Fq '# php -- BEGIN cPanel-generated handler' "$target/.htaccess"; then
+  printf '\n%s\n' "$php_handler" >> "$target/.htaccess"
+fi
 cp "$stage/.cica-manifest" "$manifest"
 while IFS= read -r file; do
   [[ -n "$file" ]] || continue

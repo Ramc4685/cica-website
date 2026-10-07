@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Keep the cPanel MultiPHP handler block in public_html/.htaccess across deployments so releases no longer reset the web PHP version.
 - Add an optional static build for Namecheap cPanel hosting, with directory routes and Apache response headers.
 - Use cicainfo.com for absolute social preview image URLs.
 - Remove the exposed demo admin password and browser-only login; display unavailable notices on the existing admin URLs.
