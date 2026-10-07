@@ -1,0 +1,33 @@
+.frame { margin:0 clamp(8px,1.4vw,24px);overflow:hidden;border-radius:60px;background:var(--cica-green);padding:clamp(24px,3.4vw,48px) 0 calc(clamp(24px,3.4vw,48px) + 4vw); }
+.figure { margin:0; }
+.wall { display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(10px,1.4vw,20px);padding:0 clamp(20px,3vw,44px); }
+.row,.track { display:contents; }
+.track[data-copy] { display:none; }
+.tile { grid-column:calc(var(--col) + 1);grid-row:calc(var(--row) + 1);aspect-ratio:1;border-radius:22%;overflow:hidden;display:grid;place-items:center;background:var(--cica-cream); }
+.tile:nth-child(even) { translate:0 50%; }
+.tile[data-tone=blue],.tile[data-tone=yellow] { background:none; }
+.tile img { width:100%;height:100%;object-fit:contain;display:block; }
+.tile[data-tone=clear] img { width:78%;height:78%; }
+
+@media (max-width:899px) {
+  .frame { margin-inline:8px;border-radius:35px;padding:24px 0; }
+  .wall { display:flex;flex-direction:column;gap:12px;padding:0; }
+  .row { display:flex;width:max-content;gap:12px; }
+  .track,.track[data-copy] { display:flex;gap:12px; }
+  .tile,.tile:nth-child(even) { width:clamp(84px,24vw,120px);translate:none; }
+}
+
+/* Motion: transform and opacity only, and only while the site motion toggle is running. */
+@media (prefers-reduced-motion:no-preference) {
+  :global(html[data-motion=running]) .frame:global(.motion-entered) .tile { animation:wall-enter .6s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc((var(--col) + var(--row)) * 45ms); }
+  :global(html[data-motion=running]) .tile img { animation:wall-drift calc(8s + var(--col) * .55s) ease-in-out infinite alternate;animation-delay:calc(var(--col) * -1.3s); }
+  :global(html[data-motion=running]) .tile { transition:transform .35s cubic-bezier(.22,1,.36,1); }
+  :global(html[data-motion=running]) .tile:hover { transform:translateY(-6px); }
+  @media (max-width:899px) {
+    :global(html[data-motion=running]) .row { animation:wall-loop 45s linear infinite; }
+    :global(html[data-motion=running]) .row:nth-child(even) { animation-direction:reverse; }
+  }
+}
+@keyframes wall-enter { from { opacity:0;transform:translateY(12px); } }
+@keyframes wall-drift { from { transform:translateY(-3px) rotate(-1.5deg); } to { transform:translateY(3px) rotate(1.5deg); } }
+@keyframes wall-loop { to { transform:translateX(-50%); } }
