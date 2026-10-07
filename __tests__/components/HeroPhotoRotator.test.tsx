@@ -53,7 +53,7 @@ describe('Hero community photos', () => {
       fireEvent.load(screen.getByAltText(heroPhotos[index].alt))
       loadedPhotos.add(index)
     }
-    expect(screen.getByText(`Photo ${index + 1} of 3`)).toBeInTheDocument()
+    expect(screen.getByText(`Photo ${index + 1} of ${heroPhotos.length}`)).toBeInTheDocument()
     expect(screen.getByRole('img', { name: heroPhotos[index].alt })).toBeInTheDocument()
   }
 
@@ -70,7 +70,8 @@ describe('Hero community photos', () => {
     expectPhoto(0)
   })
 
-  it('rotates through the photos and pauses with the site motion control', () => {
+  it('rotates through all 20 photos, wraps to the first, and pauses with the site motion control', () => {
+    expect(heroPhotos).toHaveLength(20)
     renderPhotos()
     expectPhoto(0)
     advancePhoto()
@@ -79,8 +80,10 @@ describe('Hero community photos', () => {
     act(() => { jest.advanceTimersByTime(18000) })
     expectPhoto(1)
     fireEvent.click(screen.getByRole('button', { name: 'Resume motion across the site' }))
-    advancePhoto()
-    expectPhoto(2)
+    for (let index = 2; index < heroPhotos.length; index++) {
+      advancePhoto()
+      expectPhoto(index)
+    }
     advancePhoto()
     expectPhoto(0)
   })
@@ -91,7 +94,7 @@ describe('Hero community photos', () => {
     act(() => { jest.advanceTimersByTime(18000) })
     expectPhoto(0)
     fireEvent.click(screen.getByRole('button', { name: 'Previous hero photo' }))
-    expectPhoto(2)
+    expectPhoto(heroPhotos.length - 1)
     fireEvent.click(screen.getByRole('button', { name: 'Next hero photo' }))
     expectPhoto(0)
     fireEvent.click(screen.getByRole('button', { name: 'Next hero photo' }))
@@ -119,6 +122,6 @@ describe('Hero community photos', () => {
     expectPhoto(2)
     fireEvent.blur(next, { relatedTarget: screen.getByRole('button', { name: 'Pause motion across the site' }) })
     advancePhoto()
-    expectPhoto(0)
+    expectPhoto(3)
   })
 })

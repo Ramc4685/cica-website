@@ -30,10 +30,14 @@ export function HeroPhotoRotator() {
   return <div className="growlio-hero-image hero-photo-rotator" role="region" aria-label="CICA community photos"
     onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}
     onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false) }}>
-    {frames.map(index => <Image key={heroPhotos[index].id} src={heroPhotos[index].src} alt={heroPhotos[index].alt}
+    {frames.map(index => <div key={heroPhotos[index].id} aria-hidden={index !== displayed}
+      className={`hero-photo-frame ${heroPhotos[index].width > heroPhotos[index].height ? "is-landscape" : ""} ${index === displayed ? "is-visible" : ""}`}>
+      <Image src={heroPhotos[index].src} alt="" aria-hidden="true" fill sizes="(max-width:760px) 90vw, 42vw" className="hero-photo-backdrop" />
+      <div className="hero-photo-full-view"><Image src={heroPhotos[index].src} alt={heroPhotos[index].alt}
       aria-hidden={index !== displayed} fill priority={index === 0} sizes="(max-width:760px) 90vw, 42vw"
-      className={`hero-rotating-photo ${index === displayed ? "is-visible" : ""}`}
-      onLoad={() => setLoaded(current => current.has(index) ? current : new Set([...current, index]))} />)}
+      className="hero-rotating-photo"
+      onLoad={() => setLoaded(current => current.has(index) ? current : new Set([...current, index]))} /></div>
+    </div>)}
     <span className="hero-image-badge">LOCAL ROOTS. SHARED PASSION.</span>
     <div className="hero-image-brand"><Image src="/images/cica-logo-main.webp" width={120} height={140} alt="CICA" /><span>THE GAME IS BETTER<br />WHEN WE&apos;RE TOGETHER.</span></div>
     <div className="hero-photo-controls"><span>Photo {displayed + 1} of {heroPhotos.length}</span><div>

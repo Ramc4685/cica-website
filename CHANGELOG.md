@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Rotate three authentic hero photos with load-safe fades and manual controls; reserve premium sponsor placements for GPT and Lumin Innovations, with an additional sponsorship invitation.
+- Rotate twenty authentic community hero photos in full-frame layouts with load-safe fades and manual controls; reserve premium sponsor placements for GPT and Lumin Innovations, with an additional sponsorship invitation.
 - Keep sponsor logo strips moving during card interaction while preserving the global Pause control and reduced-motion preference.
 
 - Match the Growlio reference more closely with bold green typography, a curved team ribbon, dark story sections and a large footer composition.

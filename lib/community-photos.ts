@@ -128,6 +128,15 @@ export const heroPhotos: readonly Pick<CommunityPhoto, "id" | "src" | "width" | 
   heroPhoto,
   { id: "outdoor-bat-presentation", src: "/images/community/outdoor-bat-presentation.webp", width: 1200, height: 1600, alt: "Two adults holding a cricket bat together on an outdoor field.", caption: "A shared love of the game." },
   { id: "indoor-trophy-moment", src: "/images/community/indoor-trophy-moment.webp", width: 1200, height: 1594, alt: "Two cricketers holding a trophy with community members beside them indoors.", caption: "Celebrating together, on and off the field." },
+  ...communityPhotos.filter(photo => photo.id !== heroPhoto.id),
+  {"id":"friends-at-the-ground","src":"/images/community/friends-at-the-ground.webp","width":1024,"height":768,"alt":"Four cricket supporters posing together beside a cricket ground.","caption":"Friends sharing the cricket spirit."},
+  {"id":"outdoor-trophy-gathering","src":"/images/community/outdoor-trophy-gathering.webp","width":1200,"height":900,"alt":"Three cricketers standing together with a trophy on an outdoor field.","caption":"Recognition shared on the field."},
+  {"id":"indoor-blue-team","src":"/images/community/indoor-blue-team.webp","width":1200,"height":900,"alt":"Cricketers in blue shirts posing with trophies on an indoor sports court.","caption":"A team celebration together."},
+  {"id":"indoor-teams-together","src":"/images/community/indoor-teams-together.webp","width":1200,"height":900,"alt":"Cricketers in blue and yellow shirts gathered with trophies indoors.","caption":"Many teams, a shared love of cricket."},
+  {"id":"outdoor-team-and-trophies","src":"/images/community/outdoor-team-and-trophies.webp","width":1200,"height":675,"alt":"A cricket team posing with trophies on an outdoor field.","caption":"Team pride beyond the boundary."},
+  {"id":"outdoor-team-lineup","src":"/images/community/outdoor-team-lineup.webp","width":1200,"height":675,"alt":"Cricketers standing together behind a row of trophies on grass.","caption":"Together for the game."},
+  {"id":"outdoor-red-team","src":"/images/community/outdoor-red-team.webp","width":1200,"height":675,"alt":"Cricketers in red and blue shirts posing together on an outdoor field.","caption":"A shared team moment."},
+  {"id":"outdoor-community-teams","src":"/images/community/outdoor-community-teams.webp","width":1200,"height":900,"alt":"Two groups of cricketers posing together on a field under a blue sky.","caption":"Cricket brings people together."},
 ]
 export const aboutPhotoIds = ["family-celebration", "community-on-field"] as const
 export const communityFeaturePhotoId = "community-on-field"
