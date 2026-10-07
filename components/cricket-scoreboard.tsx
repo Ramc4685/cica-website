@@ -128,30 +128,6 @@ export function CricketScoreboard() {
               </a>
             </div>
           </div>
-
-          {/* Quick Stats Row */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white/10 p-3 rounded-lg text-center hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="text-lg font-bold text-yellow-400 animate-pulse">LIVE</div>
-              <div className="text-xs text-gray-300">Matches</div>
-            </div>
-            <div className="bg-white/10 p-3 rounded-lg text-center hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="text-lg font-bold text-green-400">8+</div>
-              <div className="text-xs text-gray-300">Teams</div>
-            </div>
-            <div className="bg-white/10 p-3 rounded-lg text-center hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <div className="text-lg font-bold text-blue-400">2025</div>
-              <div className="text-xs text-gray-300">Season</div>
-            </div>
-          </div>
-
-          {/* Tournament Badge */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-green-900 px-4 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <Trophy className="h-4 w-4 animate-bounce" />
-              Indoor Championship 2025
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>

@@ -37,7 +37,6 @@ export function Navigation() {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-xl text-blue-600 group-hover:text-blue-700 transition-colors">CICA</span>
-              <span className="text-xs text-gray-500 hidden sm:block">Since 1998</span>
             </div>
           </Link>
 
