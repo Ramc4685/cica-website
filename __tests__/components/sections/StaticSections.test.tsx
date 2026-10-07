@@ -10,6 +10,7 @@ import { UpcomingSeason } from '@/components/sections/upcoming-season'
 import { Voices } from '@/components/sections/voices'
 import { WhereWePlay } from '@/components/sections/where-we-play'
 import { tournaments } from '@/lib/content'
+import { venues } from '@/lib/season'
 
 describe('CompetitionCards', () => {
   it('renders one card per competition and never shows tbc placeholders as facts', () => {
@@ -85,13 +86,15 @@ describe('season sections', () => {
     render(<UpcomingSeason events={[{ id: 'b', title: 'Final', date: '2027-06-01' }, { id: 'a', title: 'Opening day', date: '2027-05-01', venueId: 'baywood' }]} />)
     const titles = screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
     expect(titles).toEqual(['Opening day', 'Final'])
-    expect(screen.getByText('Baywood ground')).toBeInTheDocument()
+    expect(screen.getByText(venues.find(venue => venue.id === 'baywood')!.name)).toBeInTheDocument()
     expect(document.querySelector('time')).toHaveAttribute('dateTime', '2027-05-01')
   })
   it('only renders confirmed venue details', () => {
     render(<WhereWePlay />)
-    expect(screen.getAllByText('Confirmed by organizers')).toHaveLength(2)
-    expect(screen.getAllByRole('link', { name: /Ask for directions/ })).toHaveLength(2)
+    const unconfirmed = venues.filter(venue => !venue.address).length
+    expect(screen.getAllByText('Confirmed by organizers')).toHaveLength(unconfirmed)
+    expect(screen.getAllByRole('link', { name: /Ask for directions/ })).toHaveLength(venues.filter(venue => !venue.mapUrl).length)
+    expect(screen.getAllByRole('link', { name: /in maps/ })).toHaveLength(venues.filter(venue => venue.mapUrl).length)
   })
   it('renders no voices section without consented quotes', () => {
     const { container } = render(<Voices />)

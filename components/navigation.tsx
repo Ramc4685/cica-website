@@ -9,7 +9,7 @@ import { MotionControl } from "@/components/site-motion"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 
 const primary = [{ name: "Our story", href: "/about/" }, { name: "Cricket", href: "/tournaments/" }, { name: "Gallery", href: "/gallery/" }, { name: "Contact", href: "/contact/" }]
-const more = [{ name: "Rules & bylaws", href: "/rules/" }, { name: "Champions", href: "/champions/" }, { name: "Our board", href: "/board/" }, { name: "Sponsors", href: "/sponsors/" }, { name: "Email updates", href: "/join/" }]
+const more = [{ name: "Rules", href: "/rules/" }, { name: "Bylaws", href: "/bylaws/" }, { name: "Champions", href: "/champions/" }, { name: "Our board", href: "/board/" }, { name: "Sponsors", href: "/sponsors/" }, { name: "Email updates", href: "/join/" }]
 const normalize = (path: string) => path.replace(/\/$/, "") || "/"
 
 function MenuIcon() {

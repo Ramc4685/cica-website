@@ -16,6 +16,7 @@
     "test:e2e": "pnpm build:namecheap && node scripts/e2e.mjs",
     "test:e2e:serve": "node scripts/e2e.mjs --serve-only",
     "build:namecheap": "CICA_STATIC_EXPORT=1 next build",
+    "sync:documents": "node scripts/sync-documents.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
