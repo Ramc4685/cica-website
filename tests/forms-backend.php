@@ -23,8 +23,14 @@ check(rejects(array_replace($valid, ['firstName' => '   '])), 'Blank names rejec
 check(rejects(array_replace($valid, ['message' => str_repeat('a', 4001)])), 'Message limit enforced');
 check(rejects(array_replace($valid, ['email' => ['test@example.test']])), 'Non-string values rejected');
 check(rejects(array_replace($valid, ['type' => 'arbitrary'])), 'Type allowlist');
-check(cica_origin_allowed('https://cicainfo.com') && cica_origin_allowed('https://www.cicainfo.com'), 'Both website origins');
-check(!cica_origin_allowed('https://cicainfo.com.attacker.test') && !cica_origin_allowed(''), 'Foreign/missing origin rejected');
+$production = cica_site('/home/cicanrkn/public_html');
+$staging = cica_site('/home/cicanrkn/staging_html');
+check($production !== null && $staging !== null && cica_site('/home/cicanrkn') === null && cica_site('/tmp/public_html') === null, 'Only the two known document roots');
+check(cica_origin_allowed($production, 'https://cicainfo.com') && cica_origin_allowed($production, 'https://www.cicainfo.com'), 'Both website origins');
+check(!cica_origin_allowed($production, 'https://cicainfo.com.attacker.test') && !cica_origin_allowed($production, ''), 'Foreign/missing origin rejected');
+check(!cica_origin_allowed($production, 'https://staging.cicainfo.com') && cica_origin_allowed($staging, 'https://staging.cicainfo.com'), 'Staging origin only on staging');
+check(!cica_origin_allowed($staging, 'https://cicainfo.com'), 'Production origin rejected on staging');
+check($staging['storage'] !== $production['storage'] && $staging['subjectPrefix'] === '[STAGING] ' && $production['subjectPrefix'] === '', 'Staging records and mail stay separate');
 check(cica_validate(['type' => 'updates', 'name' => 'A person', 'email' => 'test@example.test', 'website' => ''])['type'] === 'updates', 'Updates schema');
 check(cica_validate(['type' => 'sponsor', 'fullName' => 'A person', 'company' => 'A company', 'email' => 'test@example.test', 'interest' => 'Events', 'message' => 'A sponsorship inquiry.', 'website' => ''])['type'] === 'sponsor', 'Sponsor schema');
 $dir = sys_get_temp_dir() . '/cica-forms-test-' . bin2hex(random_bytes(8));

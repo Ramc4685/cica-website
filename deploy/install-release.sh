@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
-# Executed on the host over verified SSH; never accepts an alternate document root.
+# Executed on the host over verified SSH; only the two named document roots are accepted.
 set -euo pipefail
 umask 022
 release=${1:-}
+site=${2:-}
 [[ "$release" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || { echo 'Invalid release identifier' >&2; exit 1; }
 account=/home/cicanrkn
-target="$account/public_html"
-stage="$account/.cica-deploy/$release/site"
-backup="$account/.cica-backups/$release"
-manifest="$account/.cica-deploy-manifest"
+case "$site" in
+  # Production paths are unchanged so existing manifests and backups stay valid.
+  production) target="$account/public_html"; manifest="$account/.cica-deploy-manifest"; backup="$account/.cica-backups/$release" ;;
+  staging) target="$account/staging_html"; manifest="$account/.cica-staging-manifest"; backup="$account/.cica-backups/staging-$release" ;;
+  *) echo 'Deployment target must be production or staging' >&2; exit 1 ;;
+esac
+stage="$account/.cica-deploy/$site-$release/site"
 [[ -d "$target" && ! -L "$target" && -d "$stage" && ! -L "$stage" ]] || exit 1
 [[ -f "$stage/index.html" && -f "$stage/.cica-manifest" && -f "$stage/deployment.json" ]] || exit 1
 [[ ! -L "$manifest" ]] || exit 1
@@ -116,6 +120,10 @@ rm -- "$target/.cica-manifest"
 if [[ -s "$preserved" ]]; then
   { printf '\n# Preserved from the previous .htaccess by install-release.sh\n'; cat "$preserved"; } >> "$target/.htaccess"
 fi
+if [[ "$site" == staging ]]; then
+  # Keep the shared staging copy out of search results.
+  printf '\n<IfModule mod_headers.c>\n  Header always set X-Robots-Tag "noindex, nofollow"\n</IfModule>\n' >> "$target/.htaccess"
+fi
 cp "$stage/.cica-manifest" "$manifest"
 while IFS= read -r file; do
   [[ -n "$file" ]] || continue
@@ -128,5 +136,5 @@ while IFS= read -r file; do
   done
 done < "$manifest"
 trap - ERR
-rm -rf -- "$account/.cica-deploy/$release"
-printf 'Installed release %s; backup outside public_html: %s\n' "$release" "$backup/public_html.tar.gz"
+rm -rf -- "$account/.cica-deploy/$site-$release"
+printf 'Installed %s release %s; backup outside the webroot: %s\n' "$site" "$release" "$backup/public_html.tar.gz"

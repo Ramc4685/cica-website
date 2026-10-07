@@ -2,7 +2,7 @@
 
 The public forms POST to `/forms/submit.php` with `type` contact, updates or sponsor. JavaScript sends JSON; a browser without JavaScript can post `application/x-www-form-urlencoded` and is redirected to `/thank-you/?ref=<reference>` on success, or shown a small error page. PHP 8.1+ is required (the SSH CLI PHP 8.2 was verified during setup; the deploy smoke test also checks that the web handler runs the script). Deployment copies the file from `public/forms` into the static export. The browser frontend remains statically hosted.
 
-Requests must originate from https://cicainfo.com or https://www.cicainfo.com. Other origins and GET requests are rejected. A hidden `website` field (the form must submit it empty), server validation, a 16KB body limit and the limits below reduce basic automated abuse. These are not a complete defense against a determined bot.
+Requests must originate from https://cicainfo.com or https://www.cicainfo.com. Other origins and GET requests are rejected. The handler identifies its site from the document root: on staging (`/home/cicanrkn/staging_html`) it accepts only https://staging.cicainfo.com, stores records in `/home/cicanrkn/.cica-forms-staging`, and prefixes notification subjects with `[STAGING]`. Any other document root refuses to save. A hidden `website` field (the form must submit it empty), server validation, a 16KB body limit and the limits below reduce basic automated abuse. These are not a complete defense against a determined bot.
 
 ## Responses
 
@@ -39,6 +39,6 @@ ssh cicanrkn@HOST php -- delete REFERENCE < scripts/forms-records.php
 
 `php -l public/forms/submit.php` and `php tests/forms-backend.php` check validation, private persistence, limits, rotation and locking without sending mail. `pnpm test:e2e` builds the static export and runs the Cypress form specs against `scripts/e2e.mjs`, which serves `out/` with a mock `/forms/submit.php` (the real handler is tied to the cPanel paths, so it is covered by the PHP tests); each spec also stubs the response with `cy.intercept`. `pnpm test:forms` runs the PHP checks. A release still needs the deploy smoke test and controlled submission checks; never count mocks as real delivery.
 
-For a controlled test, use clearly marked synthetic content, an owner-approved reply email, and verify each record by reference without displaying its personal fields. Verify organizer notification receipt or the host delivery log separately. Do not automatically resubmit after a timeout: the record may already exist.
+Run controlled tests on staging first. Use clearly marked synthetic content, an owner-approved reply email, and verify each record by reference without displaying its personal fields. Verify organizer notification receipt or the host delivery log separately. Do not automatically resubmit after a timeout: the record may already exist.
 
 Hosting administrators can inspect private records through cPanel/SSH. No browser admin or public record endpoint exists. Protect cPanel access, and do not put mailbox or hosting passwords in source or browser code.

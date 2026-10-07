@@ -41,18 +41,24 @@ function cica_validate(array $input): array
     return $clean;
 }
 
-function cica_origin_allowed(string $origin): bool
+// The same artifact serves both sites; the document root decides which one is running.
+function cica_site(string $resolvedRoot): ?array
 {
-    return in_array($origin, ['https://cicainfo.com', 'https://www.cicainfo.com'], true);
+    $sites = [
+        '/home/cicanrkn/public_html' => ['origins' => ['https://cicainfo.com', 'https://www.cicainfo.com'], 'storage' => '.cica-forms', 'subjectPrefix' => ''],
+        '/home/cicanrkn/staging_html' => ['origins' => ['https://staging.cicainfo.com'], 'storage' => '.cica-forms-staging', 'subjectPrefix' => '[STAGING] '],
+    ];
+    return $sites[$resolvedRoot] ?? null;
 }
 
-function cica_private_directory(string $root): string
+function cica_origin_allowed(array $site, string $origin): bool
 {
-    $resolvedRoot = realpath($root);
-    if ($resolvedRoot !== '/home/cicanrkn/public_html') {
-        throw new RuntimeException('Unexpected hosting configuration.');
-    }
-    $dir = dirname($resolvedRoot) . '/.cica-forms';
+    return in_array($origin, $site['origins'], true);
+}
+
+function cica_private_directory(string $resolvedRoot, array $site): string
+{
+    $dir = dirname($resolvedRoot) . '/' . $site['storage'];
     if (is_link($dir) || (!is_dir($dir) && !mkdir($dir, 0700))) {
         throw new RuntimeException('Private storage is unavailable.');
     }
@@ -220,7 +226,7 @@ function cica_save_request(array $fields, string $dir, string $remoteAddress, in
     }
 }
 
-function cica_notify(array $record): bool
+function cica_notify(array $record, array $site): bool
 {
     $labels = ['contact' => 'Contact request', 'updates' => 'Updates request', 'sponsor' => 'Sponsorship inquiry'];
     $body = 'CICA website request ' . $record['id'] . "\r\nReceived: " . $record['receivedAt'] . "\r\n\r\n";
@@ -229,7 +235,7 @@ function cica_notify(array $record): bool
     }
     return mail(
         'organizers@cicainfo.com',
-        '[CICA website] ' . $labels[$record['fields']['type']],
+        $site['subjectPrefix'] . '[CICA website] ' . $labels[$record['fields']['type']],
         wordwrap($body, 70, "\r\n"),
         ['From' => 'CICA Website <organizers@cicainfo.com>', 'Reply-To' => $record['fields']['email'], 'Content-Type' => 'text/plain; charset=UTF-8', 'MIME-Version' => '1.0'],
         '-forganizers@cicainfo.com'
@@ -277,7 +283,13 @@ $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
 $isJson = strpos($contentType, 'application/json') === 0;
 $isForm = strpos($contentType, 'application/x-www-form-urlencoded') === 0;
 $reply = $isForm ? 'cica_form_reply' : 'cica_reply';
-if (!cica_origin_allowed($_SERVER['HTTP_ORIGIN'] ?? '')) {
+$resolvedRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+$site = is_string($resolvedRoot) ? cica_site($resolvedRoot) : null;
+if ($site === null) {
+    error_log('CICA form service: unexpected document root');
+    $reply(503, ['success' => false, 'message' => 'We could not save your request. Please email organizers@cicainfo.com.']);
+}
+if (!cica_origin_allowed($site, $_SERVER['HTTP_ORIGIN'] ?? '')) {
     $reply(403, ['success' => false, 'message' => 'Submit your request from the CICA website.']);
 }
 if (!$isJson && !$isForm) {
@@ -300,10 +312,10 @@ try {
         throw new InvalidArgumentException('Check the information you entered.');
     }
     $fields = cica_validate($input);
-    $dir = cica_private_directory($_SERVER['DOCUMENT_ROOT'] ?? '');
+    $dir = cica_private_directory($resolvedRoot, $site);
     $record = cica_save_request($fields, $dir, $_SERVER['REMOTE_ADDR'] ?? '', time());
     try {
-        $queued = cica_notify($record);
+        $queued = cica_notify($record, $site);
     } catch (Throwable $notificationError) {
         $queued = false;
     }
