@@ -60,7 +60,8 @@ try {
     // Storage: alert near 80%, rotate (not fail) when full.
     $fullDir = $dir . '/full';
     mkdir($fullDir, 0700);
-    $small = ['maxBytes' => 1500] + $options;
+    // Four test records are ~1 KB, so a 1000-byte limit crosses the 80% alert on the fourth save.
+    $small = ['maxBytes' => 1000] + $options;
     $alerts = [];
     for ($i = 0; $i < 4; $i++) { cica_save_request($clean, $fullDir, '10.2.0.' . $i, 9000, $small); }
     check(in_array('Form storage is 80% full', $alerts, true), 'Storage-fill alert');

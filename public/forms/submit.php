@@ -163,11 +163,11 @@ function cica_save_request(array $fields, string $dir, string $remoteAddress, in
         }
         $recent = $ips[$bucket] ?? ['start' => $now, 'count' => 0];
         $global = $state['global'] ?? [];
-        if ($now - ($global['hourStart'] ?? 0) >= 3600) {
+        if (!isset($global['hourStart']) || $now - $global['hourStart'] >= 3600) {
             $global['hourStart'] = $now;
             $global['hourCount'] = 0;
         }
-        if ($now - ($global['dayStart'] ?? 0) >= 86400) {
+        if (!isset($global['dayStart']) || $now - $global['dayStart'] >= 86400) {
             $global['dayStart'] = $now;
             $global['dayCount'] = 0;
         }
