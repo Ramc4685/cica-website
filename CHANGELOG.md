@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Remove the retired Google Apps Script form handlers, their live-endpoint test scripts, handler tests and Sheet templates now that the web apps are undeployed.
 - Add a staging site at staging.cicainfo.com: every `main` build deploys there first, and production deploys the same artifact only after an approver signs off. Staging forms keep separate records and `[STAGING]` notifications.
 - Add bylaws and indoor rules pages reproducing the official documents verbatim, with a sticky contents list, print and PDF copies.
 - Rebuild the home page and site chrome in the Growlio style: tag-dot intros, capsule CTAs, soft cards, Goudy display type at its loaded 400 weight and a footer call to action that never links to its own page.
