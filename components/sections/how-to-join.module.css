@@ -1,0 +1,43 @@
+.section { padding-block:100px 110px;border-radius:0 0 60px 60px;background:var(--cica-green);color:var(--cica-cream); }
+
+.layout { display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,2.2fr);gap:48px;align-items:start; }
+
+/* Left rail: a hairline track with the active step as a white pill. */
+.rail { position:relative;display:flex;flex-direction:column;gap:6px;padding-left:14px; }
+.rail:before { content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:var(--cica-on-dark-line); }
+.step { display:flex;align-items:center;gap:14px;min-height:52px;padding:10px 20px 10px 14px;border:0;border-radius:100px;background:transparent;color:var(--cica-on-dark-muted);font-size:16px;font-weight:500;text-align:left;cursor:pointer;transition:background-color .25s,color .25s; }
+.step:hover { color:var(--cica-cream); }
+.step[aria-selected=true] { background:var(--cica-paper);color:var(--cica-green); }
+.step:focus-visible { outline:2px solid var(--cica-cream);outline-offset:2px; }
+.number { font-family:var(--font-display),Georgia,serif;font-size:20px;line-height:1;color:var(--cica-mint); }
+.step[aria-selected=true] .number { color:var(--cica-mint-deep); }
+
+.panel { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center; }
+.panel[hidden] { display:none; }
+.photo { margin:0;overflow:hidden;border-radius:32px;aspect-ratio:4/3;background:hsl(var(--cica-cream-hsl) / .08); }
+.photo img { height:100%; }
+.copy { display:flex;flex-direction:column;align-items:flex-start; }
+.stepCount { margin:0 0 14px;font-size:14px;color:var(--cica-on-dark-muted); }
+.title { margin:0 0 18px;font-family:var(--font-display),Georgia,serif;font-size:var(--step-h3);font-weight:400;line-height:1.05;letter-spacing:-.015em; }
+.text { max-width:44ch;margin:0 0 30px;font-size:17px;line-height:1.65;color:var(--cica-on-dark-muted); }
+
+@media (prefers-reduced-motion:no-preference) {
+  :global(html[data-motion=running]) .panel:not([hidden]) .photo,:global(html[data-motion=running]) .panel:not([hidden]) .copy { animation:stepIn .5s cubic-bezier(.22,1,.36,1) both; }
+}
+@keyframes stepIn { from { opacity:.4;transform:translateY(10px); } to { opacity:1;transform:none; } }
+
+@media (max-width:1099px) {
+  .layout { grid-template-columns:1fr;gap:32px; }
+  .rail { flex-direction:row;flex-wrap:wrap;gap:8px;padding-left:0; }
+  .rail:before { display:none; }
+  .step { padding:8px 18px 8px 12px;box-shadow:inset 0 0 0 1px var(--cica-on-dark-line); }
+  .step[aria-selected=true] { box-shadow:none; }
+}
+@media (max-width:760px) {
+  .section { padding-block:65px 70px;border-radius:0 0 35px 35px; }
+  .panel { grid-template-columns:1fr;gap:26px; }
+  .photo { border-radius:24px; }
+  .text { font-size:16px; }
+  .copy :global(.capsule) { display:flex;width:100%; }
+  .copy :global(.capsule-label) { flex:1;padding-inline:18px;font-size:20px; }
+}

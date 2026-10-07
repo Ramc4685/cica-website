@@ -1,0 +1,3 @@
+/* Shared vertical rhythm for the light-surface sections in this folder. */
+.section { padding-block:110px; }
+@media (max-width:760px) { .section { padding-block:70px; } }
