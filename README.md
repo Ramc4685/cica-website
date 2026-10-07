@@ -20,7 +20,7 @@ The static build exports to `out/`. [CI setup and rollback](deploy/CI.md) descri
 
 ## Forms and administration
 
-The contact, updates and sponsorship forms submit to a same-origin PHP backend on Namecheap. Requests are validated and saved privately outside the public website folder, with notifications to the organizers. Read [hosted form operation](docs/forms/namecheap.md) for storage, limits, testing and delivery verification. An updates request is separate from playing or tournament registration; the Get Involved page explains participation pathways. Historical Apps Script sources are retained as migration references.
+The contact, updates and sponsorship forms submit to a same-origin PHP backend on Namecheap. Requests are validated and saved privately outside the public website folder, with notifications to the organizers. Read [hosted form operation](docs/forms/namecheap.md) for storage, limits, testing and delivery verification. An updates request is separate from playing or tournament registration; the Get Involved page explains participation pathways. The former Google Apps Script handlers have been undeployed and removed.
 
 The old prototype admin remains disabled. Real content administration needs secure server authentication, authorization and storage; current content updates use reviewed Git changes.
 

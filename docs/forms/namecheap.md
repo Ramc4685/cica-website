@@ -21,7 +21,7 @@ Retention: no automatic deletion is implemented. Records stay until an organizer
 
 Each accepted record gets an opaque reference. An organizer notification is sent through the host mail transport to organizers@cicainfo.com, with a fixed sender and validated reply address. A notification failure does not erase the saved request or incorrectly report save failure. PHP mail acceptance does not prove inbox delivery. Deployment does not overwrite the private directory; never publish it or restore it into public_html.
 
-Updates requests are manually handled. This is not an automated newsletter service or tournament registration. The privacy page explains the hosting records and possible legacy Google Sheet records. The `scripts/apps-scripts` handlers and CSV templates remain historical migration references; no frontend requests go to Google Apps Script.
+Updates requests are manually handled. This is not an automated newsletter service or tournament registration. The privacy page explains the hosting records and possible legacy Google Sheet records. The former Google Apps Script web apps were undeployed after this handler was verified in production; their Google Sheets remain only as records of earlier submissions.
 
 ## Managing stored records
 
