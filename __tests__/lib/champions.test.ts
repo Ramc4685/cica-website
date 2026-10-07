@@ -1,6 +1,6 @@
 declare const expect: jest.Expect;
 declare const it: jest.It;
-import { competitions, computeChampionStats, titlesForTeam, type Competition } from "@/lib/champions"
+import { competitions, computeChampionStats, newestSeasonFirst, titlesForTeam, type Competition } from "@/lib/champions"
 
 const sample: Competition[] = [
   { id: "mains", title: "A", records: [{ season: 2024, champion: "X" }, { season: 2023, champion: "Y" }, { season: 2022, champion: "X" }] },
@@ -34,5 +34,26 @@ describe("computeChampionStats", () => {
     expect(names).not.toContain("Bloomboys")
     expect(names).not.toContain("BloomBulls")
     expect(names.filter(n => n.toLowerCase().startsWith("techie"))).toEqual(["Techie Brains Legends"])
+  })
+})
+
+describe("newestSeasonFirst", () => {
+  it("orders each competition's seasons newest first whatever order they were entered in", () => {
+    const shuffled: Competition[] = [
+      { id: "mains", title: "A", records: [{ season: 2019, champion: "Old" }, { season: 2025, champion: "New" }, { season: 2020, champion: "Mid" }] },
+      { id: "mini", title: "B", records: [] },
+    ]
+    const sorted = newestSeasonFirst(shuffled)
+    expect(sorted[0].records.map(r => r.season)).toEqual([2025, 2020, 2019])
+    expect(sorted[0].records[0].champion).toBe("New")
+    expect(sorted[1].records).toEqual([])
+    expect(shuffled[0].records[0].season).toBe(2019)
+  })
+
+  it("keeps the real archive newest first", () => {
+    for (const competition of competitions) {
+      const seasons = competition.records.map(r => r.season)
+      expect(seasons).toEqual([...seasons].sort((a, b) => b - a))
+    }
   })
 })

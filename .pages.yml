@@ -41,7 +41,7 @@ content:
           format: yyyy-MM-dd
       - name: competitions
         label: Competitions
-        description: One entry per competition. Add new seasons at the top of its list, newest first.
+        description: One entry per competition. Add seasons in any order; the site sorts them newest first.
         type: object
         list: true
         fields:
@@ -57,7 +57,7 @@ content:
               maxlength: 80
           - name: records
             label: Seasons
-            description: One entry per season, newest first. Only enter results organizers have confirmed.
+            description: One entry per season, in any order (the site sorts them). Only enter results organizers have confirmed.
             type: object
             list: true
             fields:

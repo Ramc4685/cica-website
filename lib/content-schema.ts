@@ -34,7 +34,13 @@ export const championsFileSchema = z.object({
       notes: optionalText(300),
       photo: championPhotoSchema.optional(),
     }).strict()).default([]),
-  }).strict()).default([]),
+  }).strict().superRefine((competition, ctx) => {
+    const seen = new Set<number>()
+    for (const record of competition.records) {
+      if (seen.has(record.season)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["records"], message: `${competition.title} has season ${record.season} more than once; keep one entry per season` })
+      seen.add(record.season)
+    }
+  })).default([]),
 }).strict()
 
 export const photosFileSchema = z.object({

@@ -47,7 +47,7 @@ Content lives in `content/*.json` and is parsed by the schemas in `lib/content-s
 
 You can edit five things. Sign in from the email invite you received at https://app.pagescms.org and choose the CICA website.
 
-- **Champions:** pick a competition, add a season at the top of its list (newest first), and enter the champion exactly as the team name should appear. Runner-up and notes are optional. Only enter results organizers have confirmed. If you leave something unknown, leave it blank.
+- **Champions:** pick a competition, add a season anywhere in its list (the site orders seasons newest first automatically, and the newest season becomes the highlighted current champion), and enter the champion exactly as the team name should appear. Runner-up and notes are optional. Enter each season only once per competition; a repeated season stops the build. Only enter results organizers have confirmed. If you leave something unknown, leave it blank.
 - **Champion team photo:** optional, per season. Use a JPG, PNG or WebP under 10 MB, and only with the team's consent. A short description of the photo for people using screen readers is required.
 - **Community photos:** add a photo, a description, a caption, and tick where it should appear. Keep the Short ID as lowercase words joined by hyphens, and never change an existing ID.
 - **Tournaments:** update registration status, dates, links and format. Type a number such as 13 for overs or squad size, or tbc if it is not confirmed.
