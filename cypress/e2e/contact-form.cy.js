@@ -32,8 +32,8 @@ describe('Contact Form', () => {
   });
 
   it('should fill and submit the form', () => {
-    // Intercept the form submission to Google Apps Script
-    cy.intercept('POST', '**/script.google.com/macros/**').as('formSubmission');
+    // Intercept the form submission to the same-origin PHP handler
+    cy.intercept('POST', '**/forms/submit.php').as('formSubmission');
 
     // Fill the form
     const formData = {
