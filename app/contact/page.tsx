@@ -3,350 +3,83 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import Link from "next/link"
-import * as z from "zod"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Mail, MessageCircle, MapPin, Loader2, CheckCircle } from "lucide-react"
-import { toast } from "sonner"
+import { CheckCircle, Loader2 } from "lucide-react"
+import { nameField, emailField, phoneField, messageField, submitForm, UNCERTAIN_SUBMISSION } from "@/lib/form-submission"
 
-// Form validation schema using Zod
-const formSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: "First name is required" })
-    .max(50, { message: "First name must be less than 50 characters" })
-    .regex(/^[a-zA-Z\s\-']+$/, { message: "First name can only contain letters, spaces, hyphens, and apostrophes" }),
-  lastName: z
-    .string()
-    .min(1, { message: "Last name is required" })
-    .max(50, { message: "Last name must be less than 50 characters" })
-    .regex(/^[a-zA-Z\s\-']+$/, { message: "Last name can only contain letters, spaces, hyphens, and apostrophes" }),
-  email: z
-    .string()
-    .email({ message: "Invalid email address" })
-    .max(100, { message: "Email must be less than 100 characters" }),
-  phone: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !val || /^\+?[0-9\s\-\(\)]+$/.test(val),
-      { message: "Phone number can only contain numbers, spaces, and these symbols: + - ( )" }
-    ),
-  subject: z
-    .string()
-    .min(1, { message: "Subject is required" })
-    .max(100, { message: "Subject must be less than 100 characters" }),
-  message: z
-    .string()
-    .min(10, { message: "Message must be at least 10 characters" })
-    .max(1000, { message: "Message must be less than 1000 characters" }),
-});
-
-// Define the form data type
-type FormValues = z.infer<typeof formSchema>;
-
-// Form submission handler URL (Google Apps Script Web App URL)
-const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbwZ3MauXuEadegmbESfcl4ZOZzMohBOzXPEv1HwGfTHeE51ADV5cxAl5u0x1gqzjI3d/exec"
+const formSchema = z.object({ website: z.string().max(200), firstName: nameField("First name", 50), lastName: nameField("Last name", 50), email: emailField, phone: phoneField, subject: nameField("Subject", 200), message: messageField })
+type FormValues = z.infer<typeof formSchema>
+const fields = [
+  { name: "firstName", label: "First Name", type: "text", autoComplete: "given-name", maximum: 50 },
+  { name: "lastName", label: "Last Name", type: "text", autoComplete: "family-name", maximum: 50 },
+  { name: "email", label: "Email Address", type: "email", autoComplete: "email", maximum: 254 },
+  { name: "phone", label: "Phone (Optional)", type: "tel", autoComplete: "tel", maximum: 30 },
+  { name: "subject", label: "Subject", type: "text", autoComplete: "off", maximum: 200 },
+  { name: "message", label: "Message", type: "textarea", autoComplete: "off", maximum: 3000 },
+] satisfies readonly { name: keyof FormValues; label: string; type: string; autoComplete: string; maximum: number }[]
 
 export default function ContactPage() {
-  // React Hook Form with Zod validation
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    },
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(formSchema), defaultValues: { website: "", firstName: "", lastName: "", email: "", phone: "", subject: "", message: "" },
   })
-
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
-
-  // Form submission handler
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
+    setSubmissionError(null)
     try {
-      setSubmissionError(null)
-
-      // Send form data to Google Apps Script
-      const response = await fetch(FORM_SUBMISSION_URL, {
-        method: "POST",
-        headers: {
-          // Apps Script does not serve CORS preflight; send JSON as a simple request.
-          "Content-Type": "text/plain;charset=UTF-8",
-        },
-        body: JSON.stringify(data),
-        // Timeout after 8 seconds
-        signal: AbortSignal.timeout(8000)
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        setSubmitSuccess(true)
-        reset()
-        toast.success("Your message has been sent successfully! We'll be in touch soon.")
-
-        // Reset success message after 5 seconds
-        setTimeout(() => {
-          setSubmitSuccess(false)
-        }, 5000)
-      } else {
-        setSubmissionError(result.message || "Something went wrong with your submission. Please try again.")
-        toast.error(result.message || "Something went wrong with your submission. Please try again.")
-      }
-    } catch (error: any) {
-      console.error("Form submission error:", error)
-
-      // Handle timeout separately
-      if (error.name === 'TimeoutError' || error.name === 'AbortError') {
-        setSubmissionError("Request timed out. Please check your internet connection and try again.")
-        toast.error("Request timed out. Please check your internet connection and try again.")
-      } else {
-        setSubmissionError("Failed to send message. Please try again later.")
-        toast.error("Failed to send message. Please try again later.")
-      }
+      await submitForm("contact", values)
+      setSubmitSuccess(true)
+      reset()
+    } catch {
+      setSubmissionError(UNCERTAIN_SUBMISSION)
     }
   }
+
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-4">Contact Us</h1>
-        <p className="text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-          Get in touch with CICA for tournament information, sponsorship opportunities, or general inquiries. We're here
-          to help you become part of our cricket community.
-        </p>
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Contact Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Send us a Message</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <Label htmlFor="firstName" className="flex items-center justify-between">
-                      First Name
-                      {errors.firstName && (
-                        <span className="text-red-500 text-xs">{errors.firstName.message}</span>
-                      )}
-                    </Label>
-                    <Input
-                      id="firstName"
-                      placeholder="John"
-                      {...register("firstName")}
-                      className={errors.firstName ? "border-red-500" : ""}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName" className="flex items-center justify-between">
-                      Last Name
-                      {errors.lastName && (
-                        <span className="text-red-500 text-xs">{errors.lastName.message}</span>
-                      )}
-                    </Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Doe"
-                      {...register("lastName")}
-                      className={errors.lastName ? "border-red-500" : ""}
-                    />
-                  </div>
+    <div className="page-shell">
+      <header className="page-hero mb-10">
+        <p className="eyebrow">Contact CICA</p>
+        <h1 className="mt-5 mx-auto max-w-4xl">A conversation starts here.</h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">New to cricket, planning a family visit, or interested in helping out? Tell us what you have in mind.</p>
+      </header>
+      <div className="grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
+        <aside className="editorial-panel h-fit p-6 sm:p-8"><p className="eyebrow">A friendly first step</p><h2 className="mt-4 text-3xl">You do not need to know a team to reach out.</h2><p className="mt-5 text-muted-foreground">Ask about playing, watching cricket with family, volunteering, or a tournament. The organizers can help you find your next step.</p><a className="mt-6 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a><div className="mt-8 border-t pt-6"><p className="text-sm text-muted-foreground">Central Illinois Cricket Association</p><p className="mt-2">Serving the cricket community in Central Illinois.</p></div></aside>
+        <section className="editorial-panel p-6 sm:p-8" aria-labelledby="form-heading">
+          <p className="eyebrow">Let us know</p>
+          <h2 id="form-heading" className="mt-4 text-3xl">Send us a Message</h2>
+          <p className="mt-4 mb-7 text-sm text-muted-foreground">All fields are required except phone. We use these details to handle your request. <Link className="underline underline-offset-4" href="/privacy/">Read our privacy notice.</Link></p>
+          {submitSuccess ? (
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-6" role="status" aria-live="polite">
+              <CheckCircle className="mb-4 h-8 w-8 text-green-800" aria-hidden="true" />
+              <h3 className="text-xl font-semibold text-green-950">Your message has been recorded.</h3>
+              <p className="mt-3 text-green-950">Thank you for reaching out. For time-sensitive questions, contact the organizers directly.</p>
+              <Button className="mt-6" variant="outline" type="button" onClick={() => { setSubmitSuccess(false); reset() }}>Send another request</Button>
+            </div>
+          ) : (
+            <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5" aria-busy={isSubmitting}>
+              <div hidden aria-hidden="true"><label htmlFor="website">Website</label><input id="website" tabIndex={-1} autoComplete="off" {...register("website")} /></div>
+              {fields.map(field => (
+                <div className="space-y-2" key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  {field.type === "textarea" ? (
+                    <Textarea id={field.name} rows={5} maxLength={field.maximum} autoComplete={field.autoComplete} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  ) : (
+                    <Input id={field.name} type={field.type} maxLength={field.maximum} autoComplete={field.autoComplete} inputMode={field.type === "tel" ? "tel" : field.type === "email" ? "email" : "text"} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  )}
+                  {errors[field.name] && <p id={`${field.name}-error`} className="text-sm text-red-800" role="alert">{errors[field.name]?.message}</p>}
                 </div>
-                <div>
-                  <Label htmlFor="email" className="flex items-center justify-between">
-                    Email
-                    {errors.email && (
-                      <span className="text-red-500 text-xs">{errors.email.message}</span>
-                    )}
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    {...register("email")}
-                    className={errors.email ? "border-red-500" : ""}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="flex items-center justify-between">
-                    Phone (Optional)
-                    {errors.phone && (
-                      <span className="text-red-500 text-xs">{errors.phone.message}</span>
-                    )}
-                  </Label>
-                  <Input
-                    id="phone"
-                    placeholder="(555) 123-4567"
-                    {...register("phone")}
-                    className={errors.phone ? "border-red-500" : ""}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="subject" className="flex items-center justify-between">
-                    Subject
-                    {errors.subject && (
-                      <span className="text-red-500 text-xs">{errors.subject.message}</span>
-                    )}
-                  </Label>
-                  <Input
-                    id="subject"
-                    placeholder="Tournament inquiry, sponsorship, etc."
-                    {...register("subject")}
-                    className={errors.subject ? "border-red-500" : ""}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="message" className="flex items-center justify-between">
-                    Message
-                    {errors.message && (
-                      <span className="text-red-500 text-xs">{errors.message.message}</span>
-                    )}
-                  </Label>
-                  <Textarea
-                    id="message"
-                    placeholder="Tell us how we can help you..."
-                    rows={5}
-                    {...register("message")}
-                    className={errors.message ? "border-red-500" : ""}
-                  />
-                </div>
-
-                {submitSuccess ? (
-                  <div className="bg-green-50 border border-green-200 rounded-md p-4 flex items-center">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                    <p className="text-green-700 text-sm">Your message has been sent successfully! We'll be in touch soon.</p>
-                  </div>
-                ) : submissionError ? (
-                  <div className="space-y-4">
-                    <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start">
-                      <div className="h-5 w-5 text-red-500 mr-2 flex-shrink-0">⚠️</div>
-                      <p className="text-red-700 text-sm">{submissionError}</p>
-                    </div>
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        "Try Again"
-                      )}
-                    </Button>
-                  </div>
-                ) : (
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Message"
-                    )}
-                  </Button>
-                )}
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Contact Information */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
-                  Email Contacts
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="font-medium">General Inquiries</p>
-                  <a className="text-blue-600 break-all hover:underline" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>
-                </div>
-                <div>
-                  <p className="font-medium">Tournament Registration</p>
-                  <a className="text-blue-600 break-all hover:underline" href="mailto:organizers@cicainfo.com?subject=Tournament%20registration">organizers@cicainfo.com</a>
-                </div>
-                <div>
-                  <p className="font-medium">Sponsorship Opportunities</p>
-                  <a className="text-blue-600 break-all hover:underline" href="mailto:organizers@cicainfo.com?subject=Sponsorship%20inquiry">organizers@cicainfo.com</a>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Stay Connected
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Stay connected with CICA through our mailing list and WhatsApp group for real-time updates on
-                  tournaments, events, and community announcements.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-                    <Link href="/join">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Join CICA Updates
-                    </Link>
-                  </Button>
-                  <Button asChild className="w-full bg-green-600 hover:bg-green-700">
-                    <a href="https://chat.whatsapp.com/Ij7GEOEkGJK9DCY2LDPFj8" target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      WhatsApp Group
-                    </a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  Location
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  <strong>Serving:</strong>
-                  <br />
-                  Bloomington/Normal, Illinois
-                  <br />
-                  and surrounding Central Illinois communities
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Links</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button asChild variant="outline" className="w-full justify-start"><a href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">Live Scores on CricClubs</a></Button>
-                <Button asChild variant="outline" className="w-full justify-start"><a href="mailto:organizers@cicainfo.com?subject=Tournament%20registration">Tournament Registration</a></Button>
-                <Button asChild variant="outline" className="w-full justify-start"><Link href="/rules">Rules & Documentation</Link></Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              ))}
+              {submissionError && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-950" role="alert"><p>{submissionError}</p><a className="mt-2 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com">Email the organizers</a></div>}
+              <Button type="submit" className="w-full min-h-12" disabled={isSubmitting}>{isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Sending request…</> : "Send Message"}</Button>
+              <p className="text-sm text-muted-foreground">Prefer email? <a className="break-all underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a></p>
+            </form>
+          )}
+        </section>
       </div>
     </div>
   )

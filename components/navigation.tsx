@@ -1,110 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { usePathname } from "next/navigation"
+import { ArrowUpRight, ChevronDown, Menu, X } from "lucide-react"
 
-const navItems = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Tournaments", href: "/tournaments" },
-  { name: "Rules", href: "/rules" },
-  { name: "Champions", href: "/champions" },
-  { name: "Board", href: "/board" },
-  { name: "Sponsors", href: "/sponsors" },
-  { name: "Gallery", href: "/gallery" },
-  { name: "Contact", href: "/contact" },
-]
+const primary = [{name:"Our story",href:"/about"},{name:"Cricket",href:"/tournaments"},{name:"Community",href:"/get-involved"},{name:"Contact",href:"/contact"}]
+const more = [{name:"Rules & bylaws",href:"/rules"},{name:"Champions",href:"/champions"},{name:"Our board",href:"/board"},{name:"Sponsors",href:"/sponsors"},{name:"Gallery",href:"/gallery"},{name:"Email updates",href:"/join"}]
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50 border-b-2 border-blue-100">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative w-12 h-12 transform group-hover:scale-110 transition-transform duration-300">
-              <Image
-                src="/images/cica-logo-main.jpg"
-                alt="CICA Logo"
-                fill
-                className="object-contain drop-shadow-md"
-                priority
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-xl text-blue-600 group-hover:text-blue-700 transition-colors">CICA</span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-gray-700 hover:text-blue-600 transition-all duration-300 font-medium text-sm relative group py-2"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            ))}
-            <Button
-              size="sm"
-              className="bg-green-600 hover:bg-green-700 transform hover:scale-105 transition-all duration-200"
-              asChild
-            >
-              <Link href="/join">Join CICA</Link>
-            </Button>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="relative" aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isOpen} aria-controls="mobile-navigation">
-              <div className="relative w-6 h-6">
-                <span
-                  className={`absolute block h-0.5 w-6 bg-gray-600 transform transition duration-300 ${isOpen ? "rotate-45 translate-y-2" : "translate-y-0"}`}
-                ></span>
-                <span
-                  className={`absolute block h-0.5 w-6 bg-gray-600 transform transition duration-300 ${isOpen ? "opacity-0" : "translate-y-2"}`}
-                ></span>
-                <span
-                  className={`absolute block h-0.5 w-6 bg-gray-600 transform transition duration-300 ${isOpen ? "-rotate-45 translate-y-2" : "translate-y-4"}`}
-                ></span>
-              </div>
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div
-          id="mobile-navigation"
-          className={`lg:hidden ${isOpen ? "max-h-[calc(100dvh-4rem)] overflow-y-auto py-4" : "hidden"}`}
-        >
-          <div className="border-t border-gray-200">
-            <div className="flex flex-col space-y-4 pt-4">
-              {navItems.map((item, index) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium px-2 py-1 animate-slide-in-right"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Button className="mx-2 bg-green-600 hover:bg-green-700" asChild>
-                <Link href="/join" onClick={() => setIsOpen(false)}>Join CICA</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
+  const [open,setOpen]=useState(false)
+  const pathname=(usePathname() || "/").replace(/\/$/, "") || "/"
+  const toggle=useRef<HTMLButtonElement>(null)
+  const moreMenu=useRef<HTMLDetailsElement>(null)
+  useEffect(()=>{setOpen(false);if(moreMenu.current)moreMenu.current.open=false},[pathname])
+  useEffect(()=>{const escape=(event:KeyboardEvent)=>{if(event.key==="Escape"){if(open){setOpen(false);toggle.current?.focus()}if(moreMenu.current?.open){moreMenu.current.open=false;moreMenu.current.querySelector("summary")?.focus()}}};document.addEventListener("keydown",escape);return()=>document.removeEventListener("keydown",escape)},[open])
+  const navLink=(item:{name:string;href:string})=><Link key={item.href} href={item.href} aria-current={pathname===item.href?"page":undefined} onClick={()=>{setOpen(false);if(moreMenu.current)moreMenu.current.open=false}}>{item.name}</Link>
+  return <header className="site-header"><nav className="page-shell nav-shell" aria-label="Main navigation"><Link href="/" className="brand" aria-label="CICA home"><Image src="/images/cica-logo-main.webp" alt="" width={58} height={58} priority /><span><strong>CICA</strong><small>CRICKET & COMMUNITY</small></span></Link><div className="desktop-navigation">{primary.map(navLink)}<details ref={moreMenu} className="more-menu"><summary>Explore <ChevronDown size={14} aria-hidden="true" /></summary><div className="more-menu-links">{more.map(navLink)}</div></details></div><Link href="/get-involved" className="premium-button nav-cta">Get involved <ArrowUpRight size={17} aria-hidden="true" /></Link><button ref={toggle} className="mobile-toggle" onClick={()=>setOpen(!open)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open?"Close navigation":"Open navigation"}>{open?<X aria-hidden="true" />:<Menu aria-hidden="true" />}</button></nav><div id="mobile-navigation" className="mobile-navigation" hidden={!open}><div className="page-shell">{[...primary,...more].map(navLink)}<Link className="premium-button" href="/get-involved" onClick={()=>setOpen(false)}>Get involved <ArrowUpRight size={18} aria-hidden="true" /></Link></div></div></header>
 }

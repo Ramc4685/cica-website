@@ -1,232 +1,87 @@
 "use client"
 
 import { useState } from "react"
+import { SponsorShowcase } from "@/components/sponsor-showcase"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { z } from "zod"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { ExternalLink, Mail, Phone, Building, Loader2, CheckCircle } from "lucide-react"
-import Link from "next/link"
-import { toast } from "sonner"
+import { CheckCircle, Loader2 } from "lucide-react"
+import { nameField, emailField, phoneField, messageField, submitForm, UNCERTAIN_SUBMISSION } from "@/lib/form-submission"
 
-// Zod schema for sponsor form validation
-const sponsorFormSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  company: z.string().min(1, "Company name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
-  interest: z.string().min(1, "Sponsorship interest is required"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type SponsorFormValues = z.infer<typeof sponsorFormSchema>;
-
-// TODO:// Google Apps Script URL for form submission
-const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbzzQZ0zYjbjJRppNKz7YOmeGpSAEGvhv3jCXaOhDo5xGJg5gdPxcZLZcxrosa5rCkqw5w/exec";
+const formSchema = z.object({ website: z.string().max(200), fullName: nameField("Full name"), company: nameField("Company name", 200), email: emailField, phone: phoneField, interest: nameField("Sponsorship interest", 200), message: messageField })
+type FormValues = z.infer<typeof formSchema>
+const fields = [
+  { name: "fullName", label: "Full Name", type: "text", autoComplete: "name", maximum: 100 },
+  { name: "company", label: "Company", type: "text", autoComplete: "organization", maximum: 200 },
+  { name: "email", label: "Email Address", type: "email", autoComplete: "email", maximum: 254 },
+  { name: "phone", label: "Phone (Optional)", type: "tel", autoComplete: "tel", maximum: 30 },
+  { name: "interest", label: "Sponsorship Interest", type: "text", autoComplete: "off", maximum: 200 },
+  { name: "message", label: "Message", type: "textarea", autoComplete: "off", maximum: 3000 },
+] satisfies readonly { name: keyof FormValues; label: string; type: string; autoComplete: string; maximum: number }[]
 
 export default function SponsorsPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<SponsorFormValues>({
-    resolver: zodResolver(sponsorFormSchema),
-  });
-
-  const onSubmit = async (data: SponsorFormValues) => {
-    setIsSubmitting(true);
-    setSubmitSuccess(false);
-
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(formSchema), defaultValues: { website: "", fullName: "", company: "", email: "", phone: "", interest: "", message: "" },
+  })
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
+  const onSubmit = async (values: FormValues) => {
+    setSubmissionError(null)
     try {
-      const response = await fetch(FORM_SUBMISSION_URL, {
-        method: "POST",
-        headers: {
-          // Apps Script does not serve CORS preflight; send JSON as a simple request.
-          "Content-Type": "text/plain;charset=UTF-8",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast.success("Your sponsorship inquiry has been sent!");
-        setSubmitSuccess(true);
-        reset();
-      } else {
-        toast.error(result.message || "An error occurred.");
-      }
-    } catch (error) {
-      toast.error("Failed to send inquiry. Please try again later.");
-    } finally {
-      setIsSubmitting(false);
+      await submitForm("sponsor", values)
+      setSubmitSuccess(true)
+      reset()
+    } catch {
+      setSubmissionError(UNCERTAIN_SUBMISSION)
     }
-  };
+  }
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-4">Our Sponsors</h1>
-        <p className="text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-          CICA is proud to partner with organizations that share our commitment to community building and sports
-          excellence. Our sponsors make it possible to organize world-class tournaments and events.
-        </p>
-
-        {/* Current Sponsors */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-8 text-center">Current Sponsors</h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="w-32 h-32 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-gray-400">1 GPT</span>
+    <div className="page-shell">
+      <header className="page-hero mb-10">
+        <p className="eyebrow">Community partnerships</p>
+        <h1 className="mt-5 mx-auto max-w-4xl">Support the moments that bring us together.</h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">Help cricket thrive in Central Illinois. Let us explore a partnership that makes sense for your organization and our community.</p>
+      </header>
+      <SponsorShowcase />
+      <div className="grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
+        <aside className="editorial-panel h-fit p-6 sm:p-8"><p className="eyebrow">Built around community</p><h2 className="mt-4 text-3xl">A partnership with purpose.</h2><p className="mt-5 text-muted-foreground">Connect with people who share a love of cricket. Talk with CICA about tournament support, equipment, or community events.</p><p className="mt-5 text-muted-foreground">Availability, recognition and partnership terms are agreed directly with the organizers. Send an inquiry to start the conversation.</p><a className="mt-6 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com?subject=Sponsorship%20inquiry">Email the organizers</a><div className="mt-8 border-t pt-6"><p className="eyebrow">Our community in action</p><a className="mt-3 inline-flex font-semibold underline underline-offset-4" href="https://www.facebook.com/cicacric/" target="_blank" rel="noopener noreferrer">Visit CICA on Facebook ↗</a></div></aside>
+        <section className="editorial-panel p-6 sm:p-8" aria-labelledby="form-heading">
+          <p className="eyebrow">Let us know</p>
+          <h2 id="form-heading" className="mt-4 text-3xl">Become a Sponsor</h2>
+          <p className="mt-4 mb-7 text-sm text-muted-foreground">All fields are required except phone. We use these details to handle your request. <Link className="underline underline-offset-4" href="/privacy/">Read our privacy notice.</Link></p>
+          {submitSuccess ? (
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-6" role="status" aria-live="polite">
+              <CheckCircle className="mb-4 h-8 w-8 text-green-800" aria-hidden="true" />
+              <h3 className="text-xl font-semibold text-green-950">Your sponsorship inquiry has been recorded.</h3>
+              <p className="mt-3 text-green-950">Thank you for your interest. The organizers can discuss opportunities and confirm the details of a potential partnership.</p>
+              <Button className="mt-6" variant="outline" type="button" onClick={() => { setSubmitSuccess(false); reset() }}>Send another request</Button>
+            </div>
+          ) : (
+            <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5" aria-busy={isSubmitting}>
+              <div hidden aria-hidden="true"><label htmlFor="website">Website</label><input id="website" tabIndex={-1} autoComplete="off" {...register("website")} /></div>
+              {fields.map(field => (
+                <div className="space-y-2" key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  {field.type === "textarea" ? (
+                    <Textarea id={field.name} rows={5} maxLength={field.maximum} autoComplete={field.autoComplete} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  ) : (
+                    <Input id={field.name} type={field.type} maxLength={field.maximum} autoComplete={field.autoComplete} inputMode={field.type === "tel" ? "tel" : field.type === "email" ? "email" : "text"} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  )}
+                  {errors[field.name] && <p id={`${field.name}-error`} className="text-sm text-red-800" role="alert">{errors[field.name]?.message}</p>}
                 </div>
-                <CardTitle>1 GPT</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm">
-                  Technology partner supporting CICA's digital initiatives and tournament management systems.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Sponsorship Information */}
-        <div className="grid gap-8 lg:grid-cols-2 mb-16">
-          <Card>
-            <CardHeader>
-              <CardTitle>Sponsorship Opportunities</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">
-                Partner with CICA to reach the vibrant cricket community in Central Illinois. We offer various
-                sponsorship packages designed to meet different business objectives and budgets.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-600 mb-4">
-                <li>• Tournament title sponsorship</li>
-                <li>• Equipment and facility sponsorship</li>
-                <li>• Event and hospitality partnerships</li>
-                <li>• Digital marketing opportunities</li>
-                <li>• Community outreach programs</li>
-              </ul>
-              <Button className="w-full" asChild>
-                <Link
-                  href="https://docs.google.com/document/d/19m8Gz7XEAijgaEqPyCXCuTGI3-bzrkILvrxwn9RP67s/preview"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  View Sponsorship Packages
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Why Sponsor CICA?</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <Building className="h-5 w-5 text-blue-600 mt-1" />
-                  <div>
-                    <h4 className="font-medium">Community Impact</h4>
-                    <p className="text-sm text-gray-600">Connect with a diverse, engaged community</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="h-5 w-5 text-blue-600 mt-1" />
-                  <div>
-                    <h4 className="font-medium">Brand Visibility</h4>
-                    <p className="text-sm text-gray-600">Prominent exposure across all our events</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Phone className="h-5 w-5 text-blue-600 mt-1" />
-                  <div>
-                    <h4 className="font-medium">Networking</h4>
-                    <p className="text-sm text-gray-600">Build relationships with local businesses</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Contact Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Become a Sponsor</CardTitle>
-          </CardHeader>
-          <CardContent>
-                        {submitSuccess ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center bg-green-50 rounded-lg">
-                <CheckCircle className="h-12 w-12 text-green-600 mb-4" />
-                <h3 className="text-xl font-semibold">Thank You!</h3>
-                <p className="text-gray-600">Your sponsorship inquiry has been received. We will get back to you shortly.</p>
-              </div>
-            ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" placeholder="Your full name" {...register("fullName")} />
-                  {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
-                </div>
-                                <div>
-                  <Label htmlFor="company">Company</Label>
-                  <Input id="company" placeholder="Company name" {...register("company")} />
-                  {errors.company && <p className="text-red-500 text-sm mt-1">{errors.company.message}</p>}
-                </div>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="your@email.com" {...register("email")} />
-                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-                </div>
-                                <div>
-                  <Label htmlFor="phone">Phone (Optional)</Label>
-                  <Input id="phone" placeholder="(555) 123-4567" {...register("phone")} />
-                </div>
-              </div>
-                            <div>
-                <Label htmlFor="interest">Sponsorship Interest</Label>
-                <Input id="interest" placeholder="e.g., Tournament sponsorship, Equipment partnership" {...register("interest")} />
-                {errors.interest && <p className="text-red-500 text-sm mt-1">{errors.interest.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="message">Message</Label>
-                                <Textarea
-                  id="message"
-                  placeholder="Tell us about your sponsorship goals and how you'd like to partner with CICA"
-                  rows={4}
-                  {...register("message")}
-                />
-                {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
-              </div>
-                            <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...</>
-                ) : (
-                  "Submit Sponsorship Inquiry"
-                )}
-              </Button>
+              ))}
+              {submissionError && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-950" role="alert"><p>{submissionError}</p><a className="mt-2 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com">Email the organizers</a></div>}
+              <Button type="submit" className="w-full min-h-12" disabled={isSubmitting}>{isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Sending request…</> : "Submit Sponsorship Inquiry"}</Button>
+              <p className="text-sm text-muted-foreground">Prefer email? <a className="break-all underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a></p>
             </form>
-            )}
-
-          </CardContent>
-        </Card>
+          )}
+        </section>
       </div>
     </div>
   )

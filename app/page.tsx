@@ -1,21 +1,23 @@
+import Link from "next/link"
+import { ArrowUpRight, HeartHandshake, Users, Trophy, ArrowRight } from "lucide-react"
 import { Hero } from "@/components/hero"
-import { LatestNews } from "@/components/latest-news"
-import { QuickLinks } from "@/components/quick-links"
-import { FeaturedTournaments } from "@/components/featured-tournaments"
-import { LogoCarousel } from "@/components/logo-carousel"
-import { Testimonials } from "@/components/testimonials"
-import { CricketStats } from "@/components/cricket-stats"
+import { SponsorShowcase } from "@/components/sponsor-showcase"
+
+const journeys = [
+  { number: "01", icon: Users, title: "Come for the cricket.", text: "New to CICA or ready to play? Start a conversation with our organizers about teams, formats, and the next opportunity.", link: "/get-involved", cta: "Explore how to get involved", color: "peach" },
+  { number: "02", icon: Trophy, title: "Stay close to the game.", text: "Explore our tournaments, follow fixtures and results, and discover the teams that have made CICA history.", link: "/tournaments", cta: "Discover our tournaments", color: "yellow" },
+  { number: "03", icon: HeartHandshake, title: "Make a difference.", text: "Help bring our community together. Ask about volunteering or supporting local cricket through sponsorship.", link: "/sponsors", cta: "Support the community", color: "sage" },
+]
 
 export default function HomePage() {
-  return (
-    <div className="space-y-0">
-      <Hero />
-      <LogoCarousel />
-      <CricketStats />
-      <QuickLinks />
-      <FeaturedTournaments />
-      <LatestNews />
-      <Testimonials />
-    </div>
-  )
+  return <>
+    <Hero />
+    <div className="community-ribbon"><div className="page-shell"><span>Cricket. Connection. Community.</span><span>BLOOMINGTON & NORMAL, ILLINOIS <span aria-hidden="true">✳</span></span></div></div>
+    <section className="home-section page-shell" aria-labelledby="belong-title"><div className="section-intro"><p className="eyebrow">THERE&apos;S A PLACE FOR YOU HERE</p><h2 id="belong-title" className="section-heading">More than a game.<br /><em>A community to call yours.</em></h2><p>You don&apos;t have to know every rule to feel welcome. Whether you love playing, cheering from the sidelines, or helping things happen, your CICA journey starts here.</p></div><div className="journey-grid">{journeys.map(({number,icon:Icon,title,text,link,cta,color}) => <article key={number} className={`journey-card ${color}`}><div className="journey-card-top"><span>{number}</span><Icon size={27} strokeWidth={1.4} aria-hidden="true" /></div><h3>{title}</h3><p>{text}</p><Link href={link}>{cta}<ArrowUpRight size={20} aria-hidden="true" /></Link></article>)}</div></section>
+    <section className="story-section page-shell" aria-labelledby="story-title"><div className="story-stamp" aria-hidden="true"><span>CENTRAL ILLINOIS</span><strong>Since<br /><em>1998.</em></strong><span>CRICKET & COMMUNITY</span></div><div><p className="eyebrow">LOCAL ROOTS. SHARED PASSION.</p><h2 id="story-title" className="section-heading">A love of cricket.<br />A lasting connection.</h2><p>CICA brings people together through cricket in Bloomington–Normal. Our story is built around the game and the community that keeps it going.</p><p>Meet the association, explore its history, and get to know the people behind it.</p><Link href="/about" className="text-link">Get to know CICA <ArrowUpRight size={18} aria-hidden="true" /></Link></div></section>
+    <section className="home-section page-shell" aria-labelledby="game-title"><div className="section-title-row"><div><p className="eyebrow">FOLLOW ALONG</p><h2 id="game-title" className="section-heading">Your connection to the game.</h2></div><a className="text-link" href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">Open CricClubs <ArrowUpRight size={18} aria-hidden="true" /></a></div><div className="game-links"><Link href="/tournaments"><span>01 / TOURNAMENTS</span><h3>Find your format.</h3><p>Explore CICA&apos;s indoor and outdoor cricket.</p><ArrowUpRight aria-hidden="true" /></Link><Link href="/champions"><span>02 / OUR HISTORY</span><h3>Celebrate the champions.</h3><p>Look back at the teams in our champions archive.</p><ArrowUpRight aria-hidden="true" /></Link><Link href="/gallery"><span>03 / COMMUNITY MOMENTS</span><h3>See CICA in action.</h3><p>Connect with our photo and video channels.</p><ArrowUpRight aria-hidden="true" /></Link></div></section>
+    <SponsorShowcase compact />
+    <section className="faq-section page-shell" aria-labelledby="faq-title"><div><p className="eyebrow">A GOOD PLACE TO START</p><h2 id="faq-title" className="section-heading">New here?<br /><em>You&apos;re welcome.</em></h2><p>A few helpful answers before you take the first step.</p><Link className="text-link" href="/contact">Have another question? <ArrowRight size={18} aria-hidden="true" /></Link></div><div className="faq-list"><details><summary>How do I get involved with CICA?</summary><p>Visit our <Link href="/get-involved">Get involved page</Link> to explore playing, volunteering, and supporting CICA. Our organizers can help you find the right next step.</p></details><details><summary>Can I ask about cricket if I&apos;m new to the game?</summary><p>Absolutely. <Link href="/contact">Contact the organizers</Link> with your experience and interests. They can explain current opportunities and what you might need.</p></details><details><summary>Where can I find fixtures and scores?</summary><p>Our <a href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">CricClubs portal</a> is the place to follow fixtures, teams, and match results. The <Link href="/tournaments">tournaments page</Link> introduces CICA&apos;s formats.</p></details><details><summary>How can I stay in touch?</summary><p><Link href="/join">Sign up for email updates</Link>, follow our social channels, or contact <a href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>.</p></details></div></section>
+    <section className="home-invitation page-shell"><p className="eyebrow">LET&apos;S MAKE CONNECTIONS</p><h2>Good cricket.<br /><em>Great company.</em></h2><p>Come find your place in the CICA community.</p><Link className="premium-button" href="/get-involved">Get involved <ArrowUpRight size={20} aria-hidden="true" /></Link></section>
+  </>
 }

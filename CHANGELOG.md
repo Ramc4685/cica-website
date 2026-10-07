@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Redesign the public website around CICA branding, warm editorial typography, clearer participation paths and accessible motion.
+- Replace sample news, endorsements and unverified counters with authentic community links; preserve leadership and champions archives.
+- Add Get Involved and privacy pages, unique route metadata, a sitemap and correctly sized sharing artwork.
+- Optimize logo assets and remove automatic carousels, decorative loops and the eager homepage portal.
+- Move all three forms to a same-origin Namecheap PHP handler with private records, organizer notifications, server validation and submission limits.
+- Improve form accessibility, international name support, optional phone fields and persistent success/failure feedback.
+- Add a working lint gate and PHP backend regression checks to CI.
+
 - Add an optional static build for Namecheap cPanel hosting, with directory routes and Apache response headers.
 - Use cicainfo.com for absolute social preview image URLs.
 - Remove the exposed demo admin password and browser-only login; display unavailable notices on the existing admin URLs.

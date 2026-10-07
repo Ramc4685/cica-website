@@ -3,215 +3,80 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { z } from "zod"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Loader2, CheckCircle, BellRing } from "lucide-react"
-import { toast } from "sonner"
+import { CheckCircle, Loader2 } from "lucide-react"
+import { nameField, emailField, phoneField, submitForm, UNCERTAIN_SUBMISSION } from "@/lib/form-submission"
 
-// Form validation schema using Zod
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Name is required" })
-    .max(100, { message: "Name must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s\-']+$/, { 
-      message: "Name can only contain letters, spaces, hyphens, and apostrophes" 
-    }),
-  email: z
-    .string()
-    .email({ message: "Invalid email address" })
-    .max(100, { message: "Email must be less than 100 characters" }),
-  phone: z
-    .string()
-    .min(1, { message: "Phone number is required" })
-    .refine(
-      (val) => /^\+?[0-9\s\-\(\)]+$/.test(val), 
-      { message: "Phone number can only contain numbers, spaces, and these symbols: + - ( )" }
-    ),
-});
-
-// Define the form data type
-type FormValues = z.infer<typeof formSchema>;
-
-// Form submission handler URL (Google Apps Script Web App URL)
-const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbxQb0XmO55sW7bJQYz1FKcoewJ-Udh-vCcneMeXs_McXY9QhrigyzMwYbpNJkOCYIJ8/exec"
+const formSchema = z.object({ website: z.string().max(200), name: nameField("Name"), email: emailField, phone: phoneField })
+type FormValues = z.infer<typeof formSchema>
+const fields = [
+  { name: "name", label: "Full Name", type: "text", autoComplete: "name", maximum: 100 },
+  { name: "email", label: "Email Address", type: "email", autoComplete: "email", maximum: 254 },
+  { name: "phone", label: "Phone Number (Optional)", type: "tel", autoComplete: "tel", maximum: 30 },
+] satisfies readonly { name: keyof FormValues; label: string; type: string; autoComplete: string; maximum: number }[]
 
 export default function JoinPage() {
-  // React Hook Form with Zod validation
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-    },
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(formSchema), defaultValues: { website: "", name: "", email: "", phone: "" },
   })
-
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
-
-  // Form submission handler
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
+    setSubmissionError(null)
     try {
-      setSubmissionError(null)
-      
-      // Send form data to Google Apps Script
-      const response = await fetch(FORM_SUBMISSION_URL, {
-        method: "POST",
-        headers: {
-          // Apps Script does not serve CORS preflight; send JSON as a simple request.
-          "Content-Type": "text/plain;charset=UTF-8",
-        },
-        body: JSON.stringify(data),
-        // Timeout after 8 seconds
-        signal: AbortSignal.timeout(8000)
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        setSubmitSuccess(true)
-        reset()
-        toast.success("Thank you for joining! You'll receive updates from CICA.")
-        
-        // Reset success message after 5 seconds
-        setTimeout(() => {
-          setSubmitSuccess(false)
-        }, 5000)
-      } else {
-        setSubmissionError(result.message || "Something went wrong with your submission. Please try again.")
-        toast.error(result.message || "Something went wrong with your submission. Please try again.")
-      }
-    } catch (error: any) {
-      console.error("Form submission error:", error)
-      
-      // Handle timeout separately
-      if (error.name === 'TimeoutError' || error.name === 'AbortError') {
-        setSubmissionError("Request timed out. Please check your internet connection and try again.")
-        toast.error("Request timed out. Please check your internet connection and try again.")
-      } else {
-        setSubmissionError("An unexpected error occurred. Please try again later.")
-        toast.error("An unexpected error occurred. Please try again later.")
-      }
+      await submitForm("updates", values)
+      setSubmitSuccess(true)
+      reset()
+    } catch {
+      setSubmissionError(UNCERTAIN_SUBMISSION)
     }
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl mb-2">Join CICA For Updates</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Stay informed about upcoming tournaments, cricket news, and community events by joining our mailing list.
-          </p>
-        </div>
-
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BellRing className="h-5 w-5" />
-                Subscribe for Updates
-              </CardTitle>
-              <CardDescription>
-                Receive news, tournament announcements, and community information directly to your inbox.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {submitSuccess ? (
-                  <div className="rounded-lg bg-green-50 p-6 text-center">
-                    <div className="flex justify-center mb-4">
-                      <CheckCircle className="h-12 w-12 text-green-500" />
-                    </div>
-                    <h3 className="text-lg font-medium text-green-800">Thank you for subscribing!</h3>
-                    <p className="mt-2 text-green-700">
-                      You're now on our updates list. We'll keep you informed about CICA events and news.
-                    </p>
-                    <Button
-                      type="button"
-                      className="mt-4"
-                      variant="outline"
-                      onClick={() => {
-                        setSubmitSuccess(false)
-                        reset()
-                      }}
-                    >
-                      Subscribe another
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        placeholder="Enter your full name"
-                        {...register("name")}
-                        className={errors.name ? "border-red-300" : ""}
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm">{errors.name.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="your.email@example.com"
-                        {...register("email")}
-                        className={errors.email ? "border-red-300" : ""}
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm">{errors.email.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        placeholder="(123) 456-7890"
-                        {...register("phone")}
-                        className={errors.phone ? "border-red-300" : ""}
-                      />
-                      {errors.phone && (
-                        <p className="text-red-500 text-sm">{errors.phone.message}</p>
-                      )}
-                    </div>
-
-                    {submissionError && (
-                      <div className="bg-red-50 p-4 rounded-md">
-                        <p className="text-red-800">{submissionError}</p>
-                      </div>
-                    )}
-
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        "Subscribe Now"
-                      )}
-                    </Button>
-                  </>
-                )}
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+    <div className="page-shell">
+      <header className="page-hero mb-10">
+        <p className="eyebrow">Community updates</p>
+        <h1 className="mt-5 mx-auto max-w-4xl">Keep the community close.</h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">Interested in cricket news and community events? Leave your details to request updates from CICA. For playing or volunteering, talk to an organizer.</p>
+      </header>
+      <div className="grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
+        <aside className="space-y-5"><div className="editorial-panel p-6 sm:p-8"><p className="eyebrow">01 / Find your next step</p><h2 className="mt-4 text-3xl">New player? Family? Volunteer?</h2><p className="mt-5 text-muted-foreground">Tell the organizers how you would like to take part. Ask about team placement, upcoming events, or ways to support the community.</p><Button asChild className="mt-6"><Link href="/contact/">Talk to an organizer</Link></Button></div><div className="editorial-panel p-6 sm:p-8"><p className="eyebrow">02 / Follow the cricket</p><h2 className="mt-4 text-2xl">Explore before you join.</h2><p className="mt-4 text-muted-foreground">Browse our tournament formats, then ask the organizers about current schedules and registration.</p><Link className="mt-5 inline-flex font-semibold underline underline-offset-4" href="/tournaments/">Explore tournaments</Link></div></aside>
+        <section className="editorial-panel p-6 sm:p-8" aria-labelledby="form-heading">
+          <p className="eyebrow">Let us know</p>
+          <h2 id="form-heading" className="mt-4 text-3xl">Request Community Updates</h2>
+          <p className="mt-4 mb-7 text-sm text-muted-foreground">All fields are required except phone. We use these details to handle your request. <Link className="underline underline-offset-4" href="/privacy/">Read our privacy notice.</Link></p>
+          {submitSuccess ? (
+            <div className="rounded-2xl border border-green-200 bg-green-50 p-6" role="status" aria-live="polite">
+              <CheckCircle className="mb-4 h-8 w-8 text-green-800" aria-hidden="true" />
+              <h3 className="text-xl font-semibold text-green-950">Your update request has been recorded.</h3>
+              <p className="mt-3 text-green-950">This records your interest in CICA news and events. It does not register you for a team or tournament.</p>
+              <Button className="mt-6" variant="outline" type="button" onClick={() => { setSubmitSuccess(false); reset() }}>Send another request</Button>
+            </div>
+          ) : (
+            <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5" aria-busy={isSubmitting}>
+              <div hidden aria-hidden="true"><label htmlFor="website">Website</label><input id="website" tabIndex={-1} autoComplete="off" {...register("website")} /></div>
+              {fields.map(field => (
+                <div className="space-y-2" key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  {field.type === "textarea" ? (
+                    <Textarea id={field.name} rows={5} maxLength={field.maximum} autoComplete={field.autoComplete} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  ) : (
+                    <Input id={field.name} type={field.type} maxLength={field.maximum} autoComplete={field.autoComplete} inputMode={field.type === "tel" ? "tel" : field.type === "email" ? "email" : "text"} aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} {...register(field.name)} />
+                  )}
+                  {errors[field.name] && <p id={`${field.name}-error`} className="text-sm text-red-800" role="alert">{errors[field.name]?.message}</p>}
+                </div>
+              ))}
+              {submissionError && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-950" role="alert"><p>{submissionError}</p><a className="mt-2 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com">Email the organizers</a></div>}
+              <Button type="submit" className="w-full min-h-12" disabled={isSubmitting}>{isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Sending request…</> : "Request Updates"}</Button>
+              <p className="text-sm text-muted-foreground">Prefer email? <a className="break-all underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a></p>
+            </form>
+          )}
+        </section>
       </div>
     </div>
   )

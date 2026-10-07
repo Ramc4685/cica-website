@@ -1,121 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { FileText, ExternalLink } from "lucide-react"
+import Image from "next/image"
+import { CPLTeamShowcase } from "@/components/team-logo"
 import Link from "next/link"
-
+import { ArrowUpRight } from "lucide-react"
+import { communityLinks, tournaments } from "@/lib/content"
+import { pageMetadata } from "@/lib/site-metadata"
+export const metadata = pageMetadata("Cricket tournaments", "Explore CICA’s indoor and outdoor cricket tournaments, find scores and ask about upcoming participation.", "/tournaments/")
 export default function TournamentsPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-6 animate-fade-in">Tournaments</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              CICA organizes various tournament formats throughout the year, catering to different skill levels and
-              preferences. From indoor winter leagues to outdoor summer championships, there's something for every
-              cricket enthusiast.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 mb-16">
-            <Card className="hover:shadow-xl transition-all duration-300 animate-fade-in-up border-0">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-                <CardTitle className="text-2xl">Indoor Tournaments</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <ul className="space-y-4">
-                  <li className="p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-purple-700 mb-1">CPL Indoor</h3>
-                    <p className="text-gray-600">
-                      Premier indoor tournament featuring the best teams in Central Illinois with fast-paced action
-                    </p>
-                  </li>
-                  <li className="p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-purple-700 mb-1">CICA Indoor</h3>
-                    <p className="text-gray-600">
-                      Community-focused indoor tournament welcoming players of all skill levels
-                    </p>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="hover:shadow-xl transition-all duration-300 animate-fade-in-up border-0"
-              style={{ animationDelay: "200ms" }}
-            >
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                <CardTitle className="text-2xl">Outdoor Tournaments</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <ul className="space-y-4">
-                  <li className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-blue-700 mb-1">CPL</h3>
-                    <p className="text-gray-600">
-                      High-intensity outdoor cricket with professional-level competition and live streaming
-                    </p>
-                  </li>
-                  <li className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-blue-700 mb-1">Mains</h3>
-                    <p className="text-gray-600">
-                      The flagship outdoor tournament showcasing the highest level of cricket in Central Illinois
-                    </p>
-                  </li>
-                  <li className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-blue-700 mb-1">Mini</h3>
-                    <p className="text-gray-600">
-                      Perfect for newcomers and younger players to experience competitive cricket
-                    </p>
-                  </li>
-                  <li className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <h3 className="text-lg font-semibold text-blue-700 mb-1">Challenger</h3>
-                    <p className="text-gray-600">
-                      Developmental tournament designed to bridge the gap between recreational and competitive play
-                    </p>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card
-            className="hover:shadow-xl transition-all duration-300 animate-fade-in-up border-0"
-            style={{ animationDelay: "400ms" }}
-          >
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Rules & Documentation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-6">
-                All tournament rules, regulations, and code of conduct documents are maintained in our official Google
-                Drive folder. This includes detailed format specifications, player eligibility criteria, and
-                disciplinary procedures.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="h-auto flex-1 whitespace-normal text-center">
-                  <Link
-                    href="https://drive.google.com/drive/u/1/folders/16mFxdlNfcbK8_1_z5CNhLpFD5WPh4Asy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View Rules & Regulations
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-auto flex-1 whitespace-normal text-center">
-                  <Link href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View Live Scores on CricClubs
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  )
+  return <><header className="page-hero"><div className="page-shell"><p className="eyebrow">On the field</p><h1>Different formats.<br />The same love of cricket.</h1><p>Explore CICA’s indoor and outdoor competitions, then connect with an organizer about the right next step.</p><a href={communityLinks.scores} target="_blank" rel="noopener noreferrer" className="premium-button mt-6">Fixtures & scores on CricClubs <ArrowUpRight size={18} /></a></div></header>
+  <div className="page-shell py-16 md:py-24 space-y-16">{["Outdoor","Indoor"].map(setting=><section key={setting} id={setting.toLowerCase()}><p className="eyebrow">{setting === "Outdoor" ? "Beyond the boundary" : "Keep the game going"}</p><h2 className="section-heading">{setting} cricket</h2><div className="grid gap-6 md:grid-cols-2 mt-8">{tournaments.filter(t=>t.setting===setting).map(t=><article key={t.id} id={t.id} className="editorial-panel flex gap-5 items-start scroll-mt-28"><Image src={t.logo} alt="" width={72} height={72} className="shrink-0 w-16 h-16 object-contain" /><div><h3 className="text-2xl font-semibold">{t.name}</h3><p className="mt-3 leading-relaxed">{t.description}</p><Link href="/contact/" className="text-link inline-flex mt-5">Ask about participation <ArrowUpRight size={16} /></Link></div></article>)}</div></section>)}
+  <CPLTeamShowcase />
+  <section className="editorial-panel"><p className="eyebrow">Before you register</p><h2 className="section-heading">Let’s get you the right details.</h2><p className="max-w-3xl mt-5 leading-relaxed">Dates, venues, fees, eligibility and registration arrangements depend on the competition. Check the tournament listing on CricClubs and confirm details with the organizers before making plans. Current event rules take precedence over general format descriptions.</p><div className="flex flex-wrap gap-4 mt-7"><Link href="/get-involved/" className="premium-button">New to CICA? Start here <ArrowUpRight size={18} /></Link><Link href="/rules/" className="premium-button secondary">Rules & documents</Link></div></section></div></>
 }

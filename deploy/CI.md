@@ -3,6 +3,7 @@
 The live public website is https://cicainfo.com at `/home/cicanrkn/public_html`.
 The workflow `.github/workflows/namecheap.yml` checks pull requests and builds
 each push to `main`. It uses Node 22, pnpm 11.13.0, the frozen lockfile, TypeScript,
+ESLint, PHP form validation/persistence checks (without sending mail),
 the repository's Jest component/form tests, deployment regression tests, a static export, admin security tests against the
 built export, and local link/asset validation. Only a successful `main` run can
 deploy its exact artifact. Serialized deployment jobs skip superseded commits.
@@ -58,6 +59,11 @@ It preserves unrelated hosting files, `.well-known`, `cgi-bin`, the separate mai
 document root, and email configuration. Public file/directory permissions are
 normalized to 644/755.
 
+The artifact includes `forms/submit.php`, which requires PHP 8.1 or later in the
+website's HTTP handler. Form records are stored in `/home/cicanrkn/.cica-forms`,
+outside the public root and deployment manifest; deployments never replace them.
+See `docs/forms/namecheap.md` for the storage and notification contract.
+
 An installation error automatically restores previous managed website files and
 the prior manifest, preserving unrelated hosting files. The copy is not an atomic
 whole-site swap, so there can be a brief transition between asset versions.
@@ -78,6 +84,9 @@ validation, CGI, or unrelated files when removing a failed release's owned paths
 ```sh
 pnpm install --frozen-lockfile
 pnpm typecheck
+pnpm lint
+php -l public/forms/submit.php
+php tests/forms-backend.php
 pnpm test --runInBand
 node --test deploy/tests/*.test.mjs
 pnpm build:namecheap

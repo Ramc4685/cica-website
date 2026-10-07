@@ -1,9 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
+import { ArrowUpRight, Trophy } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Trophy, Crown, Award } from "lucide-react"
-import Image from "next/image"
+import { communityLinks } from "@/lib/content"
+import { pageMetadata } from "@/lib/site-metadata"
+export const metadata = pageMetadata("Champions archive", "Celebrate CICA tournament champions and explore recorded results from the association’s cricket history.", "/champions/")
 
-// Champions data
 const mainsChampions = [
   { year: "2024", team: "BloomBoys" },
   { year: "2023", team: "BloomBulls" },
@@ -38,191 +39,15 @@ const cplIndoorChampions = [
 
 const cplOutdoorChampions = [{ year: "2024", team: "TECHIE BRAINS LEGENDS", runner: "BLOOM EVENTS EAGLES" }]
 
-export default function ChampionsPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-6 animate-fade-in">CICA Champions</h1>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-              Celebrating the teams that have achieved excellence in our tournaments over the years. These champions
-              have demonstrated exceptional skill, teamwork, and sportsmanship in developing cricket in Central
-              Illinois.
-            </p>
-          </div>
 
-          <Tabs defaultValue="mains" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1">
-              <TabsTrigger value="mains" className="relative overflow-hidden group py-3">
-                <div className="absolute inset-0 bg-blue-600 opacity-0 group-data-[state=active]:opacity-10 transition-opacity"></div>
-                <div className="relative z-10 flex items-center gap-2">
-                  <Trophy className="h-4 w-4" />
-                  <span className="hidden sm:inline">CICA Mains</span>
-                  <span className="sm:hidden">Mains</span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger value="cica-indoor" className="relative overflow-hidden group py-3">
-                <div className="absolute inset-0 bg-purple-600 opacity-0 group-data-[state=active]:opacity-10 transition-opacity"></div>
-                <div className="relative z-10 flex items-center gap-2">
-                  <Crown className="h-4 w-4" />
-                  <span className="hidden sm:inline">CICA Indoor</span>
-                  <span className="sm:hidden">Indoor</span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger value="cpl-indoor" className="relative overflow-hidden group py-3">
-                <div className="absolute inset-0 bg-green-600 opacity-0 group-data-[state=active]:opacity-10 transition-opacity"></div>
-                <div className="relative z-10 flex items-center gap-2">
-                  <Award className="h-4 w-4" />
-                  <span className="hidden sm:inline">CPL Indoor</span>
-                  <span className="sm:hidden">CPL-I</span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger value="cpl-outdoor" className="relative overflow-hidden group py-3">
-                <div className="absolute inset-0 bg-orange-600 opacity-0 group-data-[state=active]:opacity-10 transition-opacity"></div>
-                <div className="relative z-10 flex items-center gap-2">
-                  <Trophy className="h-4 w-4" />
-                  <span className="hidden sm:inline">CPL Outdoor</span>
-                  <span className="sm:hidden">CPL-O</span>
-                </div>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="mains" className="animate-fade-in">
-              <Card className="overflow-hidden border-0 shadow-xl">
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-3 text-2xl">
-                      <Trophy className="h-8 w-8" />
-                      CICA Mains Champions
-                    </CardTitle>
-                    <div className="relative h-16 w-16">
-                      <Image
-                        src="/placeholder.svg?height=64&width=64"
-                        alt="CICA Mains Logo"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
-                    {mainsChampions.map((champion, index) => (
-                      <div
-                        key={index}
-                        className="bg-white p-6 text-center hover:bg-blue-50 transition-colors hover-lift group"
-                      >
-                        <Trophy className="h-8 w-8 mx-auto mb-3 text-blue-600 group-hover:scale-110 transition-transform" />
-                        <p className="text-3xl font-bold text-blue-600 mb-2">{champion.year}</p>
-                        <p className="font-semibold text-gray-800">{champion.team}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="cica-indoor" className="animate-fade-in">
-              <Card className="overflow-hidden border-0 shadow-xl">
-                <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-3 text-2xl">
-                      <Crown className="h-8 w-8" />
-                      CICA Indoor Champions
-                    </CardTitle>
-                    <div className="relative h-16 w-16">
-                      <Image
-                        src="/placeholder.svg?height=64&width=64"
-                        alt="CICA Indoor Logo"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
-                    {cicaIndoorChampions.map((champion, index) => (
-                      <div
-                        key={index}
-                        className="bg-white p-6 text-center hover:bg-purple-50 transition-colors hover-lift group"
-                      >
-                        <Crown className="h-8 w-8 mx-auto mb-3 text-purple-600 group-hover:scale-110 transition-transform" />
-                        <p className="text-3xl font-bold text-purple-600 mb-2">{champion.year}</p>
-                        <p className="font-semibold text-gray-800 mb-1">{champion.team}</p>
-                        {champion.runner && <p className="text-sm text-gray-500">Runner-up: {champion.runner}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="cpl-indoor" className="animate-fade-in">
-              <Card className="overflow-hidden border-0 shadow-xl">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-3 text-2xl">
-                      <Award className="h-8 w-8" />
-                      CPL Indoor Champions
-                    </CardTitle>
-                    <div className="relative h-16 w-16">
-                      <Image src="/placeholder.svg?height=64&width=64" alt="CPL Logo" fill className="object-contain" />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
-                    {cplIndoorChampions.map((champion, index) => (
-                      <div
-                        key={index}
-                        className="bg-white p-6 text-center hover:bg-green-50 transition-colors hover-lift group"
-                      >
-                        <Award className="h-8 w-8 mx-auto mb-3 text-green-600 group-hover:scale-110 transition-transform" />
-                        <p className="text-3xl font-bold text-green-600 mb-2">{champion.year}</p>
-                        <p className="font-semibold text-gray-800 mb-1">{champion.team}</p>
-                        {champion.runner && <p className="text-sm text-gray-500">Runner-up: {champion.runner}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="cpl-outdoor" className="animate-fade-in">
-              <Card className="overflow-hidden border-0 shadow-xl">
-                <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 text-white">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-3 text-2xl">
-                      <Trophy className="h-8 w-8" />
-                      CPL Outdoor Champions
-                    </CardTitle>
-                    <div className="relative h-16 w-16">
-                      <Image src="/placeholder.svg?height=64&width=64" alt="CPL Logo" fill className="object-contain" />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-gray-200">
-                    {cplOutdoorChampions.map((champion, index) => (
-                      <div
-                        key={index}
-                        className="bg-white p-6 text-center hover:bg-orange-50 transition-colors hover-lift group"
-                      >
-                        <Trophy className="h-8 w-8 mx-auto mb-3 text-orange-600 group-hover:scale-110 transition-transform" />
-                        <p className="text-3xl font-bold text-orange-600 mb-2">{champion.year}</p>
-                        <p className="font-semibold text-gray-800 mb-1">{champion.team}</p>
-                        {champion.runner && <p className="text-sm text-gray-500">Runner-up: {champion.runner}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
-    </div>
-  )
-}
+const competitions = [
+  { id: "mains", title: "CICA Mains", records: mainsChampions },
+  { id: "cica-indoor", title: "CICA Indoor", records: cicaIndoorChampions },
+  { id: "cpl-indoor", title: "CPL Indoor", records: cplIndoorChampions },
+  { id: "cpl-outdoor", title: "CPL Outdoor", records: cplOutdoorChampions },
+]
+export default function ChampionsPage(){return <>
+  <header className="page-hero"><div className="page-shell"><p className="eyebrow">The champions archive</p><h1>Great teams.<br />Memorable seasons.</h1><p>A celebration of the teams recorded in CICA’s tournament history.</p></div></header>
+  <section className="page-shell py-16 md:py-24"><div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10"><div><h2 className="section-heading">A place in CICA history.</h2><p className="mt-4 max-w-2xl leading-relaxed">This archive preserves the records available on our website. Some years and runners-up are not recorded here; the list is not a complete season history.</p></div><a href={communityLinks.scores} target="_blank" rel="noopener noreferrer" className="text-link shrink-0">Latest results on CricClubs <ArrowUpRight size={18}/></a></div>
+  <Tabs defaultValue="mains"><TabsList className="grid h-auto w-full grid-cols-2 md:grid-cols-4 gap-2 p-2 bg-[#eeeae0] rounded-2xl mb-8">{competitions.map(c=><TabsTrigger key={c.id} value={c.id} className="min-h-12 whitespace-normal px-3 py-3 rounded-xl text-[#172d43] data-[state=active]:bg-white">{c.title}</TabsTrigger>)}</TabsList>{competitions.map(c=><TabsContent key={c.id} value={c.id}><div className="editorial-panel"><h3 className="text-2xl font-semibold flex items-center gap-3"><Trophy aria-hidden="true" size={24}/>{c.title}</h3><div className="overflow-x-auto mt-6"><table className="w-full text-left"><caption className="sr-only">Recorded {c.title} champions and runners-up</caption><thead><tr className="border-b"><th scope="col" className="py-4 pr-4">Year</th><th scope="col" className="py-4 pr-4">Champion</th><th scope="col" className="py-4">Runner-up</th></tr></thead><tbody>{c.records.map((record:{year:string;team:string;runner?:string})=><tr key={record.year} className="border-b last:border-0"><th scope="row" className="py-5 pr-4 font-medium">{record.year}</th><td className="py-5 pr-4 font-semibold">{record.team}</td><td className="py-5">{record.runner || "Not recorded"}</td></tr>)}</tbody></table></div></div></TabsContent>)}</Tabs>
+  <div className="mt-10"><p>Have a correction or a missing result to share?</p><Link href="/contact/" className="text-link inline-flex mt-3">Help us complete the archive <ArrowUpRight size={18}/></Link></div></section></>}

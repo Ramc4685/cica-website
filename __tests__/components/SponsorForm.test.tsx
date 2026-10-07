@@ -1,157 +1,69 @@
 import '@testing-library/jest-dom';
-
-// Cypress also declares a global expect; these suites use Jest's matchers.
 declare const expect: jest.Expect;
-import React, { act } from 'react';
+import { act } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SponsorsPage from '@/app/sponsors/page';
-import '@testing-library/jest-dom';
 
-// Add Jest matchers type declarations
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeInTheDocument(): R;
-      toHaveBeenCalledTimes(expected: number): R;
-      toHaveBeenCalledWith(...args: any[]): R;
-    }
-  }
+function fillForm() {
+  fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'José 李' } });
+  fireEvent.change(screen.getByLabelText('Company'), { target: { value: 'Local business' } });
+  fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'visitor@example.com' } });
+  fireEvent.change(screen.getByLabelText('Sponsorship Interest'), { target: { value: 'Community events' } });
+  fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'We would like to support community cricket.' } });
+}
+async function submit() {
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Submit Sponsorship Inquiry' })); });
 }
 
-// Define expect extensions
-declare global {
-  namespace jest {
-    interface Expect {
-      objectContaining(expected: object): any;
-      stringContaining(expected: string): any;
-      any(constructor: any): any;
-    }
-  }
-}
-
-// Mock the sonner toast
-jest.mock('sonner', () => ({
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
-
-// Mock fetch for form submission with proper Response interface implementation
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: true,
-    status: 200,
-    statusText: 'OK',
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-    redirected: false,
-    type: 'basic' as ResponseType,
-    url: '',
-    json: () => Promise.resolve({ success: true, message: 'Form submitted successfully' }),
-    text: () => Promise.resolve(JSON.stringify({ success: true, message: 'Form submitted successfully' })),
-    blob: () => Promise.resolve(new Blob()),
-    arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-    formData: () => Promise.resolve(new FormData()),
-    clone: function() { return this as Response; },
-    body: null,
-    bodyUsed: false,
-  } as Response)
-);
-
-describe('Sponsor Form', () => {
+describe('Sponsor request form', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true }) });
   });
 
-  it('renders the sponsor form', () => {
+  it('accepts Unicode names and an omitted phone, and leaves a persistent honest confirmation', async () => {
     render(<SponsorsPage />);
-    
-    // Check that the page has proper headings
-    expect(screen.getByText(/Become a Sponsor/i)).toBeInTheDocument();
-    
-    // Check form fields are present
-    expect(screen.getByLabelText(/Full Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Company/i)).toBeInTheDocument();
-    // Updated to match actual label in component
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    // Updated to match actual label in component
-    expect(screen.getByLabelText(/Phone/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Sponsorship Interest/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Message/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
-  });
-
-  it('displays validation errors when form is submitted with empty fields', async () => {
-    render(<SponsorsPage />);
-    
-    // Submit the form without filling any fields
-    const submitButton = screen.getByRole('button', { name: /Submit/i });
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-    
-    // Check for validation errors
-    await waitFor(() => {
-      expect(screen.getByText(/Full name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/Company name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
-      expect(screen.getByText(/Sponsorship interest is required/i)).toBeInTheDocument();
-    });
-  });
-
-  it('submits the form successfully when all fields are filled', async () => {
-    render(<SponsorsPage />);
-    
-    // Fill in the form fields
-    fireEvent.change(screen.getByLabelText(/Full Name/i), {
-      target: { value: 'Test Sponsor' },
-    });
-    fireEvent.change(screen.getByLabelText(/Company/i), {
-      target: { value: 'Test Company LLC' },
-    });
-    // Updated to match actual label in component
-    fireEvent.change(screen.getByLabelText(/Email/i), {
-      target: { value: 'sponsor@example.com' },
-    });
-    // Updated to match actual label in component
-    fireEvent.change(screen.getByLabelText(/Phone/i), {
-      target: { value: '123-456-7890' },
-    });
-    fireEvent.change(screen.getByLabelText(/Sponsorship Interest/i), {
-      target: { value: 'Tournament Sponsorship' },
-    });
-    fireEvent.change(screen.getByLabelText(/Message/i), {
-      target: { value: 'This is a test message for the sponsor form.' },
-    });
-
-    // Submit the form
-    const submitButton = screen.getByRole('button', { name: /Submit/i });
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-
-    // Verify form submission API was called
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          'Content-Type': 'text/plain;charset=UTF-8',
-        }),
-        body: expect.any(String),
-      }));
-    });
-
+    fillForm();
+    await submit();
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Your sponsorship inquiry has been recorded.'));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
     const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    expect(request.headers).toEqual({ 'Content-Type': 'application/json' });
     expect(request.mode).not.toBe('no-cors');
-    expect(JSON.parse(request.body)).toEqual({
-      fullName: 'Test Sponsor', company: 'Test Company LLC', email: 'sponsor@example.com',
-      phone: '123-456-7890', interest: 'Tournament Sponsorship',
-      message: 'This is a test message for the sponsor form.',
-    });
+    expect(JSON.parse(request.body).phone).toBe('');
+    expect(JSON.parse(request.body).website).toBe('');
+    expect(JSON.parse(request.body).type).toBe('sponsor');
+    expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe('/forms/submit.php');
+    expect(screen.getByRole('button', { name: 'Send another request' })).toBeInTheDocument();
+    expect(screen.queryByText(/shortly|successfully sent|now on our updates list/i)).not.toBeInTheDocument();
+  });
 
-    // Verify success toast was shown
-    const { toast } = require('sonner');
-    expect(toast.success).toHaveBeenCalledWith(expect.stringContaining('Your sponsorship inquiry has been sent!'));
+  it('connects validation errors to their fields and rejects a whitespace-only name', async () => {
+    render(<SponsorsPage />);
+    fillForm();
+    const input = screen.getByLabelText('Full Name');
+    fireEvent.change(input, { target: { value: '   ' } });
+    await submit();
+    await waitFor(() => expect(input).toHaveAttribute('aria-invalid', 'true'));
+    expect(input).toHaveAttribute('aria-describedby', input.id + '-error');
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('shows failure inline, preserves input, and warns against duplicate retries', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
+    render(<SponsorsPage />);
+    fillForm();
+    await submit();
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('It may already have been saved'));
+    expect(screen.getByLabelText('Full Name')).toHaveValue('José 李');
+    expect(screen.getByRole('button', { name: 'Submit Sponsorship Inquiry' })).toBeEnabled();
+    expect(screen.getAllByRole('link', { name: /Email the organizers/i }).length).toBeGreaterThan(0);
+  });
+
+  it('offers privacy information and mobile autofill hints', () => {
+    render(<SponsorsPage />);
+    expect(screen.getByRole('link', { name: 'Read our privacy notice.' })).toHaveAttribute('href', '/privacy');
+    expect(screen.getByLabelText('Email Address')).toHaveAttribute('autocomplete', 'email');
+    expect(screen.getByLabelText(/Phone/)).toHaveAttribute('type', 'tel');
+    expect(screen.getByLabelText(/Phone/)).toHaveAttribute('inputmode', 'tel');
   });
 });

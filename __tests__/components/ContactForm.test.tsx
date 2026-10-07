@@ -1,91 +1,69 @@
 import '@testing-library/jest-dom';
-
-// Cypress also declares a global expect; these suites use Jest's matchers.
 declare const expect: jest.Expect;
-import React, { act } from 'react';
+import { act } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ContactPage from '@/app/contact/page';
 
-// Mock the sonner toast
-jest.mock('sonner', () => ({
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
+function fillForm() {
+  fireEvent.change(screen.getByLabelText('First Name'), { target: { value: 'José' } });
+  fireEvent.change(screen.getByLabelText('Last Name'), { target: { value: '李' } });
+  fireEvent.change(screen.getByLabelText('Email Address'), { target: { value: 'visitor@example.com' } });
+  fireEvent.change(screen.getByLabelText('Subject'), { target: { value: 'Family visit' } });
+  fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Can our family come and watch cricket?' } });
+}
+async function submit() {
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Send Message' })); });
+}
 
-// Mock fetch for form submission
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve({ success: true }),
-  })
-) as jest.Mock;
-
-// Mock AbortSignal.timeout
-Object.defineProperty(AbortSignal, "timeout", {
-  configurable: true,
-  value: jest.fn(() => new AbortController().signal),
-});
-
-describe('Contact Form', () => {
+describe('Contact request form', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true }) });
   });
 
-  it('renders the contact form', () => {
+  it('accepts Unicode names and an omitted phone, and leaves a persistent honest confirmation', async () => {
     render(<ContactPage />);
-    
-    expect(screen.getByText(/Send us a Message/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/First Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Last Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Phone \(Optional\)/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Subject/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Message/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Send Message/i })).toBeInTheDocument();
-  });
-
-  it('displays validation errors when form is submitted with empty fields', async () => {
-    render(<ContactPage />);
-    
-    // Submit the form without filling any fields
-    const submitButton = screen.getByRole('button', { name: /Send Message/i });
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-    
-    // Check for validation errors
-    await waitFor(() => {
-      expect(screen.getByText(/First name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/Last name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument();
-      expect(screen.getByText(/Subject is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/Message must be at least 10 characters/i)).toBeInTheDocument();
-    });
-  });
-  it('submits readable JSON in a simple request without a CORS preflight', async () => {
-    render(<ContactPage />);
-    const fields = [
-      [/First Name/i, 'Test'], [/Last Name/i, 'User'], [/Email/i, 'contact@example.com'],
-      [/Phone \(Optional\)/i, '123-456-7890'], [/Subject/i, 'Tournament inquiry'],
-      [/Message/i, 'Please share information about joining the next tournament.'],
-    ] as const;
-    for (const [label, value] of fields) {
-      fireEvent.change(screen.getByLabelText(label), { target: { value } });
-    }
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /Send Message/i }));
-    });
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    fillForm();
+    await submit();
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Your message has been recorded.'));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
     const request = (global.fetch as jest.Mock).mock.calls[0][1];
-    expect(request.method).toBe('POST');
-    expect(request.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
+    expect(request.headers).toEqual({ 'Content-Type': 'application/json' });
     expect(request.mode).not.toBe('no-cors');
-    expect(JSON.parse(request.body)).toEqual({
-      firstName: 'Test', lastName: 'User', email: 'contact@example.com', phone: '123-456-7890',
-      subject: 'Tournament inquiry', message: 'Please share information about joining the next tournament.',
-    });
-    expect(screen.getByText(/Your message has been sent successfully/i)).toBeInTheDocument();
+    expect(JSON.parse(request.body).phone).toBe('');
+    expect(JSON.parse(request.body).website).toBe('');
+    expect(JSON.parse(request.body).type).toBe('contact');
+    expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe('/forms/submit.php');
+    expect(screen.getByRole('button', { name: 'Send another request' })).toBeInTheDocument();
+    expect(screen.queryByText(/shortly|successfully sent|now on our updates list/i)).not.toBeInTheDocument();
   });
 
+  it('connects validation errors to their fields and rejects a whitespace-only name', async () => {
+    render(<ContactPage />);
+    fillForm();
+    const input = screen.getByLabelText('First Name');
+    fireEvent.change(input, { target: { value: '   ' } });
+    await submit();
+    await waitFor(() => expect(input).toHaveAttribute('aria-invalid', 'true'));
+    expect(input).toHaveAttribute('aria-describedby', input.id + '-error');
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('shows failure inline, preserves input, and warns against duplicate retries', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
+    render(<ContactPage />);
+    fillForm();
+    await submit();
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('It may already have been saved'));
+    expect(screen.getByLabelText('First Name')).toHaveValue('José');
+    expect(screen.getByRole('button', { name: 'Send Message' })).toBeEnabled();
+    expect(screen.getAllByRole('link', { name: /Email the organizers/i }).length).toBeGreaterThan(0);
+  });
+
+  it('offers privacy information and mobile autofill hints', () => {
+    render(<ContactPage />);
+    expect(screen.getByRole('link', { name: 'Read our privacy notice.' })).toHaveAttribute('href', '/privacy');
+    expect(screen.getByLabelText('Email Address')).toHaveAttribute('autocomplete', 'email');
+    expect(screen.getByLabelText(/Phone/)).toHaveAttribute('type', 'tel');
+    expect(screen.getByLabelText(/Phone/)).toHaveAttribute('inputmode', 'tel');
+  });
 });

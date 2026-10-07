@@ -1,0 +1,8 @@
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowUpRight } from "lucide-react"
+import { cplSponsors } from "@/lib/brand-assets"
+
+export function SponsorShowcase({ compact = false }: { compact?: boolean }) {
+  return <section aria-labelledby={compact?"home-sponsors-heading":"cpl-sponsors-heading"} className={compact?"home-section page-shell":"mb-16"}><div className="mb-8 flex flex-wrap items-end justify-between gap-5"><div><p className="eyebrow">Community partnerships</p><h2 id={compact?"home-sponsors-heading":"cpl-sponsors-heading"} className="section-heading">Local names.<br /><em>Shared community spirit.</em></h2><p className="max-w-2xl leading-relaxed text-muted-foreground">Businesses represented in CICA&apos;s CPL sponsor artwork.</p></div>{compact&&<Link href="/sponsors/" className="text-link">Explore community partnerships <ArrowUpRight size={18} aria-hidden="true"/></Link>}</div><div className="grid grid-cols-2 gap-4 md:grid-cols-4">{cplSponsors.map(sponsor=><figure key={sponsor.id} className="rounded-2xl border border-border bg-white p-4"><div className="flex h-28 items-center justify-center sm:h-32"><Image src={`/images/sponsors/${sponsor.id}.webp`} alt="" width={230} height={130} className="h-full w-full object-contain"/></div><figcaption className="mt-4 text-center text-xs font-semibold leading-snug">{sponsor.name}</figcaption></figure>)}</div>{!compact&&<p className="mt-5 text-sm text-muted-foreground">This showcase presents the supplied sponsor artwork. Current sponsorship opportunities and arrangements are confirmed directly with CICA&apos;s organizers.</p>}</section>
+}

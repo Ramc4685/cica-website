@@ -1,11 +1,12 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Goudy_Bookletter_1911, Karla } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 
-const inter = Inter({ subsets: ["latin"] })
+const display = Goudy_Bookletter_1911({ subsets: ["latin"], weight: "400", variable: "--font-display", display: "swap" })
+const body = Karla({ subsets: ["latin"], variable: "--font-body", display: "swap" })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://cicainfo.com"),
@@ -23,10 +24,10 @@ export const metadata: Metadata = {
     siteName: "CICA",
     images: [
       {
-        url: "/images/cica-logo-main.jpg",
+        url: "/images/cica-social.webp",
         width: 1200,
         height: 630,
-        alt: "CICA Logo",
+        alt: "Cricket brings us together — Central Illinois Cricket Association",
       },
     ],
   },
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Central Illinois Cricket Association - CICA",
     description: "Developing cricket in Bloomington/Normal, Illinois since 1998",
-    images: ["/images/cica-logo-main.jpg"],
+    images: ["/images/cica-social.webp"],
   },
   robots: {
     index: true,
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-    generator: 'v0.app'
+  alternates: { canonical: "https://cicainfo.com/" }
 }
 
 export default function RootLayout({
@@ -54,9 +55,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${display.variable} ${body.variable}`}>
+          <a href="#main-content" className="skip-link">Skip to content</a>
           <Navigation />
-          <main className="min-h-screen">{children}</main>
+          <main id="main-content" className="min-h-screen" tabIndex={-1}>{children}</main>
           <Footer />
       </body>
     </html>

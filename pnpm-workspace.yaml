@@ -1,3 +1,4 @@
 allowBuilds:
   cypress: false
   sharp: true
+  unrs-resolver: false
