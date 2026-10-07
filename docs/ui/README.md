@@ -11,10 +11,10 @@ Group photos fit completely inside the frame above the branding and controls;
 a soft photographic backdrop preserves the composition without cropping people.
 
 GPT and Lumin Innovations have owner-assigned premium placements near the top of
-Home and above the regular spotlight on Sponsors. The third placement invites an
+Home and at the top of Sponsors. The third placement invites an
 inquiry. Lumin's supplied logo preserves its proportions and dark background.
 Sponsor logo strips continue during card interaction and stop with the global pause
-control or reduced-motion preference. The regular spotlight still pauses while used.
+control or reduced-motion preference.
 
 ![Twenty-photo hero](cica-twenty-photo-hero-desktop.jpg)
 ![Full group on mobile](cica-twenty-photo-hero-mobile.jpg)
