@@ -1,15 +1,12 @@
-import Image from "next/image"
 import { CalendarDays, HeartHandshake, Snowflake, Sun, Trophy } from "lucide-react"
+import { LogoFamilyWall } from "@/components/sections/logo-family-wall"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { SectionIntro } from "@/components/ui/section-intro"
-import { communityPhotos, photoFocusStyle } from "@/lib/community-photos"
 import { pageMetadata } from "@/lib/site-metadata"
 import s from "../inner-page.module.css"
 
 export const metadata = pageMetadata("About our community", "Learn about CICA’s story, purpose and community in Bloomington–Normal and Central Illinois.", "/about/")
-
-const bannerPhoto = communityPhotos.find(photo => photo.id === "community-on-field") ?? communityPhotos[0]
 
 // Facts only: each line restates what lib/content.ts and the association record already say.
 const offers = [
@@ -25,10 +22,7 @@ export default function AboutPage() {
     <PageHero tag="Our story" title={"One game.\nA community of *connections.*"}
       intro="Cricket gives us a reason to come together. The people make us want to stay." />
 
-    <figure className={s.fullBleed}>
-      <Image src={bannerPhoto.src} width={bannerPhoto.width} height={bannerPhoto.height} alt={bannerPhoto.alt}
-        sizes="100vw" className="community-photo" style={photoFocusStyle(bannerPhoto)} />
-    </figure>
+    <LogoFamilyWall />
 
     <section className={`page-shell ${s.section}`} aria-labelledby="about-story-title">
       <div className={s.split}>

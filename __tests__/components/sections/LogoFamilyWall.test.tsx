@@ -31,4 +31,10 @@ describe('LogoFamilyWall', () => {
     expect(outside).not.toMatch(/animation\s*:/)
     for (const rule of inside.match(/[^{}]+\{[^{}]*animation\s*:[^}]*\}/g) ?? []) expect(rule.trim()).toMatch(/^:global\(html\[data-motion=running\]\)/)
   })
+
+  it('replaces the About banner photo', () => {
+    const source = readFileSync(path.join(process.cwd(), 'app/about/page.tsx'), 'utf8')
+    expect(source).toMatch(/<LogoFamilyWall \/>/)
+    expect(source).not.toMatch(/community-on-field|bannerPhoto|communityPhotos/)
+  })
 })
