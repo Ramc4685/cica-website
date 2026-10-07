@@ -35,7 +35,7 @@ test('installer removes old browser bundles, preserves hosting files, and normal
   const account = await fixture(t)
   const release = `${'a'.repeat(40)}-1-1`
   const target = path.join(account, 'public_html')
-  const stage = path.join(account, '.cica-deploy', release, 'site')
+  const stage = path.join(account, '.cica-deploy', `production-${release}`, 'site')
   for (const directory of ['_next/static', 'admin', '.well-known/pki-validation', 'cgi-bin', 'unrelated']) {
     await mkdir(path.join(target, directory), { recursive: true })
   }
@@ -51,7 +51,7 @@ test('installer removes old browser bundles, preserves hosting files, and normal
   const script = path.join(account, 'install-test.sh')
   // Test a copied script in a fixture; the shipped script never accepts a root override.
   await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
-  const result = spawnSync('bash', [script, release], { encoding: 'utf8' })
+  const result = spawnSync('bash', [script, release, 'production'], { encoding: 'utf8' })
   assert.equal(result.status, 0, result.stderr)
   for (const file of ['_next/static/old.js', 'admin/index.html', 'admin.html', '.cica-manifest']) {
     await assert.rejects(access(path.join(target, file)))
@@ -66,7 +66,7 @@ test('installer removes old browser bundles, preserves hosting files, and normal
 
   // Simulate an interrupted second release after cp has started changing files.
   const nextRelease = `${'c'.repeat(40)}-3-1`
-  const nextStage = path.join(account, '.cica-deploy', nextRelease, 'site')
+  const nextStage = path.join(account, '.cica-deploy', `production-${nextRelease}`, 'site')
   await mkdir(path.join(nextStage, '_next/static'), { recursive: true })
   for (const file of ['index.html', 'deployment.json', 'new-page.html', '_next/static/broken.js']) {
     await writeFile(path.join(nextStage, file), 'failed-release')
@@ -75,7 +75,7 @@ test('installer removes old browser bundles, preserves hosting files, and normal
   const bin = path.join(account, 'bin')
   await mkdir(bin)
   await writeFile(path.join(bin, 'cp'), '#!/usr/bin/env bash\nif [[ "$1" == "-R" ]]; then /bin/cp "$@"; exit 1; fi\nexec /bin/cp "$@"\n', { mode: 0o755 })
-  const failure = spawnSync('bash', [script, nextRelease], {
+  const failure = spawnSync('bash', [script, nextRelease, 'production'], {
     encoding: 'utf8', env: { ...process.env, PATH: `${bin}:${process.env.PATH}` },
   })
   assert.notEqual(failure.status, 0)
@@ -95,7 +95,7 @@ test('installer refuses an unsafe previous manifest before touching the live sit
   const account = await fixture(t)
   const release = `${'b'.repeat(40)}-2-1`
   const target = path.join(account, 'public_html')
-  const stage = path.join(account, '.cica-deploy', release, 'site')
+  const stage = path.join(account, '.cica-deploy', `production-${release}`, 'site')
   await mkdir(target)
   await mkdir(stage, { recursive: true })
   await writeFile(path.join(target, 'index.html'), 'old')
@@ -105,7 +105,47 @@ test('installer refuses an unsafe previous manifest before touching the live sit
   const source = await readFile(new URL('../install-release.sh', import.meta.url), 'utf8')
   const script = path.join(account, 'install-test.sh')
   await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
-  const result = spawnSync('bash', [script, release], { encoding: 'utf8' })
+  const result = spawnSync('bash', [script, release, 'production'], { encoding: 'utf8' })
   assert.notEqual(result.status, 0)
   assert.equal(await readFile(path.join(target, 'index.html'), 'utf8'), 'old')
+})
+
+test('installer deploys staging to its own root, manifest and backups, marked noindex', async t => {
+  const account = await fixture(t)
+  const release = `${'d'.repeat(40)}-4-1`
+  const production = path.join(account, 'public_html')
+  const target = path.join(account, 'staging_html')
+  const stage = path.join(account, '.cica-deploy', `staging-${release}`, 'site')
+  await mkdir(production)
+  await mkdir(target)
+  await mkdir(stage, { recursive: true })
+  await writeFile(path.join(production, 'index.html'), 'live')
+  await writeFile(path.join(account, '.cica-deploy-manifest'), 'index.html\n')
+  const managed = ['index.html', 'deployment.json', '.htaccess']
+  for (const file of managed) await writeFile(path.join(stage, file), file === '.htaccess' ? 'Options -Indexes\n' : 'staged')
+  await writeFile(path.join(stage, '.cica-manifest'), `${managed.join('\n')}\n`)
+  const source = await readFile(new URL('../install-release.sh', import.meta.url), 'utf8')
+  const script = path.join(account, 'install-test.sh')
+  await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
+  const result = spawnSync('bash', [script, release, 'staging'], { encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(await readFile(path.join(target, 'index.html'), 'utf8'), 'staged')
+  assert.match(await readFile(path.join(target, '.htaccess'), 'utf8'), /X-Robots-Tag "noindex, nofollow"/)
+  assert.equal(await readFile(path.join(production, 'index.html'), 'utf8'), 'live')
+  assert.equal(await readFile(path.join(account, '.cica-deploy-manifest'), 'utf8'), 'index.html\n')
+  assert.equal(await readFile(path.join(account, '.cica-staging-manifest'), 'utf8'), `${managed.join('\n')}\n`)
+  await access(path.join(account, '.cica-backups', `staging-${release}`, 'public_html.tar.gz'))
+  await assert.rejects(access(path.join(account, '.cica-deploy', `staging-${release}`)))
+})
+
+test('installer rejects any target other than production or staging', async t => {
+  const account = await fixture(t)
+  const source = await readFile(new URL('../install-release.sh', import.meta.url), 'utf8')
+  const script = path.join(account, 'install-test.sh')
+  await writeFile(script, source.replace('account=/home/cicanrkn', `account=${JSON.stringify(account)}`))
+  for (const target of ['', 'public_html', '../production', 'Production']) {
+    const result = spawnSync('bash', [script, `${'e'.repeat(40)}-5-1`, target], { encoding: 'utf8' })
+    assert.notEqual(result.status, 0)
+    assert.match(result.stderr, /production or staging/)
+  }
 })

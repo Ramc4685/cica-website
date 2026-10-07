@@ -51,10 +51,56 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-  deploy:
-    name: Deploy verified export
+  # Every main build goes to staging first. Manual runs on any branch deploy to staging only.
+  deploy-staging:
+    name: Deploy to staging
     needs: check
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: staging
+      url: https://staging.cicainfo.com
+    concurrency:
+      group: cica-namecheap-staging
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Skip superseded commits
+        id: current
+        run: |
+          latest=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'deploy=false' >> "$GITHUB_OUTPUT"
+            echo 'A newer commit on this branch will deploy; skipping this older build.'
+          fi
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        if: steps.current.outputs.deploy == 'true'
+        with:
+          name: cica-site-${{ github.sha }}
+          path: artifact
+      - name: Deploy through verified SSH
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          CICA_DEPLOY_TARGET: staging
+          NAMECHEAP_SSH_HOST: ${{ secrets.NAMECHEAP_SSH_HOST }}
+          NAMECHEAP_SSH_USER: ${{ secrets.NAMECHEAP_SSH_USER }}
+          NAMECHEAP_SSH_PORT: ${{ secrets.NAMECHEAP_SSH_PORT }}
+          NAMECHEAP_SSH_PRIVATE_KEY: ${{ secrets.NAMECHEAP_SSH_PRIVATE_KEY }}
+          NAMECHEAP_SSH_KNOWN_HOSTS: ${{ secrets.NAMECHEAP_SSH_KNOWN_HOSTS }}
+        run: bash deploy/deploy-namecheap.sh
+
+  # Promotes the exact artifact verified on staging. The production environment's
+  # required reviewer approval is the go-live decision.
+  deploy:
+    name: Deploy to production (after approval)
+    needs: [check, deploy-staging]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -87,6 +133,7 @@ jobs:
       - name: Deploy through verified SSH
         if: steps.current.outputs.deploy == 'true'
         env:
+          CICA_DEPLOY_TARGET: production
           NAMECHEAP_SSH_HOST: ${{ secrets.NAMECHEAP_SSH_HOST }}
           NAMECHEAP_SSH_USER: ${{ secrets.NAMECHEAP_SSH_USER }}
           NAMECHEAP_SSH_PORT: ${{ secrets.NAMECHEAP_SSH_PORT }}

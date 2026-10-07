@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add a staging site at staging.cicainfo.com: every `main` build deploys there first, and production deploys the same artifact only after an approver signs off. Staging forms keep separate records and `[STAGING]` notifications.
 - Move the contact, join and sponsorship forms from Google Apps Script to a same-origin Namecheap PHP handler with private records, organizer notifications, server validation, a honeypot and submission limits.
 - Show a do-not-resubmit notice when a form submission cannot be confirmed, since the request may already be saved.
 - Replace the broken `next lint` script with a working ESLint gate, and add lint plus PHP backend checks to CI.
