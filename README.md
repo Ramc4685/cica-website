@@ -1,30 +1,28 @@
-# CICA
+# CICA website
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Public website for the Central Illinois Cricket Association, hosted at [cicainfo.com](https://cicainfo.com) on Namecheap cPanel.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/cicas-projects-8bea677d/v0-cica)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/Z4CQ4daGFQ5)
+## Develop and validate
 
-## Overview
+Use Node.js 22 and pnpm 11.13.0. This checkout is the single working copy at `/Users/ramc/Documents/Code/Git/cica-website`.
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm typecheck
+pnpm test --runInBand
+pnpm build:namecheap
+CICA_TEST_EXPORT_DIR=out node --test tests/admin-security.test.mjs
+```
 
-## Deployment
+The static build exports to `out/`. [CI setup and rollback](deploy/CI.md) describes the checked GitHub Actions pipeline, production secrets and backups. PRs are checked; successful builds from main deploy automatically using a dedicated SSH key and verified server host identity. Deployment credentials never belong in source or client bundles.
 
-Your project is live at:
+## Forms and administration
 
-**[https://vercel.com/cicas-projects-8bea677d/v0-cica](https://vercel.com/cicas-projects-8bea677d/v0-cica)**
+The existing contact, join and sponsorship forms submit through their configured Google Apps Script endpoints. Their request/validation behavior is covered by mocked component tests; tests send no real submissions. The Apps Script deployments and spreadsheet permissions are managed separately. Source handlers and spreadsheet templates are retained under `scripts/apps-scripts/` and `docs/`.
 
-## Build your app
+The previous admin interface disclosed a demo password and its editing controls did not persist changes. Both admin URLs now display an unavailable notice. The hardcoded NextAuth API and session provider were removed because they were insecure and incompatible with static cPanel hosting. Real content administration needs server-side authentication, authorization and storage.
 
-Continue building your app on:
+The domain and DNS remain at GoDaddy; website and mail hosting remain at Namecheap. Website and mail A records use `192.64.118.48`, while SPF preserves the provider's separate outbound IP. The deployment does not change mailbox settings or renew SSL/hosting subscriptions.
 
-**[https://v0.dev/chat/projects/Z4CQ4daGFQ5](https://v0.dev/chat/projects/Z4CQ4daGFQ5)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Issues [#1](https://github.com/Ramc4685/cica-website/issues/1), [#2](https://github.com/Ramc4685/cica-website/issues/2) and [#3](https://github.com/Ramc4685/cica-website/issues/3) track the security, deployment and UI corrections. Historical sample news/testimonials were preserved pending authoritative content updates.

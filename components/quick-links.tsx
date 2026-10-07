@@ -12,10 +12,10 @@ const quickLinks = [
     color: "from-blue-500 to-blue-600",
   },
   {
-    title: "Player Registration",
-    description: "Join tournaments and events",
+    title: "Join CICA Updates",
+    description: "Get tournament and community announcements",
     icon: Users,
-    href: "/register",
+    href: "/join",
     color: "from-green-500 to-green-600",
   },
   {
@@ -36,15 +36,16 @@ const quickLinks = [
     title: "WhatsApp Community",
     description: "Join our active community chat",
     icon: MessageCircle,
-    href: "#",
+    href: "https://chat.whatsapp.com/Ij7GEOEkGJK9DCY2LDPFj8",
     external: true,
     color: "from-green-500 to-green-600",
   },
   {
-    title: "Events Calendar",
+    title: "Tournament Schedule",
     description: "Upcoming matches and events",
     icon: Calendar,
-    href: "/events",
+    href: "https://cricclubs.com/CICA",
+    external: true,
     color: "from-orange-500 to-orange-600",
   },
 ]

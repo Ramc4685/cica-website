@@ -56,14 +56,15 @@ export function Navigation() {
             <Button
               size="sm"
               className="bg-green-600 hover:bg-green-700 transform hover:scale-105 transition-all duration-200"
+              asChild
             >
-              Join Community
+              <Link href="/join">Join CICA</Link>
             </Button>
           </div>
 
           {/* Mobile menu button */}
           <div className="lg:hidden">
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="relative">
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="relative" aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isOpen} aria-controls="mobile-navigation">
               <div className="relative w-6 h-6">
                 <span
                   className={`absolute block h-0.5 w-6 bg-gray-600 transform transition duration-300 ${isOpen ? "rotate-45 translate-y-2" : "translate-y-0"}`}
@@ -81,7 +82,8 @@ export function Navigation() {
 
         {/* Mobile Navigation */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96 py-4" : "max-h-0"}`}
+          id="mobile-navigation"
+          className={`lg:hidden ${isOpen ? "max-h-[calc(100dvh-4rem)] overflow-y-auto py-4" : "hidden"}`}
         >
           <div className="border-t border-gray-200">
             <div className="flex flex-col space-y-4 pt-4">
@@ -96,7 +98,9 @@ export function Navigation() {
                   {item.name}
                 </Link>
               ))}
-              <Button className="mx-2 bg-green-600 hover:bg-green-700">Join Community</Button>
+              <Button className="mx-2 bg-green-600 hover:bg-green-700" asChild>
+                <Link href="/join" onClick={() => setIsOpen(false)}>Join CICA</Link>
+              </Button>
             </div>
           </div>
         </div>

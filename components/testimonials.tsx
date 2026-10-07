@@ -48,14 +48,7 @@ export function Testimonials() {
             </Card>
           ))}
         </div>
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            Testimonials can be managed through the{" "}
-            <a href="/admin" className="text-blue-600 hover:underline">
-              Admin Panel
-            </a>
-          </p>
-        </div>
+
       </div>
     </section>
   )

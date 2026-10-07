@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
+const staticExport = process.env.CICA_STATIC_EXPORT === "1"
+
 const nextConfig = {
+  ...(staticExport ? { output: "export", trailingSlash: true } : {}),
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
   images: {
     unoptimized: true,
@@ -19,7 +19,7 @@ const nextConfig = {
       },
     ],
   },
-  async headers() {
+  ...(staticExport ? {} : { async headers() {
     return [
       {
         source: "/(.*)",
@@ -39,7 +39,7 @@ const nextConfig = {
         ],
       },
     ]
-  },
+  } }),
 }
 
 export default nextConfig

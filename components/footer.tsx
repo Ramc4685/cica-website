@@ -5,7 +5,6 @@ import { Facebook, Youtube, Mail, MessageCircle, MapPin, Trophy } from "lucide-r
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
       {/* Cricket field pattern overlay */}
@@ -41,7 +40,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 bg-transparent"
+                className="bg-blue-600/20 text-blue-400 border-blue-500/50 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-300"
                 asChild
               >
                 <a
@@ -56,7 +55,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-red-600 hover:border-red-600 transition-all duration-300 bg-transparent"
+                className="bg-red-600/20 text-red-400 border-red-500/50 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-300"
                 asChild
               >
                 <a
@@ -71,7 +70,7 @@ export function Footer() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-white border-gray-600 hover:bg-green-600 hover:border-green-600 transition-all duration-300 bg-transparent"
+                className="bg-green-600/20 text-green-400 border-green-500/50 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-300"
                 asChild
               >
                 <a
@@ -142,7 +141,7 @@ export function Footer() {
                   <p className="text-sm font-medium">General Inquiries</p>
                   <a
                     href="mailto:organizers@cicainfo.com"
-                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-blue-400 hover:text-blue-300 transition-colors break-all"
                   >
                     organizers@cicainfo.com
                   </a>
@@ -155,19 +154,36 @@ export function Footer() {
                   <p className="text-sm">Bloomington/Normal, Illinois</p>
                 </div>
               </li>
-              <li className="flex items-start gap-3 group">
-                <MessageCircle className="h-5 w-5 text-green-400 mt-0.5 group-hover:scale-110 transition-transform" />
-                <div>
-                  <p className="text-sm font-medium">Community</p>
-                  <a
-                    href="https://chat.whatsapp.com/Ij7GEOEkGJK9DCY2LDPFj8"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-400 hover:text-green-300 transition-colors"
-                  >
-                    Join WhatsApp Group
-                  </a>
-                </div>
+              <li>
+              <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
+                <MessageCircle className="h-5 w-5 text-green-500" />
+                Connect With Us
+              </h3>
+              <ul className="space-y-3 text-gray-300">
+                <li>
+                  <div className="flex flex-col">
+                    <span className="text-gray-100 font-medium">Stay Updated</span>
+                    <div className="flex flex-wrap gap-3 mt-2">
+                      <Link
+                        href="/join"
+                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1.5 px-3 rounded-md transition-colors inline-flex items-center gap-2"
+                      >
+                        <Mail className="h-3.5 w-3.5" />
+                        Join CICA Updates
+                      </Link>
+                      <a
+                        href="https://chat.whatsapp.com/Ij7GEOEkGJK9DCY2LDPFj8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-600 hover:bg-green-700 text-white text-sm py-1.5 px-3 rounded-md transition-colors inline-flex items-center gap-2"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                        WhatsApp Group
+                      </a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
               </li>
             </ul>
           </div>
@@ -181,13 +197,8 @@ export function Footer() {
                 Latest on YouTube
               </h4>
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 flex-shrink-0">
-                  <Image
-                    src="/images/youtube-thumbnail.png"
-                    alt="CICA YouTube Channel"
-                    fill
-                    className="object-cover rounded-md"
-                  />
+                <div className="flex w-16 h-16 flex-shrink-0 items-center justify-center rounded-md bg-red-500/10" aria-hidden="true">
+                  <Youtube className="h-8 w-8 text-red-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-300">
@@ -211,13 +222,8 @@ export function Footer() {
                 Connect on Facebook
               </h4>
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 flex-shrink-0">
-                  <Image
-                    src="/images/facebook-thumbnail.png"
-                    alt="CICA Facebook Page"
-                    fill
-                    className="object-cover rounded-md"
-                  />
+                <div className="flex w-16 h-16 flex-shrink-0 items-center justify-center rounded-md bg-blue-500/10" aria-hidden="true">
+                  <Facebook className="h-8 w-8 text-blue-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-300">
@@ -250,9 +256,6 @@ export function Footer() {
                 className="text-blue-400 hover:text-blue-300 transition-colors hover:underline"
               >
                 Live Scores
-              </Link>
-              <Link href="/admin" className="text-gray-400 hover:text-white transition-colors hover:underline">
-                Admin
               </Link>
             </div>
           </div>

@@ -1,12 +1,76 @@
+"use client"
+
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { ExternalLink, Mail, Phone, Building } from "lucide-react"
+import { ExternalLink, Mail, Phone, Building, Loader2, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
+
+// Zod schema for sponsor form validation
+const sponsorFormSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  company: z.string().min(1, "Company name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  interest: z.string().min(1, "Sponsorship interest is required"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type SponsorFormValues = z.infer<typeof sponsorFormSchema>;
+
+// TODO:// Google Apps Script URL for form submission
+const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbzzQZ0zYjbjJRppNKz7YOmeGpSAEGvhv3jCXaOhDo5xGJg5gdPxcZLZcxrosa5rCkqw5w/exec";
 
 export default function SponsorsPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SponsorFormValues>({
+    resolver: zodResolver(sponsorFormSchema),
+  });
+
+  const onSubmit = async (data: SponsorFormValues) => {
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+
+    try {
+      const response = await fetch(FORM_SUBMISSION_URL, {
+        method: "POST",
+        headers: {
+          // Apps Script does not serve CORS preflight; send JSON as a simple request.
+          "Content-Type": "text/plain;charset=UTF-8",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Your sponsorship inquiry has been sent!");
+        setSubmitSuccess(true);
+        reset();
+      } else {
+        toast.error(result.message || "An error occurred.");
+      }
+    } catch (error) {
+      toast.error("Failed to send inquiry. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-6xl mx-auto">
@@ -105,43 +169,62 @@ export default function SponsorsPage() {
             <CardTitle>Become a Sponsor</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+                        {submitSuccess ? (
+              <div className="flex flex-col items-center justify-center p-8 text-center bg-green-50 rounded-lg">
+                <CheckCircle className="h-12 w-12 text-green-600 mb-4" />
+                <h3 className="text-xl font-semibold">Thank You!</h3>
+                <p className="text-gray-600">Your sponsorship inquiry has been received. We will get back to you shortly.</p>
+              </div>
+            ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="Your full name" />
+                                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input id="fullName" placeholder="Your full name" {...register("fullName")} />
+                  {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
                 </div>
-                <div>
+                                <div>
                   <Label htmlFor="company">Company</Label>
-                  <Input id="company" placeholder="Company name" />
+                  <Input id="company" placeholder="Company name" {...register("company")} />
+                  {errors.company && <p className="text-red-500 text-sm mt-1">{errors.company.message}</p>}
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
-                <div>
+                                <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="your@email.com" />
+                  <Input id="email" type="email" placeholder="your@email.com" {...register("email")} />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                 </div>
-                <div>
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" placeholder="(555) 123-4567" />
+                                <div>
+                  <Label htmlFor="phone">Phone (Optional)</Label>
+                  <Input id="phone" placeholder="(555) 123-4567" {...register("phone")} />
                 </div>
               </div>
-              <div>
+                            <div>
                 <Label htmlFor="interest">Sponsorship Interest</Label>
-                <Input id="interest" placeholder="e.g., Tournament sponsorship, Equipment partnership" />
+                <Input id="interest" placeholder="e.g., Tournament sponsorship, Equipment partnership" {...register("interest")} />
+                {errors.interest && <p className="text-red-500 text-sm mt-1">{errors.interest.message}</p>}
               </div>
               <div>
                 <Label htmlFor="message">Message</Label>
-                <Textarea
+                                <Textarea
                   id="message"
                   placeholder="Tell us about your sponsorship goals and how you'd like to partner with CICA"
                   rows={4}
+                  {...register("message")}
                 />
+                {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
               </div>
-              <Button type="submit" className="w-full">
-                Submit Sponsorship Inquiry
+                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...</>
+                ) : (
+                  "Submit Sponsorship Inquiry"
+                )}
               </Button>
             </form>
+            )}
+
           </CardContent>
         </Card>
       </div>

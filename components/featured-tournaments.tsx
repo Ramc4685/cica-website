@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Trophy, Calendar, History, Clock } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 const featuredTournaments = [
   {
@@ -138,11 +139,11 @@ export function FeaturedTournaments() {
                 </div>
 
                 <Button
+                  asChild
                   variant="outline"
                   className="w-full group-hover:bg-blue-600 group-hover:text-white transition-colors"
                 >
-                  <Trophy className="h-4 w-4 mr-2" />
-                  Tournament Details
+                  <Link href="/tournaments"><Trophy className="h-4 w-4 mr-2" />Tournament Details</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -194,11 +195,11 @@ export function FeaturedTournaments() {
                 </div>
 
                 <Button
+                  asChild
                   variant="outline"
                   className="w-full group-hover:bg-blue-600 group-hover:text-white transition-colors"
                 >
-                  <Trophy className="h-4 w-4 mr-2" />
-                  Tournament Details
+                  <Link href="/tournaments"><Trophy className="h-4 w-4 mr-2" />Tournament Details</Link>
                 </Button>
               </CardContent>
             </Card>

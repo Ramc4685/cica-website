@@ -95,7 +95,7 @@ export default function TournamentsPage() {
                 disciplinary procedures.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="flex-1">
+                <Button asChild className="h-auto flex-1 whitespace-normal text-center">
                   <Link
                     href="https://drive.google.com/drive/u/1/folders/16mFxdlNfcbK8_1_z5CNhLpFD5WPh4Asy"
                     target="_blank"
@@ -105,7 +105,7 @@ export default function TournamentsPage() {
                     View Rules & Regulations
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="flex-1">
+                <Button asChild variant="outline" className="h-auto flex-1 whitespace-normal text-center">
                   <Link href="https://cricclubs.com/CICA" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     View Live Scores on CricClubs
