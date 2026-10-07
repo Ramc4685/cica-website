@@ -1,0 +1,87 @@
+.card {
+  scroll-margin-top: calc(var(--header-height) + 20px);
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid var(--cica-hairline);
+  border-radius: 32px;
+  background: var(--cica-cream);
+}
+
+.title {
+  margin-top: 16px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--step-h3);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* With JavaScript running, a click before hydration would bypass client validation, so the
+   button waits for React. Without JavaScript the rule never applies and the form posts natively. */
+@media (scripting: enabled) {
+  .form:not([data-hydrated]) .submit {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+.success {
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 24px;
+  background: var(--cica-green);
+  color: var(--cica-cream);
+}
+
+.successTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--step-h3);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--cica-cream);
+}
+
+.successTitle:focus {
+  outline: none;
+}
+
+.successTitle:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.reference {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cica-on-dark-line);
+  font-size: 14px;
+  color: var(--cica-on-dark-muted);
+}
+
+.reference span {
+  margin-left: 8px;
+  word-break: break-all;
+}
+
+.again {
+  margin-top: 24px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1.5px solid var(--cica-cream);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--cica-cream);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.again:hover {
+  background: var(--cica-cream);
+  color: var(--cica-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .again { transition: none; }
+}
+
+:global(html[data-motion="paused"]) .again { transition: none; }
