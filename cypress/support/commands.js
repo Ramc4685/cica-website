@@ -4,7 +4,7 @@ import '@testing-library/cypress/add-commands';
 // Custom command to fill out a form based on field labels
 Cypress.Commands.add('fillFormByLabels', (formData) => {
   Object.keys(formData).forEach(label => {
-    cy.findByLabelText(new RegExp(label, 'i'))
+    cy.findByLabelText(new RegExp(`^${label}`, 'i'))
       .should('exist')
       .type(formData[label]);
   });
