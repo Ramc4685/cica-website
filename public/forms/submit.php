@@ -203,7 +203,8 @@ function cica_save_request(array $fields, string $dir, string $remoteAddress, in
         $global['hourCount']++;
         $global['dayCount']++;
         $state = ['ips' => $ips, 'global' => $global, 'alertedAt' => $state['alertedAt'] ?? 0];
-        if ($size >= (int)($maxBytes * 0.8) && $now - $state['alertedAt'] >= 7 * 86400) {
+        // alertedAt 0 means "never alerted", not a timestamp to throttle against.
+        if ($size >= (int)($maxBytes * 0.8) && ($state['alertedAt'] === 0 || $now - $state['alertedAt'] >= 7 * 86400)) {
             $state['alertedAt'] = $now;
             $alert('Form storage is 80% full', "The request file is at least 80% of its size limit. When full it is archived automatically; up to " . CICA_MAX_ARCHIVES . " archives are kept before new requests are refused. Review and export records with scripts/forms-records.php.");
         }
