@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowUpRight, Facebook, Youtube, MessageCircle } from "lucide-react"
-import { CapsuleLink } from "@/components/ui/capsule-link"
+import { FooterCta } from "@/components/footer-cta"
 import { communityLinks } from "@/lib/content"
 
 const columns = [
@@ -43,13 +43,7 @@ const socials = [
 
 export function Footer() {
   return <footer className="site-footer" data-tone="ink">
-    <div className="footer-cta">
-      <div className="footer-arc" aria-hidden="true" />
-      <div className="page-shell footer-cta-inner">
-        <h2 className="footer-line">Ready for the season? <em>Join CICA.</em></h2>
-        <CapsuleLink href="/get-involved/" tone="cream">Get involved</CapsuleLink>
-      </div>
-    </div>
+    <FooterCta />
     <div className="page-shell">
       <div className="footer-top">
         <div className="footer-brand">
