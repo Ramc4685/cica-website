@@ -47,6 +47,10 @@ export default function PrivacyPage() {
             <p>{retentionPeriod ? `We keep submissions for ${retentionPeriod}, then delete them.` : "Records are kept until an organizer deletes them; no automatic deletion happens yet. The organizers are confirming a fixed retention period."} You can ask for your record to be exported or removed at any time.</p>
           </section>
           <section>
+            <h2>Photos and organizer editing</h2>
+            <p>Organizers publish team and community photos with the team’s consent. Published photos are resized copies with embedded camera and location details removed. To have a photo removed, email organizers@cicainfo.com. Invited organizers edit this website’s champions, photos and tournament details through Pages CMS, an external editing service that holds their sign-in email; this website does not.</p>
+          </section>
+          <section>
             <h2>Children</h2>
             <p>These forms are for adults and for parents or guardians. Do not submit a form if you are under 13; a parent or guardian can write to us on your behalf.</p>
           </section>

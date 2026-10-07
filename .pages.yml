@@ -1,0 +1,379 @@
+# Pages CMS configuration (https://pagescms.org/docs/configuration/).
+# Forms for organizer-owned facts. Edits are committed to main and follow the normal
+# staging -> owner-approved production deploy. See docs/content-editing.md.
+# Every key in content/*.json must be declared here (tested in __tests__/lib/pages-config.test.ts).
+
+media:
+  - name: champion-photos
+    label: Champion team photos
+    input: content/uploads/champions
+    output: /uploads/champions
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: community-photos
+    label: Community photos
+    input: content/uploads/photos
+    output: /uploads/photos
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+
+settings:
+  # Keep any key the forms below do not know about instead of rewriting the file without it.
+  content:
+    merge: true
+  commit:
+    # app = the GitHub App identity, so volunteer emails never enter public git history.
+    identity: app
+
+content:
+  - name: champions
+    label: Champions
+    type: file
+    path: content/champions.json
+    format: json
+    fields:
+      - name: recordsUpdated
+        label: Archive last checked on
+        description: Date an organizer last checked the champions list. Leave blank if unsure.
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: competitions
+        label: Competitions
+        description: One entry per competition. Add new seasons at the top of its list, newest first.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Internal ID (do not change)
+            type: string
+            readonly: true
+          - name: title
+            label: Competition name
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: records
+            label: Seasons
+            description: One entry per season, newest first. Only enter results organizers have confirmed.
+            type: object
+            list: true
+            fields:
+              - name: season
+                label: Season (year)
+                type: number
+                required: true
+                options:
+                  min: 1998
+                  max: 2100
+              - name: champion
+                label: Champion
+                description: Team name exactly as it should appear.
+                type: string
+                required: true
+                options:
+                  maxlength: 80
+              - name: runnerUp
+                label: Runner-up
+                description: Optional. Leave blank if not confirmed.
+                type: string
+                options:
+                  maxlength: 80
+              - name: notes
+                label: Notes
+                description: Optional short note about the season.
+                type: string
+                options:
+                  maxlength: 300
+              - name: photo
+                label: Team photo
+                description: Optional. Only add a photo with the team's consent.
+                type: object
+                fields:
+                  - name: src
+                    label: Photo
+                    description: JPG, PNG or WebP under 10 MB.
+                    type: image
+                    options:
+                      media: champion-photos
+                  - name: alt
+                    label: Photo description
+                    description: Describe the photo for people using screen readers (required with a photo).
+                    type: string
+                    required: true
+                    options:
+                      maxlength: 200
+
+  - name: photos
+    label: Community photos
+    type: file
+    path: content/photos.json
+    format: json
+    fields:
+      - name: photos
+        label: Photos
+        description: Photos shown in the gallery and the home page rotation.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Short ID
+            description: Lowercase words joined by hyphens, for example family-picnic. Do not change an existing ID, the site uses some of them.
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: src
+            label: Photo
+            description: JPG, PNG or WebP under 10 MB.
+            type: image
+            required: true
+            options:
+              media: community-photos
+          - name: alt
+            label: Photo description
+            description: Describe the photo for people using screen readers (required).
+            type: string
+            required: true
+            options:
+              maxlength: 200
+          - name: caption
+            label: Caption
+            type: string
+            required: true
+            options:
+              maxlength: 160
+          - name: objectPosition
+            label: Focal point
+            description: Where the crop centres, as two percentages such as 50% 35% (left-right, top-bottom). Use 50% 50% if unsure.
+            type: string
+            required: true
+            default: 50% 50%
+            options:
+              maxlength: 12
+          - name: gallery
+            label: Show in the gallery
+            type: boolean
+            default: true
+          - name: hero
+            label: Show in the home page rotation
+            type: boolean
+            default: false
+
+  - name: tournaments
+    label: Tournaments
+    type: file
+    path: content/tournaments.json
+    format: json
+    fields:
+      - name: tournaments
+        label: Tournaments
+        description: Edit the details of each tournament. Do not add or remove tournaments here, ask the website maintainer.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Internal ID (do not change)
+            type: string
+            readonly: true
+          - name: name
+            label: Tournament name
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: setting
+            label: Setting (do not change)
+            type: string
+            readonly: true
+          - name: logo
+            label: Logo file (do not change)
+            type: string
+            readonly: true
+          - name: description
+            label: Description
+            type: text
+            required: true
+            options:
+              maxlength: 400
+          - name: registrationStatus
+            label: Registration
+            type: select
+            required: true
+            options:
+              values:
+                - name: tbc
+                  label: To be confirmed
+                - name: upcoming
+                  label: Opening soon
+                - name: open
+                  label: Open
+                - name: closed
+                  label: Closed
+          - name: registrationDeadline
+            label: Registration deadline
+            description: Optional. Leave blank if unknown.
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
+          - name: registrationUrl
+            label: Registration link
+            description: Optional. Must start with https://
+            type: string
+            options:
+              maxlength: 500
+          - name: format
+            label: Format
+            type: object
+            fields:
+              - name: overs
+                label: Overs per side
+                description: A number such as 13, or tbc if not confirmed.
+                type: string
+                options:
+                  maxlength: 5
+              - name: ballType
+                label: Ball type
+                type: select
+                options:
+                  values:
+                    - name: tbc
+                      label: To be confirmed
+                    - name: leather
+                      label: Leather
+                    - name: tennis
+                      label: Tennis
+              - name: squadSize
+                label: Squad size
+                description: A number such as 15, or tbc if not confirmed.
+                type: string
+                options:
+                  maxlength: 5
+              - name: rulesPdf
+                label: Rules document link
+                description: Optional. Must start with https://
+                type: string
+                options:
+                  maxlength: 500
+
+  - name: season
+    label: Season news, events and FAQ
+    type: file
+    path: content/season.json
+    format: json
+    fields:
+      - name: announcements
+        label: Announcements
+        description: Newest first. Only publish what organizers have confirmed.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Short ID
+            description: Lowercase words joined by hyphens, for example season-opener. Must be unique.
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: title
+            label: Title
+            type: string
+            required: true
+            options:
+              maxlength: 120
+          - name: date
+            label: Date
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+          - name: body
+            label: Message
+            description: Plain text only.
+            type: text
+            required: true
+            options:
+              maxlength: 2000
+          - name: url
+            label: Link
+            description: Optional. Must start with https://
+            type: string
+            options:
+              maxlength: 500
+      - name: events
+        label: Events
+        description: Upcoming matches and gatherings.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Short ID
+            description: Lowercase words joined by hyphens. Must be unique.
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: title
+            label: Title
+            type: string
+            required: true
+            options:
+              maxlength: 120
+          - name: date
+            label: Date
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+          - name: competitionId
+            label: Competition ID
+            description: Optional. The internal ID of the tournament, for example cica-mains.
+            type: string
+            options:
+              maxlength: 80
+          - name: venueId
+            label: Venue ID
+            description: Optional. Leave blank unless the website maintainer gave you one.
+            type: string
+            options:
+              maxlength: 80
+          - name: summary
+            label: Summary
+            description: Optional. Plain text only.
+            type: text
+            options:
+              maxlength: 400
+          - name: url
+            label: Link
+            description: Optional. Must start with https://
+            type: string
+            options:
+              maxlength: 500
+      - name: faq
+        label: Frequently asked questions
+        description: Answers shown on the FAQ page. Plain text only; do not guess policies.
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: Short ID
+            description: Lowercase words joined by hyphens. Do not change an existing ID.
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: question
+            label: Question
+            type: string
+            required: true
+            options:
+              maxlength: 200
+          - name: answer
+            label: Answer
+            type: text
+            required: true
+            options:
+              maxlength: 5000

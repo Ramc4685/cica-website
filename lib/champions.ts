@@ -1,3 +1,6 @@
+import championsFile from "@/content/champions.json"
+import { championsFileSchema, parseContent } from "@/lib/content-schema"
+
 export type CompetitionId = "mains" | "cica-indoor" | "cpl-indoor" | "cpl-outdoor" | "mini" | "challengers"
 
 export interface ChampionRecord {
@@ -5,6 +8,7 @@ export interface ChampionRecord {
   champion: string
   runnerUp?: string
   notes?: string
+  photo?: { src: string; alt: string }
 }
 
 export interface Competition {
@@ -13,74 +17,16 @@ export interface Competition {
   records: readonly ChampionRecord[]
 }
 
-/**
- * ISO date (YYYY-MM-DD) organizers last checked the archive. While unset, the showcase says which
- * season the records run through instead of inventing an update date.
- * TODO(organizers): confirm the date the champions archive was last reviewed.
- */
-export const recordsUpdated: string | undefined = undefined
+const championsContent = parseContent(championsFileSchema, championsFile, "champions.json")
 
-/** Records are newest first. Years missing from a list are not recorded on this site. */
-export const competitions: readonly Competition[] = [
-  {
-    id: "mains",
-    title: "CICA Mains",
-    records: [
-      { season: 2024, champion: "BloomBoys" },
-      { season: 2023, champion: "Bloom Bulls" },
-      { season: 2022, champion: "Peoria Marvels" },
-      { season: 2021, champion: "Moghals" },
-      { season: 2019, champion: "Moghals" },
-      { season: 2018, champion: "Hunters" },
-      { season: 2017, champion: "BloomBoys" },
-      { season: 2016, champion: "Bashers" },
-      { season: 2015, champion: "Moghals" },
-      { season: 2014, champion: "Bradley Bulls" },
-      { season: 2013, champion: "Klasic" },
-      { season: 2012, champion: "Sarkaar" },
-    ],
-  },
-  {
-    id: "cica-indoor",
-    title: "CICA Indoor",
-    records: [
-      { season: 2025, champion: "Hunters", runnerUp: "Bloom Bulls" },
-      { season: 2024, champion: "Spartans", runnerUp: "Bloom Bulls" },
-      { season: 2023, champion: "Raiders" },
-      { season: 2021, champion: "Spartans" },
-      { season: 2019, champion: "Hunters" },
-      { season: 2018, champion: "Moghals" },
-      { season: 2017, champion: "Spartans" },
-      { season: 2016, champion: "Spartans" },
-      { season: 2015, champion: "BCC" },
-    ],
-  },
-  {
-    id: "cpl-indoor",
-    title: "CPL Indoor",
-    records: [
-      { season: 2025, champion: "Techie Brains Legends", runnerUp: "Bloom Barista Bulls" },
-      { season: 2023, champion: "Sysintelli Strikers", runnerUp: "Parke Regency Thalaivas" },
-    ],
-  },
-  {
-    id: "cpl-outdoor",
-    title: "CPL Outdoor",
-    records: [{ season: 2024, champion: "Techie Brains Legends", runnerUp: "Bloom Events Eagles" }],
-  },
-  {
-    id: "mini",
-    title: "Mini Tournament",
-    // TODO(organizers): supply recorded Mini Tournament champions (season, champion, runner-up).
-    records: [],
-  },
-  {
-    id: "challengers",
-    title: "Challengers",
-    // TODO(organizers): supply recorded Challengers champions (season, champion, runner-up).
-    records: [],
-  },
-]
+/**
+ * ISO date (YYYY-MM-DD) organizers last checked the archive; edited in content/champions.json. While
+ * unset, the showcase says which season the records run through instead of inventing an update date.
+ */
+export const recordsUpdated: string | undefined = championsContent.recordsUpdated || undefined
+
+/** Records are newest first. Edited through Pages CMS in content/champions.json; see docs/content-editing.md. */
+export const competitions: readonly Competition[] = championsContent.competitions
 
 export interface TitleCount {
   team: string

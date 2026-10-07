@@ -9,11 +9,11 @@ import { CricketFaq } from "@/components/sections/cricket-faq"
 import { HowToJoin } from "@/components/sections/how-to-join"
 import { MetricsStrip } from "@/components/sections/metrics-strip"
 import { CapsuleLink } from "@/components/ui/capsule-link"
-import { aboutPhotoIds, communityPhotos, photoFocusStyle } from "@/lib/community-photos"
+import { aboutPhotoIds, photoById, photoFocusStyle } from "@/lib/community-photos"
 
 export const metadata: Metadata = { alternates: { canonical: "https://cicainfo.com/" } }
 
-const [familyPhoto, fieldPhoto] = aboutPhotoIds.map(id => communityPhotos.find(photo => photo.id === id)!)
+const [familyPhoto, fieldPhoto] = aboutPhotoIds.map(id => photoById(id))
 
 /** Growlio about anatomy: short line, small photo, centered "Our story", small photo, short line; then the mission line. */
 function AboutBand() {

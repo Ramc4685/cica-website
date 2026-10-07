@@ -21,6 +21,15 @@ test("public admin routes offer no client authentication or editing controls", a
   await assert.rejects(access(path.join(root, "app/providers.tsx")), { code: "ENOENT" })
 })
 
+test("content files carry no script, javascript: URL or inline event handler text", async () => {
+  const dir = path.join(root, "content")
+  const files = (await readdir(dir)).filter((name) => name.endsWith(".json"))
+  assert.ok(files.length >= 4)
+  for (const name of files) {
+    assert.doesNotMatch(await readFile(path.join(dir, name), "utf8"), /<script|javascript:|\bon[a-z]+\s*=/i, `Unsafe text in content/${name}`)
+  }
+})
+
 // Run against the fresh export in CI to prevent a client login from shipping again.
 if (process.env.CICA_TEST_EXPORT_DIR) {
   test("exported admin pages and browser assets contain no exposed demo authentication", async () => {
@@ -42,6 +51,34 @@ if (process.env.CICA_TEST_EXPORT_DIR) {
       assert.match(html, /Administration is unavailable/)
       assert.doesNotMatch(html, /<input[^>]+type="password"/i)
       assert.match(html, /name="robots" content="noindex, nofollow"/)
+    }
+  })
+
+  test("export ships no CMS configuration or editor bundle", async () => {
+    const exportRoot = path.resolve(root, process.env.CICA_TEST_EXPORT_DIR)
+    await assert.rejects(access(path.join(exportRoot, ".pages.yml")), { code: "ENOENT" })
+    const pending = [exportRoot]
+    while (pending.length) {
+      const directory = pending.pop()
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const file = path.join(directory, entry.name)
+        if (entry.isDirectory()) pending.push(file)
+        else if (/\.(?:html|js)$/.test(entry.name)) assert.doesNotMatch(await readFile(file, "utf8"), /pagescms|decap-cms|netlify-cms/i, `CMS code in ${path.relative(exportRoot, file)}`)
+      }
+    }
+  })
+
+  test("export ships no original uploads (their EXIF metadata must not be public)", async () => {
+    const exportRoot = path.resolve(root, process.env.CICA_TEST_EXPORT_DIR)
+    await assert.rejects(access(path.join(exportRoot, "uploads")), { code: "ENOENT" })
+    const pending = [exportRoot]
+    while (pending.length) {
+      const directory = pending.pop()
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const file = path.join(directory, entry.name)
+        if (entry.isDirectory()) pending.push(file)
+        else if (/(?:^|\/)uploads\//.test(path.relative(exportRoot, file))) assert.fail(`Original upload in export: ${path.relative(exportRoot, file)}`)
+      }
     }
   })
 }

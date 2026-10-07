@@ -1,5 +1,7 @@
+import seasonFile from "@/content/season.json"
 import { computeChampionStats } from "@/lib/champions"
 import { tournaments } from "@/lib/content"
+import { parseContent, seasonFileSchema } from "@/lib/content-schema"
 
 export interface Venue {
   id: string
@@ -48,33 +50,18 @@ export interface Announcement {
   url?: string
 }
 
-// TODO(organizers): add dated fixtures and events for the current season.
-export const seasonEvents: readonly SeasonEvent[] = []
-
-// TODO(organizers): add announcements (registration openings, schedule changes, results).
-export const announcements: readonly Announcement[] = []
-
 export interface FaqEntry {
   id: string
   question: string
   answer: string
 }
 
-const contactAnswer = "Please contact the organizers at organizers@cicainfo.com and they will confirm the details for your competition."
+const seasonContent = parseContent(seasonFileSchema, seasonFile, "season.json")
 
-// Rules-backed answers cite their source document (lib/documents.ts):
-// general = CICA Playing Conditions and Rules; indoor2025 = CICA Indoor 2025; cplIndoor2025 = 2025 CPL Indoor Tournament Rules.
-export const faq: readonly FaqEntry[] = [
-  { id: "register-team", question: "How do I register a team?", answer: `Registration details differ by tournament. A team is registered only once it has submitted its registration and paid the tournament fee. ${contactAnswer}` }, // general: Registration Fees
-  { id: "registration-open", question: "Is registration open right now?", answer: `Registration dates are set per competition and are not published on this site yet. ${contactAnswer}` },
-  { id: "rules", question: "Where are the tournament rules?", answer: "The Rules page reproduces CICA’s General Rules, the 2025 indoor rules and the bylaws, with a link to each source document in CICA’s Google Drive rules folder. If the site and the Drive document ever differ, the Drive document applies." },
-  { id: "format", question: "How many overs are in each match?", answer: "Outdoor overs are set before each tournament, and no game is shorter than 10 overs unless CICA approves it. The 2025 indoor tournaments (CICA Indoor and CPL Indoor) used 13 overs per team." }, // general: Length of the Game; indoor2025; cplIndoor2025
-  { id: "fees", question: "How are fees paid?", answer: "CICA does not accept cash. The rules name Chase QuickPay to paycica@cicainfo.com for payments such as the $20 player replacement fee. Each team’s entrance fee is set by CICA for the tournament; ask the organizers for the amount." }, // general: Registration Fees
-  { id: "replace-player", question: "Can we add or replace a player during the season?", answer: "Yes. You can add players until your roster reaches the tournament’s limit. After that, each replacement costs $20 and the new player can play once the fee is paid. Replacing a player who has not played a game is free. A removed player cannot be added back that season, and CICA needs notice at least 1 hour before the game." }, // general: Registration Fees; Registering a New Player/Replacement of Player
-  { id: "playoff-eligibility", question: "How many games must a player play to be eligible for the playoffs?", answer: "Under the General Rules, at least 2 games with the same team before the postseason. CICA Indoor 2025 required 1 game. CPL Indoor 2025 required 1 match for youth players and 2 for everyone else." }, // general: Registering a New Player; indoor2025: Roster; cplIndoor2025: Player Requirements
-  { id: "complaints", question: "How do we raise a complaint or protest?", answer: "Email organizers@cicainfo.com in writing within 5 days of the incident, and say which CICA rule you believe was broken. Ask for confirmation that your email was received." }, // general: Protest/Complaint
-  { id: "scores", question: "Where can I find fixtures and scores?", answer: "Every match is scored in the CricClubs app. Fixtures and scores are on CricClubs, linked from the site header and footer." }, // general: Score sheets
-]
+/** Fixtures and events, announcements and FAQ are edited through Pages CMS in content/season.json; see docs/content-editing.md. */
+export const seasonEvents: readonly SeasonEvent[] = seasonContent.events
+export const announcements: readonly Announcement[] = seasonContent.announcements
+export const faq: readonly FaqEntry[] = seasonContent.faq
 
 export interface SponsorTier {
   id: string

@@ -22,7 +22,7 @@ The static build exports to `out/`. [CI setup and rollback](deploy/CI.md) descri
 
 The contact, updates and sponsorship forms submit to a same-origin PHP backend on Namecheap. Requests are validated and saved privately outside the public website folder, with notifications to the organizers. Read [hosted form operation](docs/forms/namecheap.md) for storage, limits, testing and delivery verification. An updates request is separate from playing or tournament registration; the Get Involved page explains participation pathways. The former Google Apps Script handlers have been undeployed and removed.
 
-The old prototype admin remains disabled. Real content administration needs secure server authentication, authorization and storage; current content updates use reviewed Git changes.
+The old prototype admin remains disabled and the site contains no login. Organizer-owned facts (champions with optional team photos, community photos, tournaments, announcements, events, FAQ) live in `content/*.json`, validated by `lib/content-schema.ts` and edited through [Pages CMS](https://pagescms.org) using the forms in `.pages.yml`. Uploads go to `content/uploads/{champions,photos}` (outside `public/`, so originals and their EXIF data are never published); `pnpm media` validates them and builds the metadata-free WebP derivatives in `public/_media`. Edits are Git commits to `main`, so they follow the normal staging and owner-approved production path. See [editing website content](docs/content-editing.md) for the owner and volunteer guide.
 
 ## Design and content
 
