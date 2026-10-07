@@ -3,6 +3,7 @@ declare const expect: jest.Expect;
 import { act } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SponsorsPage from '@/app/sponsors/page';
+import { MotionProvider } from '@/components/site-motion';
 
 function fillForm() {
   fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'José 李' } });
@@ -21,7 +22,7 @@ describe('Sponsor request form', () => {
   });
 
   it('accepts Unicode names and an omitted phone, and leaves a persistent honest confirmation', async () => {
-    render(<SponsorsPage />);
+    render(<MotionProvider><SponsorsPage /></MotionProvider>);
     fillForm();
     await submit();
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Your sponsorship inquiry has been recorded.'));
@@ -38,7 +39,7 @@ describe('Sponsor request form', () => {
   });
 
   it('connects validation errors to their fields and rejects a whitespace-only name', async () => {
-    render(<SponsorsPage />);
+    render(<MotionProvider><SponsorsPage /></MotionProvider>);
     fillForm();
     const input = screen.getByLabelText('Full Name');
     fireEvent.change(input, { target: { value: '   ' } });
@@ -50,7 +51,7 @@ describe('Sponsor request form', () => {
 
   it('shows failure inline, preserves input, and warns against duplicate retries', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
-    render(<SponsorsPage />);
+    render(<MotionProvider><SponsorsPage /></MotionProvider>);
     fillForm();
     await submit();
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('It may already have been saved'));
@@ -60,7 +61,7 @@ describe('Sponsor request form', () => {
   });
 
   it('offers privacy information and mobile autofill hints', () => {
-    render(<SponsorsPage />);
+    render(<MotionProvider><SponsorsPage /></MotionProvider>);
     expect(screen.getByRole('link', { name: 'Read our privacy notice.' })).toHaveAttribute('href', '/privacy');
     expect(screen.getByLabelText('Email Address')).toHaveAttribute('autocomplete', 'email');
     expect(screen.getByLabelText(/Phone/)).toHaveAttribute('type', 'tel');

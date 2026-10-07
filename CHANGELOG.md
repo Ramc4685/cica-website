@@ -2,10 +2,14 @@
 
 ## Unreleased
 
+- Match the Growlio reference more closely with bold green typography, a curved team ribbon, dark story sections and a large footer composition.
+- Add authentic owner-supplied community photography to the homepage and a ten-photo gallery with keyboard-accessible enlargement.
+- Animate CICA, team and sponsor identities along the hero ribbon, add prominent sponsor spotlights, and provide a site-wide pause control and reduced-motion support.
+
 - Redesign the public website around CICA branding, warm editorial typography, clearer participation paths and accessible motion.
 - Replace sample news, endorsements and unverified counters with authentic community links; preserve leadership and champions archives.
 - Add Get Involved and privacy pages, unique route metadata, a sitemap and correctly sized sharing artwork.
-- Optimize logo assets and remove automatic carousels, decorative loops and the eager homepage portal.
+- Optimize logo assets and remove the eager homepage portal.
 - Move all three forms to a same-origin Namecheap PHP handler with private records, organizer notifications, server validation and submission limits.
 - Improve form accessibility, international name support, optional phone fields and persistent success/failure feedback.
 - Add a working lint gate and PHP backend regression checks to CI.

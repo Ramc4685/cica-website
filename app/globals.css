@@ -109,3 +109,141 @@ summary::-webkit-details-marker { display:none; }
 .hero-format-seals { position:absolute;right:30px;bottom:65px;display:flex;gap:9px; }
 .hero-format-seals img { object-fit:contain;max-width:68px;height:auto; }
 @media(max-width:360px){.hero-emblem img { width:110px;height:auto; }.hero-format-seals { right:15px;bottom:43px; }.hero-format-seals img { max-width:48px; }}
+
+/* Growlio reference adaptation: bold editorial typography, curved identity ribbon,
+   tall image composition and alternating full-width storytelling sections. */
+:root { --background:60 74% 92%;--foreground:173 93% 16%;--primary:173 93% 16%;--primary-foreground:60 74% 92%;--muted:60 30% 89%;--muted-foreground:173 20% 30%;--border:173 25% 76%;--ring:173 93% 16%;--navy:#034F47;--cream:#FAFADD;--ink-soft:#3e6258; }
+body { background:#FAFADD;color:#034F47; }
+.page-shell { width:min(100% - 120px,1280px); }
+.site-header { background:#FAFADD;border:0;position:relative; }
+.nav-shell { min-height:115px; }
+.brand strong { color:#010100;font-size:26px;letter-spacing:-.7px; }
+.brand small { color:#034F47; }
+.desktop-navigation { color:#010100;gap:30px;font-size:16px; }
+.desktop-navigation>a:before,.more-menu summary:before,.nav-cta:before,.nav-cta:after { content:'';width:6px;height:6px;border-radius:1px;background:currentColor;display:inline-block; }
+.desktop-navigation>a { display:flex;align-items:center;gap:8px; }
+.nav-cta,.nav-cta:hover { background:transparent;color:#034F47;border:0;padding:10px 0;gap:8px;transform:none;font-size:16px; }
+.nav-cta svg { display:none; }
+.more-menu summary { gap:8px; }
+.more-menu-links { background:#FAFADD; }
+.growlio-hero { overflow:hidden; }
+.growlio-hero-shell { position:relative;min-height:810px;display:grid;grid-template-columns:1.2fr .9fr;gap:60px;align-items:start;padding-top:125px; }
+.hero-copy { position:relative;z-index:3; }
+.hero-copy h1 { font-size:94px;line-height:.86;letter-spacing:-.025em;font-weight:700;margin:0 0 32px; }
+.hero-copy>.eyebrow { margin-bottom:27px;font-size:10px!important; }
+.hero-description { color:#034F47;font-size:18px;line-height:1.6;max-width:550px;margin-bottom:34px; }
+.hero-cta { border:1.5px solid #034F47;padding:6px;gap:8px;border-radius:100px; }
+.cta-icon { width:54px;height:54px;background:#034F47; }
+.cta-label { min-height:54px;background:#034F47;padding:0 32px;font-family:var(--font-display),Georgia,serif;font-size:22px;font-weight:700;letter-spacing:.01em; }
+.hero-score-link { display:flex;gap:8px;align-items:center;margin-top:20px;width:fit-content;text-decoration:underline;text-underline-offset:5px;font-size:14px; }
+.growlio-hero-image { position:relative;z-index:2;height:680px;border-radius:40px 40px 0 0;overflow:hidden;background:#034F47;margin-top:5px; }
+.growlio-hero-image>img { border-radius:inherit; }
+.hero-image-badge { position:absolute;right:20px;top:24px;border-radius:50px;background:#FAFADD;color:#034F47;padding:12px 17px;font-size:10px;font-weight:600;letter-spacing:.04em; }
+.hero-image-brand { position:absolute;bottom:38px;left:28px;right:28px;background:#FAFADD;display:flex;align-items:center;gap:20px;padding:20px 24px;border-radius:20px; }
+.hero-image-brand img { width:85px;height:95px;object-fit:contain; }
+.hero-image-brand span { font-size:12px;line-height:1.5;font-weight:600; }
+.growlio-team-ribbon { position:absolute;z-index:1;left:-90px;right:-90px;top:450px;height:390px;pointer-events:none; }
+.growlio-team-ribbon svg { position:absolute;width:100%;height:100%; }
+.ribbon-logo { position:absolute;width:76px;height:76px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 4px 20px #034F4718; }
+.ribbon-logo img { width:100%;height:100%;object-fit:contain;border-radius:9px; }
+.ribbon-logo-0 { left:1%;top:64%;transform:rotate(-30deg); }.ribbon-logo-1 { left:12%;top:38%;transform:rotate(-21deg); }.ribbon-logo-2 { left:23%;top:35%;transform:rotate(5deg); }.ribbon-logo-3 { left:35%;top:44%;transform:rotate(22deg); }.ribbon-logo-4 { left:48%;top:68%;transform:rotate(23deg); }.ribbon-logo-5 { left:62%;top:74%;transform:rotate(-5deg); }.ribbon-logo-6 { left:78%;top:51%;transform:rotate(-22deg); }.ribbon-logo-7 { left:91%;top:14%;transform:rotate(-33deg); }
+.growlio-partner-strip { background:#034F47;color:#FAFADD;padding-block:25px; }
+.growlio-partner-strip .page-shell { display:flex;align-items:center;gap:35px; }
+.growlio-partner-strip p { font-family:var(--font-display),Georgia,serif;font-size:25px;line-height:1.05;flex-shrink:0; }
+.growlio-partner-strip .page-shell>div { display:flex;align-items:center;justify-content:space-around;gap:25px;flex:1;min-width:0; }
+.growlio-partner-strip img { width:125px;min-width:0;max-width:125px;height:65px;background:#fff;border-radius:8px;padding:5px; }
+.growlio-partner-strip a { border:1px solid #8dad9d;border-radius:50%;padding:12px; }
+.growlio-about { background:#010100;color:#FAFADD;padding-block:95px 100px; }
+.growlio-about .eyebrow { color:#FAFADD; }
+.growlio-about-top { display:flex;justify-content:space-between;border-bottom:1px solid #53554a;margin-bottom:50px; }
+.growlio-about-top>span { font-size:10px;letter-spacing:.1em; }
+.growlio-about h2 { font-family:var(--font-display),Georgia,serif;font-size:90px;font-weight:400;line-height:1;letter-spacing:-.03em;margin:0 0 65px; }
+.growlio-about h2 em { color:#acb492;font-style:normal; }
+.growlio-about-bottom { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center; }
+.about-emblem { display:flex;align-items:center;gap:30px; }.about-emblem img { object-fit:contain;background:#FAFADD;border-radius:20px;padding:15px; }.about-emblem span { font-size:12px;line-height:1.7;letter-spacing:.1em; }
+.growlio-about-bottom p { font-size:17px;line-height:1.65;color:#d9ddcb;margin-bottom:20px; }
+.hero-cta.light { border-color:#FAFADD; }.light .cta-icon,.light .cta-label { background:#FAFADD;color:#034F47; }
+.section-heading { font-size:70px;line-height:1.02;font-weight:700;letter-spacing:-.025em; }
+.section-heading em { color:#437464;font-style:normal; }
+.growlio-services,.growlio-tournaments { padding-block:100px; }
+.growlio-section-intro { max-width:760px;margin:0 auto 60px;text-align:center; }
+.growlio-section-intro>p:last-child { max-width:590px;margin:25px auto 0;font-size:17px;line-height:1.6; }
+.growlio-ways { display:grid;gap:30px; }
+.growlio-way { display:grid;grid-template-columns:1fr 1fr;overflow:hidden;min-height:400px;border-radius:30px;background:#e8ecc9; }
+.growlio-way:nth-child(2) { background:#f0dfbd; }.growlio-way:nth-child(3) { background:#dae8df; }
+.way-copy { padding:55px;align-self:center; }.way-copy h3 { font-family:var(--font-display),Georgia,serif;font-size:48px;line-height:1.03;font-weight:700;margin-bottom:25px; }.way-copy>p:not(.eyebrow) { line-height:1.65;max-width:390px;margin-bottom:25px; }
+.way-art { position:relative;display:flex;align-items:center;justify-content:center;min-height:360px;overflow:hidden; }
+.way-art>img { position:relative;z-index:1;object-fit:contain;transform:rotate(-8deg); }
+.way-orbit { position:absolute;width:330px;height:330px;border:1px solid #034F47;border-radius:50%;transform:rotate(-30deg); }.way-orbit:before { content:'';position:absolute;inset:35px -55px;border:1px solid #034F47;border-radius:50%; }.way-art-label { position:absolute;bottom:30px;left:35px;font-size:10px;letter-spacing:.1em; }.way-spark { position:absolute;right:50px;top:35px;font-size:65px; }.play .way-art>img { transform:rotate(9deg); }.play .way-orbit { border-radius:25px;background:#f6edda;transform:rotate(-12deg); }.support .way-orbit { background:#bfd7c3;border:0; }
+.format-filter { display:flex;justify-content:center;gap:15px;margin-bottom:40px; }.format-filter button { border:1px solid #034F47;padding:14px 25px;border-radius:50px;display:flex;align-items:center;gap:30px; }.format-filter button[aria-pressed=true] { background:#034F47;color:#FAFADD; }
+.home-tournament-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:28px; }.home-tournament-card { border-radius:26px;overflow:hidden;background:#fff; }.tournament-art { position:relative;min-height:285px;background:#e8ecc9;display:flex;justify-content:center;align-items:center; }.tournament-art img { object-fit:contain;width:215px;height:240px;position:relative;z-index:1; }.tournament-art:before { content:'';position:absolute;border:1px solid #034F4744;width:250px;height:250px;border-radius:50%; }.tournament-art>span { position:absolute;top:15px;right:25px;font-size:60px; }.tournament-tone-1 .tournament-art { background:#efdfbd; }.tournament-tone-2 .tournament-art { background:#dde8de; }.tournament-card-copy { padding:30px; }.tournament-card-copy>p:first-child { font-size:10px;letter-spacing:.12em; }.tournament-card-copy h3 { font-family:var(--font-display),Georgia,serif;font-size:38px;font-weight:700;margin-block:16px; }.tournament-card-copy>p { line-height:1.6; }.tournament-card-copy>a { margin-top:25px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #ccd9d2;padding-top:20px;font-weight:600; }.centered-link { text-align:center;margin-top:50px; }
+.growlio-process { background:#034F47;color:#FAFADD;padding-block:90px;text-align:center; }.growlio-process .eyebrow { color:#FAFADD; }.growlio-process .section-heading em { color:#beca9d; }.process-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:45px;text-align:left;margin-bottom:55px; }.process-grid article { border-top:1px solid #7d9a79;padding-top:25px; }.process-grid article>span { font-family:var(--font-display),Georgia,serif;font-size:58px;color:#b4c48d; }.process-grid h3 { font-family:var(--font-display),Georgia,serif;font-size:32px;margin:22px 0 16px; }.process-grid p { line-height:1.7;color:#dbe2cf;font-size:15px; }
+.faq-section { padding-block:110px; }.faq-list summary { font-size:18px;padding-block:27px; }.faq-list details { border-color:#b7c5a5; }
+.growlio-invitation { padding-block:30px 100px;text-align:center; }.growlio-invitation h2 { font-family:var(--font-display),Georgia,serif;font-size:100px;font-weight:700;line-height:.95;letter-spacing:-.025em;margin-bottom:45px; }
+.site-footer { background:#010100;color:#FAFADD;padding-top:90px; }.site-footer .brand strong,.site-footer .brand small { color:#FAFADD; }.footer-top { border-top:1px solid #606055;padding-top:55px; }.site-footer:before { content:'CICA';display:block;width:min(100% - 120px,1280px);margin:0 auto 50px;font-family:var(--font-display),Georgia,serif;font-size:clamp(100px,24vw,310px);line-height:.85;font-weight:400;letter-spacing:-.06em; }.footer-top>div>a:not(.brand),.footer-brand p,.footer-contact p { color:#d2d5c3; }.footer-bottom { border-color:#606055;color:#c1c6b1; }
+.page-hero h1 { font-weight:700; }.page-hero { background:#FAFADD;border-color:#d8ddbf; }
+@media(max-width:1099px){.page-shell { width:calc(100% - 64px); }.growlio-hero-shell { min-height:720px;gap:32px;padding-top:100px; }.hero-copy h1 { font-size:76px; }.growlio-hero-image { height:620px; }.growlio-team-ribbon { top:410px; }.growlio-partner-strip .page-shell { gap:20px; }.growlio-partner-strip img { max-width:95px;height:55px; }.growlio-partner-strip .page-shell>div { gap:10px; }.growlio-about h2 { font-size:80px; }.section-heading { font-size:62px; }.way-copy { padding:35px; }.way-copy h3 { font-size:43px; }.way-art>img { max-width:200px; }.hero-image-brand { left:15px;right:15px;padding:15px;gap:12px; }.hero-image-brand span { font-size:10px; }.hero-image-brand img { width:65px;height:85px; }}
+@media(max-width:760px){.page-shell { width:calc(100% - 40px); }.nav-shell { min-height:90px; }.growlio-hero-shell { display:flex;flex-direction:column;padding-top:48px;min-height:0;gap:38px; }.hero-copy { width:100%;text-align:center; }.hero-copy>.eyebrow { display:block;font-size:9px!important; }.hero-copy h1 { font-size:clamp(49px,10.5vw,72px);line-height:.98;margin-bottom:25px; }.hero-description { font-size:16px;margin:0 auto 26px;max-width:540px; }.hero-score-link { margin:20px auto 0; }.hero-cta { padding:5px;gap:6px; }.cta-icon { width:47px;height:47px; }.cta-label { min-height:47px;font-size:21px;padding-inline:24px; }.growlio-hero-image { width:100%;height:540px;margin-top:0;border-radius:30px 30px 0 0; }.growlio-team-ribbon { top:auto;bottom:300px;height:250px;left:-35px;right:-35px;z-index:4; }.ribbon-logo { width:48px;height:48px;padding:4px;border-radius:10px; }.ribbon-logo-0 { top:70%; }.ribbon-logo-1 { top:39%; }.ribbon-logo-2 { top:25%; }.ribbon-logo-3 { top:20%; }.ribbon-logo-4 { top:22%; }.ribbon-logo-5 { top:30%; }.ribbon-logo-6 { top:20%; }.ribbon-logo-7 { top:4%; }.growlio-team-ribbon svg { display:none; }.hero-image-badge { top:22px;right:20px;font-size:9px; }.hero-image-brand { bottom:28px;left:22px;right:22px; }.hero-image-brand img { width:90px;height:110px; }.hero-image-brand span { font-size:11px; }.growlio-partner-strip { padding-block:28px; }.growlio-partner-strip .page-shell { display:grid;grid-template-columns:1fr auto; }.growlio-partner-strip .page-shell>div { grid-row:2;grid-column:1/-1;flex-wrap:wrap;justify-content:start;gap:12px; }.growlio-partner-strip img { max-width:calc(33.33% - 10px);height:52px; }.growlio-partner-strip p { font-size:25px; }.growlio-about { padding-block:60px; }.growlio-about-top { margin-bottom:35px; }.growlio-about-top>span { font-size:8px; }.growlio-about h2 { font-size:clamp(48px,9vw,68px);line-height:1.03;margin-bottom:40px; }.growlio-about-bottom { grid-template-columns:1fr;gap:35px; }.about-emblem img { width:100px;height:120px; }.about-emblem span { font-size:10px; }.growlio-about-bottom p { font-size:16px; }.section-heading { font-size:clamp(43px,8.2vw,59px); }.growlio-services,.growlio-tournaments { padding-block:65px; }.growlio-section-intro { margin-bottom:35px; }.growlio-section-intro>p:last-child { font-size:16px; }.growlio-way { grid-template-columns:1fr;border-radius:24px; }.way-copy { padding:32px; }.way-copy h3 { font-size:40px; }.way-art { min-height:310px; }.way-art>img { max-width:200px; }.way-orbit { width:260px;height:260px; }.way-spark { font-size:50px; }.home-tournament-grid { grid-template-columns:1fr;gap:24px; }.format-filter { gap:10px; }.format-filter button { padding:12px 17px;gap:10px;font-size:14px; }.tournament-art { min-height:270px; }.tournament-card-copy { padding:27px; }.process-grid { grid-template-columns:1fr;gap:30px; }.growlio-process { padding-block:65px; }.process-grid article { display:grid;grid-template-columns:70px 1fr;column-gap:15px; }.process-grid article>span { grid-row:1/3;font-size:53px; }.process-grid h3 { margin-top:3px;font-size:31px; }.faq-section { padding-block:65px; }.growlio-invitation { padding-block:5px 65px; }.growlio-invitation h2 { font-size:clamp(50px,11vw,76px);margin-bottom:30px; }.site-footer { padding-top:50px; }.site-footer:before { width:calc(100% - 40px);margin-bottom:35px;font-size:33vw; }.footer-top { padding-top:35px; }}
+@media(prefers-reduced-motion:reduce){.hero-copy,.growlio-hero-image { animation:none; }}
+
+.site-footer:before { display:none; }
+.footer-invitation { padding-bottom:75px;position:relative; }
+.footer-invitation .eyebrow { color:#b3bc96; }
+.footer-invitation h2 { font-family:var(--font-display),Georgia,serif;font-size:clamp(85px,11.3vw,163px);font-weight:400;letter-spacing:-.04em;line-height:.95;margin:30px 0; }
+.footer-connect { display:inline-flex;align-items:center;gap:60px;border:1px solid #a9b391;border-radius:50px;padding:20px 30px;font-family:var(--font-display),Georgia,serif;font-size:25px; }
+.footer-bottom:after { content:'CICA';display:block;width:100%;font-family:var(--font-display),Georgia,serif;font-size:clamp(100px,25vw,330px);line-height:.9;letter-spacing:-.06em;color:#FAFADD;order:5;padding-top:40px; }
+.footer-bottom { flex-wrap:wrap; }
+@media(max-width:760px){.footer-invitation { padding-bottom:40px; }.footer-invitation h2 { font-size:clamp(54px,10.5vw,80px); }.footer-connect { font-size:22px;padding:15px 24px;gap:35px; }.footer-bottom:after { font-size:33vw;padding-top:20px; }}
+.growlio-about { border-radius:60px 60px 0 0; }
+.footer-invitation { isolation:isolate; }
+.footer-invitation:after { content:'';position:absolute;z-index:-1;width:420px;height:240px;border-radius:50%;right:0;top:85px;background:#034F47;transform:rotate(-24deg); }
+.footer-invitation h2 { position:relative;z-index:1; }
+@media(max-width:760px){.growlio-about { border-radius:35px 35px 0 0; }.footer-invitation:after { width:230px;height:140px;top:55px;right:0;opacity:.75; }}
+/* Owner-approved documentary CICA photographs preserve faces and group context. */
+.about-photo-pair { display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:60px;align-items:start; }
+.about-photo-pair figure { border-radius:24px;overflow:hidden;background:#172b23; }
+.about-photo-pair .community-photo { width:100%;height:310px;object-fit:contain; }
+.about-photo-pair figcaption { padding:18px 23px;font-size:12px;letter-spacing:.025em;color:#d5ddc8; }
+.way-art.has-community-photo { background:#14382e;padding:26px;display:flex;flex-direction:column;justify-content:center;gap:20px; }
+.way-art .way-community-photo { width:100%;height:auto;max-width:none;max-height:330px;object-fit:contain;transform:none;border-radius:16px; }
+.has-community-photo .way-art-label { position:static;display:block;color:#FAFADD; }
+@media(min-width:761px) and (max-width:1099px){.growlio-partner-strip .page-shell { display:grid;grid-template-columns:1fr auto;gap:18px; }.growlio-partner-strip .page-shell>div { grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px; }.growlio-partner-strip img { width:100%;max-width:100%;height:65px; }.growlio-partner-strip a { justify-self:end; }.about-photo-pair .community-photo { height:230px; }}
+@media(max-width:760px){.about-photo-pair { grid-template-columns:1fr;gap:22px;margin-top:38px; }.about-photo-pair .community-photo { height:auto;max-height:none; }.way-art.has-community-photo { min-height:0;padding:22px; }.way-art .way-community-photo { max-height:none;width:100%;height:auto; }.hero-image-brand { padding:12px 17px; }.hero-image-brand img { width:70px;height:80px; }}
+/* Owner-requested site motion: one global pause control governs SVG and CSS loops. */
+.motion-control { min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 15px;border:1px solid #6c8d73;border-radius:50px;font-size:11px;background:#FAFADD;color:#034F47;cursor:pointer; }
+.motion-control:disabled { cursor:default;opacity:.75; }
+.growlio-hero-shell { min-height:965px;padding-bottom:180px; }
+.logo-motion-ribbon { position:absolute;bottom:15px;left:-60px;right:-60px;height:190px;pointer-events:none;overflow:hidden;z-index:2; }
+.logo-motion-ribbon svg { width:100%;height:100%;overflow:hidden; }
+.hero-motion-control { position:absolute;right:0;bottom:4px;z-index:5; }
+html[data-motion=paused] *,html[data-motion=paused] *::before,html[data-motion=paused] *::after { animation-play-state:paused!important; }
+html[data-motion=paused] .hero-copy,html[data-motion=paused] .growlio-hero-image,html[data-motion=paused] .motion-entered { animation:none!important; }
+.motion-entered { animation:premium-section-enter .7s cubic-bezier(.22,1,.36,1) both; }
+@keyframes premium-section-enter { from { opacity:.8;transform:translateY(15px); } to { opacity:1;transform:translateY(0); } }
+.way-art:not(.has-community-photo) .way-orbit { animation:orbit-breathe 7s ease-in-out infinite; }
+@keyframes orbit-breathe { 0%,100% { transform:rotate(-20deg) scale(.98); } 50% { transform:rotate(0deg) scale(1.035); } }
+.growlio-way,.home-tournament-card,.editorial-panel { transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s; }
+.growlio-way:hover,.home-tournament-card:hover { transform:translateY(-4px);box-shadow:0 16px 36px #034F4712; }
+.home-tournament-card .tournament-art img,.way-community-photo { transition:transform .65s cubic-bezier(.22,1,.36,1); }
+.home-tournament-card:hover .tournament-art img { transform:scale(1.04) rotate(-2deg); }
+.way-art.has-community-photo { overflow:hidden; }
+.growlio-way:hover .way-art .way-community-photo { transform:scale(1.025); }
+.text-link svg,.footer-connect svg { transition:transform .25s; }
+.text-link:hover svg,.footer-connect:hover svg { transform:translate(3px,-3px); }
+@media(max-width:760px){.growlio-hero-shell { min-height:0;padding-bottom:150px; }.logo-motion-ribbon { height:130px;left:-100px;right:-100px;bottom:20px; }.hero-motion-control { bottom:2px;right:0; }.motion-control { font-size:10px;padding:10px 13px; }}
+@media(prefers-reduced-motion:reduce){.motion-entered { animation:none; }.growlio-way:hover,.home-tournament-card:hover,.home-tournament-card:hover .tournament-art img,.growlio-way:hover .way-art .way-community-photo { transform:none; }}
+.site-motion-toolbar { display:flex;justify-content:flex-end;padding-bottom:8px;margin-top:-10px; }
+@media(max-width:760px){.site-motion-toolbar { margin-top:-4px;padding-bottom:6px; }}
+
+/* Pausing also removes movement initiated by the site's intentional hover effects. */
+html[data-motion=paused] .premium-button:hover,
+html[data-motion=paused] .hero-cta:hover,
+html[data-motion=paused] .hover-lift:hover,
+html[data-motion=paused] .growlio-way:hover,
+html[data-motion=paused] .home-tournament-card:hover,
+html[data-motion=paused] .home-tournament-card:hover .tournament-art img,
+html[data-motion=paused] .growlio-way:hover .way-art .way-community-photo,
+html[data-motion=paused] .text-link:hover svg,
+html[data-motion=paused] .footer-connect:hover svg,
+html[data-motion=paused] .journey-card a:hover svg,
+html[data-motion=paused] .game-links a:hover svg { transform:none; }

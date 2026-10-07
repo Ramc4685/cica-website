@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { SponsorShowcase } from "@/components/sponsor-showcase"
+import { SponsorSpotlight } from "@/components/sponsor-spotlight"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -48,7 +48,7 @@ export default function SponsorsPage() {
         <h1 className="mt-5 mx-auto max-w-4xl">Support the moments that bring us together.</h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">Help cricket thrive in Central Illinois. Let us explore a partnership that makes sense for your organization and our community.</p>
       </header>
-      <SponsorShowcase />
+      <SponsorSpotlight />
       <div className="grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
         <aside className="editorial-panel h-fit p-6 sm:p-8"><p className="eyebrow">Built around community</p><h2 className="mt-4 text-3xl">A partnership with purpose.</h2><p className="mt-5 text-muted-foreground">Connect with people who share a love of cricket. Talk with CICA about tournament support, equipment, or community events.</p><p className="mt-5 text-muted-foreground">Availability, recognition and partnership terms are agreed directly with the organizers. Send an inquiry to start the conversation.</p><a className="mt-6 inline-flex break-all font-semibold underline underline-offset-4" href="mailto:organizers@cicainfo.com?subject=Sponsorship%20inquiry">Email the organizers</a><div className="mt-8 border-t pt-6"><p className="eyebrow">Our community in action</p><a className="mt-3 inline-flex font-semibold underline underline-offset-4" href="https://www.facebook.com/cicacric/" target="_blank" rel="noopener noreferrer">Visit CICA on Facebook ↗</a></div></aside>
         <section className="editorial-panel p-6 sm:p-8" aria-labelledby="form-heading">

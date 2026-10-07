@@ -28,6 +28,8 @@ The old prototype admin remains disabled. Real content administration needs secu
 
 The public design follows CICA branding and a warm community/family direction inspired by Growlio’s editorial layout. Shared tokens, responsive navigation and reduced-motion behavior are defined in app/globals.css. Logo derivatives are sized for static hosting; preserve original logo proportions. Do not publish sample endorsements, unsourced statistics, fabricated dates or generic photos presented as CICA events. Current event details come from organizers and CricClubs; specific tournament rules defer to official documents.
 
+The curved hero ribbon interleaves CICA, team and sponsor logos. Home and Sponsors feature a large sponsor spotlight and moving logo strip. The shared motion control pauses automatic movement across routes; system reduced-motion preferences disable it. Sponsor cycling also pauses during pointer or keyboard interaction. Ten authentic community photographs appear on the homepage and in the keyboard-accessible Gallery; see [photo provenance and sizing](docs/community-imagery.md).
+
 The domain and DNS remain at GoDaddy; website and mail hosting remain at Namecheap. Website and mail A records use `192.64.118.48`, while SPF preserves the provider's separate outbound IP. The deployment does not change mailbox settings or renew SSL/hosting subscriptions.
 
 Issues [#1](https://github.com/Ramc4685/cica-website/issues/1), [#2](https://github.com/Ramc4685/cica-website/issues/2) and [#3](https://github.com/Ramc4685/cica-website/issues/3) track the security, deployment and UI corrections. Historical sample news/testimonials were removed from public presentation.
