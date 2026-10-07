@@ -71,3 +71,25 @@ describe('format counts typed in the editor', () => {
     expect(() => parseContent(tournamentsFileSchema, data, 'tournaments.json')).toThrow(/overs/)
   })
 })
+
+// Mirrors Pages CMS sanitizeObject: a save deletes keys whose value is "" or an empty array.
+function sanitize(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sanitize)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, sanitize(child)]).filter(([, child]) => child !== '' && !(Array.isArray(child) && child.length === 0)))
+  }
+  return value
+}
+
+describe('content after a Pages CMS save strips blank values and empty lists', () => {
+  const files = [['champions.json', championsFileSchema, champions], ['photos.json', photosFileSchema, photos], ['tournaments.json', tournamentsFileSchema, tournaments], ['season.json', seasonFileSchema, season]] as const
+  it.each(files)('%s still parses to the same app data', (file, schema, data) => {
+    const saved = sanitize(clone(data))
+    expect(parseContent(schema as never, saved, file)).toEqual(parseContent(schema as never, data, file))
+  })
+  it('accepts a competition whose seasons were all removed', () => {
+    const data = clone(champions) as any
+    data.competitions[0].records = []
+    expect(parseContent(championsFileSchema, sanitize(data), 'champions.json').competitions[0].records).toEqual([])
+  })
+})

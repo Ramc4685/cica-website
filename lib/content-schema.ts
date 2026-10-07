@@ -16,13 +16,14 @@ const imagePath = (folder: RegExp) => z.string().max(200)
   .refine(value => !value.includes(".."), "Invalid image path")
   .refine(value => uploadExt.test(value), "Use a JPG, PNG or WebP image")
 
+// Pages CMS deletes keys whose value is "" or [] when it saves, so those keys must be optional or defaulted.
 export const championPhotoSchema = z.object({
   src: imagePath(/^\/uploads\/champions\/[A-Za-z0-9._-]+$/),
   alt: text(200),
 }).strict()
 
 export const championsFileSchema = z.object({
-  recordsUpdated: z.union([z.literal(""), isoDate]),
+  recordsUpdated: optionalIsoDate,
   competitions: z.array(z.object({
     id: z.enum(["mains", "cica-indoor", "cpl-indoor", "cpl-outdoor", "mini", "challengers"]),
     title: text(80),
@@ -32,8 +33,8 @@ export const championsFileSchema = z.object({
       runnerUp: optionalText(80),
       notes: optionalText(300),
       photo: championPhotoSchema.optional(),
-    }).strict()),
-  }).strict()),
+    }).strict()).default([]),
+  }).strict()).default([]),
 }).strict()
 
 export const photosFileSchema = z.object({
@@ -69,14 +70,14 @@ export const tournamentsFileSchema = z.object({
       ballType: z.enum(["leather", "tennis", "tbc"]).optional(),
       squadSize: countOrTbc(40),
       rulesPdf: optionalHttpsUrl,
-    }).strict(),
-  }).strict()),
+    }).strict().default({}),
+  }).strict()).default([]),
 }).strict()
 
 export const seasonFileSchema = z.object({
-  events: z.array(z.object({ id: slug, title: text(120), date: isoDate, competitionId: optionalSlug, venueId: optionalSlug, summary: optionalText(400), url: optionalHttpsUrl }).strict()),
-  announcements: z.array(z.object({ id: slug, title: text(120), date: isoDate, body: text(2000), url: optionalHttpsUrl }).strict()),
-  faq: z.array(z.object({ id: slug, question: text(200), answer: text(5000) }).strict()),
+  events: z.array(z.object({ id: slug, title: text(120), date: isoDate, competitionId: optionalSlug, venueId: optionalSlug, summary: optionalText(400), url: optionalHttpsUrl }).strict()).default([]),
+  announcements: z.array(z.object({ id: slug, title: text(120), date: isoDate, body: text(2000), url: optionalHttpsUrl }).strict()).default([]),
+  faq: z.array(z.object({ id: slug, question: text(200), answer: text(5000) }).strict()).default([]),
 }).strict()
 
 export function parseContent<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, data: unknown, file: string): T {
