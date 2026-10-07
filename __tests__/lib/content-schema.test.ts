@@ -57,3 +57,17 @@ describe('blank optional fields from the editor', () => {
     expect(parseContent(championsFileSchema, champs, 'champions.json').competitions[0].records[0].runnerUp).toBeUndefined()
   })
 })
+
+describe('format counts typed in the editor', () => {
+  it('coerce numeric text to numbers, keep tbc, and reject other text', () => {
+    const data = clone(tournaments) as any
+    data.tournaments[0].format.overs = '13'
+    data.tournaments[0].format.squadSize = ''
+    const parsed = parseContent(tournamentsFileSchema, data, 'tournaments.json')
+    expect(parsed.tournaments[0].format.overs).toBe(13)
+    expect(parsed.tournaments[0].format.squadSize).toBeUndefined()
+    expect(parsed.tournaments[1].format.overs).toBe('tbc')
+    data.tournaments[0].format.overs = 'lots'
+    expect(() => parseContent(tournamentsFileSchema, data, 'tournaments.json')).toThrow(/overs/)
+  })
+})

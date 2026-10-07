@@ -49,6 +49,11 @@ export const photosFileSchema = z.object({
 }).strict()
 
 const tbc = z.literal("tbc")
+// Pages CMS has no number-or-"tbc" field, so organizers type these as text; "13" becomes 13.
+const countOrTbc = (max: number) => z.preprocess(
+  value => (typeof value === "string" && /^\d+$/.test(value.trim()) ? Number(value.trim()) : blankToUndefined(value)),
+  z.union([z.number().int().min(1).max(max), tbc]).optional(),
+)
 export const tournamentsFileSchema = z.object({
   tournaments: z.array(z.object({
     id: slug,
@@ -60,9 +65,9 @@ export const tournamentsFileSchema = z.object({
     registrationDeadline: optionalIsoDate,
     registrationUrl: optionalHttpsUrl,
     format: z.object({
-      overs: z.union([z.number().int().min(1).max(100), tbc]).optional(),
+      overs: countOrTbc(100),
       ballType: z.enum(["leather", "tennis", "tbc"]).optional(),
-      squadSize: z.union([z.number().int().min(1).max(40), tbc]).optional(),
+      squadSize: countOrTbc(40),
       rulesPdf: optionalHttpsUrl,
     }).strict(),
   }).strict()),
