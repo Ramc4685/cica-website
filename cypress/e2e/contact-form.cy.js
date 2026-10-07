@@ -28,7 +28,7 @@ describe('Contact Form', () => {
     cy.findByText(/Last name is required/i).should('be.visible');
     cy.findByText(/Invalid email address/i).should('be.visible');
     cy.findByText(/Subject is required/i).should('be.visible');
-    cy.findByText(/Message must be at least 10 characters/i).should('be.visible');
+    cy.findByText(/Message is required/i).should('be.visible');
   });
 
   it('should fill and submit the form', () => {
@@ -54,6 +54,8 @@ describe('Contact Form', () => {
       expect(request.body.website).to.eq('');
       expect(response.statusCode).to.eq(200);
     });
+    cy.findByRole('heading', { name: /Thanks, we'll be in touch/i }).should('have.focus');
+    cy.contains('a1b2c3d4e5f6a1b2c3d4e5f6').should('be.visible');
   });
 
   const fillContact = () => {
