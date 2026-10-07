@@ -26,14 +26,16 @@ export interface PathwayCardsProps {
   title?: ReactNode
   subtitle?: ReactNode
   headingId?: string
+  /** `label` drops the display heading for a small tag-row heading (use straight under a PageHero). */
+  introVariant?: "display" | "label"
   className?: string
 }
 
 /** /get-involved pathways in the tier-card anatomy. "Play cricket" is always the green card. */
-export function PathwayCards({ items = pathways, tag = "Find your place", title = "Play, help, watch\nor *support.*", subtitle, headingId = "pathways-title", className }: PathwayCardsProps) {
+export function PathwayCards({ items = pathways, tag = "Find your place", title = "Play, help, watch\nor *support.*", subtitle, headingId = "pathways-title", introVariant = "display", className }: PathwayCardsProps) {
   if (items.length === 0) return null
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
-    <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} variant={introVariant} reveal />
     <TierCardStack label="Ways to get involved">
       {items.map(item => <TierCard key={item.id} id={`pathway-${item.id}`} title={item.title} summary={item.summary}
         featured={item.id === "play"} bullets={item.expect} bulletsLabel="What to expect" cta={item.cta} />)}

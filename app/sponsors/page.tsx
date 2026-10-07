@@ -36,7 +36,7 @@ export default function SponsorsPage() {
     <SponsorList />
     <SponsorTiers />
     <div className="page-shell grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
-      <aside className="editorial-panel h-fit p-6 sm:p-8">
+      <aside className={s.card}>
         <p className="tag-row">Built around community</p>
         <h2 className="mt-4 font-display text-h3 font-normal">A partnership with purpose.</h2>
         <p className="mt-5 text-[color:var(--cica-green-soft)]">Connect with people who share a love of cricket. Talk with CICA about tournament support, equipment, or community events.</p>

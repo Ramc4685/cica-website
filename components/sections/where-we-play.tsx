@@ -32,7 +32,7 @@ export function WhereWePlay({ venues = allVenues, tag = "Where we play", title =
           </dl>
           {venue.mapUrl
             ? <CapsuleLink href={venue.mapUrl} external variant="outline" aria-label={`Open ${venue.name} in maps (opens in a new tab)`}>Open in maps</CapsuleLink>
-            : <CapsuleLink href="/contact/" variant="outline">Ask for directions</CapsuleLink>}
+            : <CapsuleLink href="/contact/" variant="outline">Ask for directions<span className="sr-only"> to {venue.name}</span></CapsuleLink>}
         </article>
       </li>)}
     </ul>

@@ -9,7 +9,7 @@
 .step:hover { color:var(--cica-cream); }
 .step[aria-selected=true] { background:var(--cica-paper);color:var(--cica-green); }
 .step:focus-visible { outline:2px solid var(--cica-cream);outline-offset:2px; }
-.number { font-family:var(--font-display),Georgia,serif;font-size:20px;line-height:1;color:var(--cica-mint); }
+.number { font-family:var(--font-display),Georgia,serif;font-size:20px;font-weight:400;line-height:1;color:var(--cica-mint); }
 .step[aria-selected=true] .number { color:var(--cica-mint-deep); }
 
 .panel { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center; }

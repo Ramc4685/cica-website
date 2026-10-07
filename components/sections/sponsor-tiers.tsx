@@ -21,15 +21,18 @@ export interface SponsorTiersProps {
   className?: string
 }
 
-/** Stacked horizontal sponsorship cards. Premium is always the green card; no prices are shown. */
-export function SponsorTiers({ tiers = allTiers, tag = "Ways to partner", title = "Support local\n*cricket.*", subtitle = "Each partnership is agreed with the organizers. Ask about a tier and they will talk you through it.", headingId = "sponsor-tiers-title", className }: SponsorTiersProps) {
+/**
+ * Stacked horizontal sponsorship cards. Premium is always the green card; no prices are shown.
+ * TODO(organizers): confirmed per-tier benefits go in lib/season sponsorTiers; until then each card
+ * is one column and the section subtitle says benefits are agreed with the organizers.
+ */
+export function SponsorTiers({ tiers = allTiers, tag = "Ways to partner", title = "Support local\n*cricket.*", subtitle = "Each partnership and its benefits are agreed with the organizers. Ask about a tier and they will share the current details.", headingId = "sponsor-tiers-title", className }: SponsorTiersProps) {
   if (tiers.length === 0) return null
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
     <TierCardStack label="Sponsorship tiers">
       {tiers.map(tier => <TierCard key={tier.id} id={`tier-${tier.id}`} title={tier.name} summary={tier.summary}
         featured={tier.id === "premium"} bullets={tier.benefits} bulletsLabel="What’s included"
-        emptyNote="Benefits are agreed with the organizers for each partner. Ask and they will share the current details."
         cta={{ href: sponsorTierHref(tier.id), label: "Ask about this tier" }} />)}
     </TierCardStack>
   </section>

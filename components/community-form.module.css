@@ -1,9 +1,15 @@
 .card {
   scroll-margin-top: calc(var(--header-height) + 20px);
-  padding: clamp(24px, 4vw, 44px);
+  /* Same radius and padding as the soft .card beside it (app/inner-page.module.css), so tag rows line up.
+     The card stays cream with a hairline so the white fields read as fields. */
+  padding: 40px;
   border: 1px solid var(--cica-hairline);
   border-radius: 32px;
   background: var(--cica-cream);
+}
+
+@media (max-width: 760px) {
+  .card { padding: 26px 22px; border-radius: 26px; }
 }
 
 .title {

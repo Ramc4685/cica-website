@@ -2,6 +2,7 @@ import { CommunityForm, type CommunityField } from "@/components/community-form"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
 
 export const metadata = pageMetadata("Contact our organizers", "Get in touch with CICA’s organizers about cricket, volunteering, tournaments or the Central Illinois community.", "/contact/")
 
@@ -19,7 +20,7 @@ export default function ContactPage() {
     <PageHero tag="Contact CICA" title="A conversation *starts here.*"
       intro="New to cricket, planning a family visit, or interested in helping out? Tell us what you have in mind." />
     <div className="page-shell grid items-start gap-8 pb-20 lg:grid-cols-[0.9fr_1.1fr]">
-      <aside className="editorial-panel h-fit p-6 sm:p-8">
+      <aside className={s.card}>
         <p className="tag-row">A friendly first step</p>
         <h2 className="mt-4 font-display text-h3 font-normal">You do not need to know a team to reach out.</h2>
         <p className="mt-5 text-[color:var(--cica-green-soft)]">Ask about playing, watching cricket with family, volunteering, or a tournament. The organizers can help you find your next step.</p>

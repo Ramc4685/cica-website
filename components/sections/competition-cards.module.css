@@ -4,9 +4,11 @@
 
 .card { --card-bg:var(--cica-green);--card-fg:var(--cica-cream);--card-muted:var(--cica-on-dark-muted);--pill-bg:hsl(var(--cica-cream-hsl) / .14);--focus:var(--cica-cream);
   display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px;align-items:stretch;padding:44px 48px;border-radius:40px;background:var(--card-bg);color:var(--card-fg); }
-.card[data-card-tone=ball] { --card-bg:var(--cica-ball); }
-/* Light saturated tones carry ink text (mint-deep 5:1, pitch 8:1) and an ink capsule. */
-.card[data-card-tone=mint-deep],.card[data-card-tone=pitch] { --card-fg:var(--cica-ink);--card-muted:hsl(var(--cica-ink-hsl) / .82);--pill-bg:hsl(var(--cica-paper-hsl) / .38);--focus:var(--cica-ink); }
+/* Muted text on ball red is full cream: the usual #D6DEC8 is only 4.3:1 there (cream is 5.5:1). */
+.card[data-card-tone=ball] { --card-bg:var(--cica-ball);--card-muted:var(--cica-cream);--pill-bg:hsl(var(--cica-cream-hsl) / .08); }
+/* Light saturated tones carry ink text (mint-deep 5:1, pitch 7.6:1) and an ink capsule. Muted text stays
+   full ink: at 82% alpha it dropped to 4:1 on mint-deep. */
+.card[data-card-tone=mint-deep],.card[data-card-tone=pitch] { --card-fg:var(--cica-ink);--card-muted:var(--cica-ink);--pill-bg:hsl(var(--cica-paper-hsl) / .38);--focus:var(--cica-ink); }
 .card[data-card-tone=mint-deep] { --card-bg:var(--cica-mint-deep); }
 .card[data-card-tone=pitch] { --card-bg:var(--cica-pitch); }
 .card[data-card-tone=mint-deep] :global(.capsule),.card[data-card-tone=pitch] :global(.capsule) { --capsule-fg:var(--cica-ink);--capsule-on:var(--cica-cream); }

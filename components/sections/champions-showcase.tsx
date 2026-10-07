@@ -4,9 +4,9 @@ import Image from "next/image"
 import { useId, type ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
-import { competitions as allCompetitions, type Competition } from "@/lib/champions"
+import { competitions as allCompetitions, computeChampionStats, recordsUpdated, type Competition } from "@/lib/champions"
 import { cn } from "@/lib/utils"
-import { buildChampionHighlights, smallLogo, tournamentForCompetition } from "./competition-meta"
+import { buildChampionHighlights, formatIsoDate, smallLogo, tournamentForCompetition } from "./competition-meta"
 import { useRovingTabs } from "./use-roving-tabs"
 import styles from "./champions-showcase.module.css"
 
@@ -19,11 +19,20 @@ export interface ChampionsShowcaseProps {
   title?: ReactNode
   subtitle?: ReactNode
   headingId?: string
+  /** `label` drops the display heading for a small tag-row heading (use straight under a PageHero). */
+  introVariant?: "display" | "label"
   className?: string
 }
 
+/** "Archive last updated <date>" once organizers confirm a date, otherwise the newest recorded season. */
+function archiveStatus(list: readonly Competition[]) {
+  if (recordsUpdated) return `Archive last updated ${formatIsoDate(recordsUpdated)}.`
+  const { latestSeason } = computeChampionStats(list)
+  return latestSeason ? `Records run through the ${latestSeason} season.` : undefined
+}
+
 /** Pill tab track over a feature card per competition, with the season archive below in the full variant. */
-export function ChampionsShowcase({ competitions = allCompetitions, variant = "full", tag, title, subtitle, headingId = "champions-title", className }: ChampionsShowcaseProps) {
+export function ChampionsShowcase({ competitions = allCompetitions, variant = "full", tag, title, subtitle, headingId = "champions-title", introVariant = "display", className }: ChampionsShowcaseProps) {
   const compact = variant === "compact"
   const list = compact ? competitions.filter(competition => competition.records.length > 0) : competitions
   const { active, setActive, onKeyDown, registerTab } = useRovingTabs(list.length)
@@ -31,12 +40,15 @@ export function ChampionsShowcase({ competitions = allCompetitions, variant = "f
   if (list.length === 0) return null
   const tabId = (index: number) => `${baseId}-tab-${index}`
   const panelId = (index: number) => `${baseId}-panel-${index}`
+  const status = archiveStatus(list)
+  const intro = subtitle ?? "Champions as recorded by CICA. Missing seasons are being confirmed with organizers."
   return <section className={cn(styles.section, "page-shell", className)} data-variant={variant} aria-labelledby={headingId}>
     <SectionIntro
       tag={tag ?? (compact ? "Recent champions" : "Roll of honour")}
       title={title ?? (compact ? "Proud names on\nthe *trophy.*" : "Every recorded\n*champion.*")}
-      subtitle={subtitle ?? "Champions as recorded by CICA. Missing seasons are being confirmed with organizers."}
+      subtitle={status ? <>{intro} <span className={styles.status}>{status}</span></> : intro}
       id={headingId}
+      variant={introVariant}
       reveal
     />
     <div className={styles.track} role="tablist" aria-label="Competitions" onKeyDown={onKeyDown}>

@@ -1,11 +1,12 @@
 "use client"
 
 import { Printer } from "lucide-react"
-import styles from "./documents.module.css"
 
-/** Opens the browser's print dialog; the print stylesheet in documents.module.css drops the site chrome. */
+/** Opens the browser's print dialog in the capsule anatomy (printer icon in the circle); the print
+ * stylesheet in documents.module.css drops the site chrome. */
 export function PrintButton({ label = "Print" }: { label?: string }) {
-  return <button type="button" className={styles.printButton} onClick={() => window.print()}>
-    <Printer size={18} aria-hidden="true" />{label}
+  return <button type="button" className="capsule" data-tone="green" data-variant="outline" onClick={() => window.print()}>
+    <span className="capsule-icon"><Printer aria-hidden="true" /></span>
+    <span className="capsule-label">{label}</span>
   </button>
 }

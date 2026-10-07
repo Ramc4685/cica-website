@@ -65,7 +65,7 @@ export function CompetitionCards({ tournaments = allTournaments, variant = "home
               {latest
                 ? <p className={styles.champion}><span>Last recorded champion</span><strong>{latest.champion}</strong><span>{latest.season}</span></p>
                 : <p className={styles.champion}><span>Champions</span><strong className={styles.pending}>Being confirmed with organizers</strong></p>}
-              <CapsuleLink href={cta.href} external={cta.external} tone={tone === "green" || tone === "ball" ? "cream" : "green"} className={styles.cta}>{cta.label}</CapsuleLink>
+              <CapsuleLink href={cta.href} external={cta.external} tone={tone === "green" || tone === "ball" ? "cream" : "green"} className={styles.cta}>{cta.label}{variant === "page" && <span className="sr-only">{cta.external ? " for " : " about "}{tournament.name}</span>}</CapsuleLink>
             </div>
           </article>
         </li>

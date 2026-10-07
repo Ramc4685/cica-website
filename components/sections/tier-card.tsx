@@ -6,30 +6,27 @@ export interface TierCardProps {
   id: string
   title: string
   summary: ReactNode
-  /** Square-dot bullets on the right. When empty, `emptyNote` is shown instead. */
+  /** Square-dot bullets on the right. When empty, the right column is left out and the card is one column. */
   bullets: readonly string[]
   bulletsLabel: string
-  emptyNote?: ReactNode
   cta: { href: string; label: string; external?: boolean }
   /** The one always-green card in a stack (Premium partner, Play cricket). */
   featured?: boolean
 }
 
 /** Horizontal card shared by sponsor tiers and get-involved pathways: name, line and capsule left, bullets right. */
-export function TierCard({ id, title, summary, bullets, bulletsLabel, emptyNote, cta, featured = false }: TierCardProps) {
+export function TierCard({ id, title, summary, bullets, bulletsLabel, cta, featured = false }: TierCardProps) {
   const titleId = `${id}-title`
-  return <article id={id} className={styles.card} data-featured={featured || undefined} data-tone={featured ? "green" : undefined} aria-labelledby={titleId}>
+  return <article id={id} className={styles.card} data-single={bullets.length === 0 || undefined} data-featured={featured || undefined} data-tone={featured ? "green" : undefined} aria-labelledby={titleId}>
     <div className={styles.lead}>
       <h3 id={titleId} className={styles.title}>{title}</h3>
       <p className={styles.summary}>{summary}</p>
       <CapsuleLink href={cta.href} external={cta.external} tone={featured ? "cream" : "green"} className={styles.cta}>{cta.label}</CapsuleLink>
     </div>
-    <div className={styles.detail}>
+    {bullets.length > 0 && <div className={styles.detail}>
       <p className={styles.detailLabel}>{bulletsLabel}</p>
-      {bullets.length > 0
-        ? <ul className={styles.bullets}>{bullets.map(bullet => <li key={bullet}>{bullet}</li>)}</ul>
-        : <p className={styles.empty}>{emptyNote}</p>}
-    </div>
+      <ul className={styles.bullets}>{bullets.map(bullet => <li key={bullet}>{bullet}</li>)}</ul>
+    </div>}
   </article>
 }
 

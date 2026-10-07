@@ -57,7 +57,10 @@ describe('SponsorTiers', () => {
     expect(premium).toHaveAttribute('data-featured', 'true')
     expect(within(premium).getByRole('link', { name: /Ask about this tier/ }).getAttribute('href')).toMatch(/^\/sponsors\/?\?interest=premium#sponsor-form$/)
     expect(document.body).not.toHaveTextContent('$')
-    expect(screen.getAllByText(/Benefits are agreed with the organizers/)).toHaveLength(3)
+    // Unconfirmed benefits are said once in the intro, not repeated as filler on every card.
+    expect(screen.getAllByText(/benefits are agreed with the organizers/i)).toHaveLength(1)
+    expect(screen.queryByText('What’s included')).toBeNull()
+    expect(premium).toHaveAttribute('data-single', 'true')
     expect(sponsorTierHref('cpl-team')).toBe('/sponsors/?interest=cpl-team#sponsor-form')
     expect(sponsorTierFromInterest('matchday')?.name).toBe('Matchday & community supporter')
     expect(sponsorTierFromInterest('unknown')).toBeUndefined()

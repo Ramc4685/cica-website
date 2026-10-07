@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { CapsuleLink } from "@/components/ui/capsule-link"
+import { PageHero } from "@/components/ui/page-hero"
+import s from "../inner-page.module.css"
 
 // Landing page for form posts made without JavaScript (submit.php redirects here with ?ref=).
 export const metadata: Metadata = {
@@ -11,13 +13,11 @@ export const metadata: Metadata = {
 
 export default function ThankYouPage() {
   return (
-    <section className="page-hero">
-      <div className="page-shell">
-        <p className="eyebrow">Request received</p>
-        <h1>Thank you. We have it.</h1>
-        <p>An organizer will follow up using the email address you gave. If you need to reach us sooner, email <a className="text-link" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>.</p>
-        <CapsuleLink href="/" className="mt-8">Back to home</CapsuleLink>
+    <PageHero tag="Request received" title={"Thank you.\nWe have it."} className="utility-hero"
+      intro={<>An organizer will follow up using the email address you gave. If you need to reach us sooner, email <a className="underline underline-offset-4" href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>.</>}>
+      <div className={`${s.actions} ${s.heroActions}`}>
+        <CapsuleLink href="/">Back to home</CapsuleLink>
       </div>
-    </section>
+    </PageHero>
   )
 }

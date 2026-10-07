@@ -12,7 +12,11 @@
 .specialties { display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;padding:0;list-style:none; }
 .specialties li { padding:8px 14px;border-radius:100px;background:var(--cica-tint-green);font-size:14px;font-weight:500;line-height:1.3; }
 .contributions { margin-top:26px;border-top:1px solid var(--cica-hairline);padding-top:10px; }
-.contributions summary { display:flex;align-items:center;min-height:44px;font-weight:600;cursor:pointer; }
+.contributions summary { display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px;font-weight:600;cursor:pointer;list-style:none; }
+.contributions summary::-webkit-details-marker { display:none; }
+/* Same +/− affordance as the FAQ and contents disclosures. */
+.contributions summary::after { content:'+';flex-shrink:0;font-size:22px;font-weight:400;line-height:1; }
+.contributions[open] summary::after { content:'\2212'; }
 .contributions ul { display:grid;gap:10px;margin:10px 0 0;padding:0;list-style:none; }
 .contributions li { display:flex;align-items:baseline;gap:12px;font-size:16px;line-height:1.55; }
 .contributions li:before { content:'';flex-shrink:0;width:8px;height:8px;border-radius:2px;background:currentColor;transform:translateY(-2px); }

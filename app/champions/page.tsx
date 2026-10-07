@@ -13,7 +13,7 @@ export default function ChampionsPage() {
     <PageHero tag="The champions archive" title={"Great teams.\nMemorable *seasons.*"}
       intro="A celebration of the teams recorded in CICA’s tournament history. Some years and runners-up are not recorded here, so the archive is not a complete season history." />
 
-    <ChampionsShowcase className={s.flushTop} />
+    <ChampionsShowcase introVariant="label" className={s.flushTop} />
 
     <section className={s.band} data-tone="ink" aria-labelledby="archive-help-title">
       <div className="page-shell">

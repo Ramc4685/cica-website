@@ -65,6 +65,9 @@
   * { @apply border-border; }
   html { scroll-behavior:smooth; scroll-padding-top:calc(var(--header-height) + 20px); }
   body { margin:0; background:var(--cica-cream); color:var(--cica-green); font-family:var(--font-body),Arial,sans-serif; font-synthesis-weight:none; }
+  /* Footer sits at the bottom of short pages without padding main to a full screen. */
+  body { display:flex;flex-direction:column;min-height:100svh; }
+  body > main { flex:1 0 auto; }
   h1,h2,h3 { text-wrap:balance; }
   button,input,textarea,select { font:inherit; }
   a,button,summary { -webkit-tap-highlight-color:transparent; }
@@ -84,10 +87,10 @@
 .skip-link:focus { transform:translateY(0); }
 .page-shell { width:min(100% - 120px,1280px);margin-inline:auto; }
 
-/* Tag row: 8px rounded-square dot + sentence-case label. .eyebrow is the legacy name. */
-.tag-row,.eyebrow { display:flex;align-items:center;gap:10px;margin:0 0 20px;font-size:clamp(14px,.85rem + .2vw,16px);line-height:1.4;font-weight:500;letter-spacing:0;color:inherit; }
-.tag-row:before,.eyebrow:before { content:'';flex-shrink:0;width:8px;height:8px;border-radius:2px;background:currentColor; }
-.section-intro[data-align=center] .tag-row,.page-hero .eyebrow,.page-hero .tag-row { justify-content:center; }
+/* Tag row: 8px rounded-square dot + sentence-case label. */
+.tag-row { display:flex;align-items:center;gap:10px;margin:0 0 20px;font-size:clamp(14px,.85rem + .2vw,16px);line-height:1.4;font-weight:500;letter-spacing:0;color:inherit; }
+.tag-row:before { content:'';flex-shrink:0;width:8px;height:8px;border-radius:2px;background:currentColor; }
+.section-intro[data-align=center] .tag-row,.page-hero .tag-row { justify-content:center; }
 
 .section-heading { font-family:var(--font-display),Georgia,serif;font-weight:400;font-size:var(--step-h2);line-height:1;letter-spacing:-.02em;margin:0 0 24px; }
 .section-heading em,.page-hero h1 em { font-style:normal;color:var(--cica-mint-deep); }
@@ -95,6 +98,9 @@
 .section-intro[data-align=center] { margin-inline:auto;text-align:center; }
 .section-intro-subtitle { max-width:570px;font-size:17px;line-height:1.6;color:var(--cica-green-soft); }
 .section-intro[data-align=center] .section-intro-subtitle { margin-inline:auto; }
+.section-intro[data-variant=label] { margin-bottom:32px; }
+.section-intro[data-variant=label] .tag-row { margin-bottom:10px; }
+.section-intro[data-variant=label] .section-intro-subtitle { margin-block:0;font-size:16px; }
 .section-intro[data-tone=dark] { color:var(--cica-cream); }
 .section-intro[data-tone=dark] .section-heading em { color:var(--cica-mint); }
 .section-intro[data-tone=dark] .section-intro-subtitle { color:var(--cica-on-dark-muted); }
@@ -108,6 +114,10 @@
 .capsule[data-variant=outline] .capsule-label { background:transparent;color:var(--capsule-fg);padding-left:14px; }
 .capsule[data-size=block] { display:flex;width:100%; }
 .capsule[data-size=block] .capsule-label { flex:1; }
+/* <button class="capsule"> (print, form submit) keeps the same anatomy as the link. */
+button.capsule { background:transparent;font:inherit;cursor:pointer; }
+button.capsule:disabled { cursor:not-allowed;opacity:.6;transform:none; }
+.capsule-icon .animate-spin { width:22px;height:22px; }
 .capsule:hover { transform:translateY(-3px); }
 @media (max-width:760px) {
   .capsule-icon { width:46px;height:46px; }
@@ -132,7 +142,7 @@
 .brand { display:inline-flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none; }
 .brand img { width:52px;height:52px;object-fit:contain; }
 .brand strong { display:block;font-size:24px;line-height:1.05;letter-spacing:-.7px;color:var(--cica-ink); }
-.brand small { display:block;margin-top:3px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--cica-green); }
+.brand small { display:block;margin-top:3px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--cica-green); }
 .desktop-navigation { display:flex;align-items:center;gap:28px;margin-left:auto;font-size:15px;font-weight:500;color:var(--cica-ink); }
 .desktop-navigation>a,.more-menu summary { display:flex;align-items:center;gap:8px;min-height:44px; }
 .desktop-navigation>a:before,.more-menu summary:before { content:'';width:6px;height:6px;border-radius:1px;background:currentColor; }
@@ -166,6 +176,15 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
 .mobile-navigation-inner>a { padding:12px 4px;font-size:17px; }
 .mobile-navigation-inner .capsule { margin-top:12px; }
 @media (min-width:1100px) { .mobile-navigation { display:none; } }
+/* Without JavaScript the toggle cannot open the menu, so hide it and show the links in the header flow. */
+@media (scripting:none) and (max-width:1099px) {
+  .site-header { position:relative; }
+  .nav-shell { flex-wrap:wrap; }
+  .mobile-toggle { display:none!important; }
+  .mobile-navigation[hidden] { position:static;display:block;flex-basis:100%;max-height:none;box-shadow:none; }
+  .mobile-navigation-inner { width:100%;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px; }
+  .mobile-navigation-inner .capsule { grid-column:1/-1; }
+}
 @media (max-width:1099px) {
   .desktop-navigation { display:none; }
   .mobile-toggle { display:flex; }
@@ -176,7 +195,6 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
   .nav-shell { gap:12px; }
   .brand img { width:42px;height:42px; }
   .brand strong { font-size:21px; }
-  .brand small { font-size:9px; }
   .nav-cta { display:none!important; }
 }
 
@@ -268,7 +286,7 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
    --------------------------------------------------------------------------- */
 .page-hero { padding:72px 0;background:var(--cica-cream);text-align:center; }
 .page-hero h1 { font-family:var(--font-display),Georgia,serif;font-size:var(--step-hero);font-weight:400;line-height:.92;letter-spacing:-.02em; }
-.page-hero>p:not(.eyebrow),.page-hero .page-shell>p:not(.eyebrow),.page-hero-intro { max-width:700px;margin:20px auto 0;font-size:18px;line-height:1.6;color:var(--cica-green-soft); }
+.page-hero-intro { max-width:700px;margin:20px auto 0;font-size:18px;line-height:1.6;color:var(--cica-green-soft); }
 .page-hero[data-tone=green] { background:var(--cica-green);color:var(--cica-cream); }
 .page-hero[data-tone=ink] { background:var(--cica-ink);color:var(--cica-cream); }
 .page-hero[data-tone=green] .page-hero-intro,.page-hero[data-tone=ink] .page-hero-intro { color:var(--cica-on-dark-muted); }
@@ -278,9 +296,14 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
 .page-hero-shell[data-has-image] .page-hero-intro { margin-inline:0; }
 .page-hero-media { margin:0;overflow:hidden;border-radius:32px; }
 .page-hero-media img { aspect-ratio:4/3; }
-.editorial-panel { padding:32px;border:1px solid transparent;border-radius:24px;background:var(--cica-paper); }
 @media (max-width:900px) { .page-hero-shell[data-has-image] { grid-template-columns:1fr;gap:32px;text-align:center; } .page-hero-shell[data-has-image] .tag-row { justify-content:center; } .page-hero-shell[data-has-image] .page-hero-intro { margin-inline:auto; } }
-@media (max-width:760px) { .page-hero { padding:48px 0; } .editorial-panel { padding:24px; } }
+@media (max-width:760px) { .page-hero { padding:48px 0; } }
+/* Utility pages (thank-you, 404, admin): the hero is centred in whatever space is left above a
+   footer without its CTA band, instead of leaving a tall empty gap. */
+main:has(.utility-hero) { display:grid;align-content:center; }
+main:has(.utility-hero) + .site-footer .footer-cta { display:none; }
+main:has(.utility-hero) + .site-footer .footer-top { padding-top:56px; }
+.utility-hero { padding-block:clamp(72px,10vh,120px); }
 
 /* ---------------------------------------------------------------------------
    Footer
@@ -336,8 +359,6 @@ html[data-motion=paused] .desktop-navigation>a:hover { text-decoration:underline
 .reveal-word>span { display:inline-block; }
 html[data-motion=running] .reveal-heading.motion-waiting .reveal-word>span { transform:translateY(105%); }
 html[data-motion=running] .reveal-heading.motion-entered .reveal-word>span { animation:reveal-word .8s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--word-index,0) * 60ms); }
-
-.editorial-panel { transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s; }
 
 html[data-motion=paused] *,html[data-motion=paused] *::before,html[data-motion=paused] *::after { animation-play-state:paused!important; }
 html[data-motion=paused] .hero-copy,html[data-motion=paused] .motion-entered,html[data-motion=paused] .motion-entered .reveal-word>span { animation:none!important; }

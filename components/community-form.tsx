@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { CapsuleChevrons } from "@/components/ui/capsule-link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
@@ -177,9 +177,11 @@ export function CommunityForm({ kind, fields, tag, title, submitLabel, successCo
                 {failure.uncertain && <a className="mt-2 inline-flex break-all font-semibold text-green underline underline-offset-4" href={`mailto:${ORGANIZERS}`}>Email the organizers</a>}
               </div>
             )}
-            <Button type="submit" variant="capsule" size="block" className={styles.submit} disabled={isSubmitting}>
-              {isSubmitting ? <><Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden="true" />Sending…</> : submitLabel}
-            </Button>
+            {/* Full width on forms, but the same capsule anatomy as every CapsuleLink: chevron circle + serif label. */}
+            <button type="submit" className={cn("capsule", styles.submit)} data-tone="green" data-variant="filled" data-size="block" disabled={isSubmitting}>
+              <span className="capsule-icon">{isSubmitting ? <Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <CapsuleChevrons />}</span>
+              <span className="capsule-label">{isSubmitting ? "Sending…" : submitLabel}</span>
+            </button>
             <p className="text-sm text-[color:var(--cica-green-soft)]">
               Prefer email? <a className="break-all underline underline-offset-4" href={`mailto:${ORGANIZERS}`}>{ORGANIZERS}</a>
             </p>

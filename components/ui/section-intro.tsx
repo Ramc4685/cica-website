@@ -18,12 +18,19 @@ export interface SectionIntroProps {
   id?: string
   /** Animate a string title with the masked word reveal (once, motion permitting). */
   reveal?: boolean
+  /** `label` renders the tag itself as a small heading (no display title) for a section placed straight
+   * under a PageHero, so the hero stays the only display headline above the first content block. */
+  variant?: "display" | "label"
   className?: string
 }
 
 /** Tag row + display-serif heading + optional subtitle, shared by every section. */
-export function SectionIntro({ tag, title, subtitle, align = "center", as = "h2", tone = "light", id, reveal = false, className }: SectionIntroProps) {
+export function SectionIntro({ tag, title, subtitle, align = "center", as = "h2", tone = "light", id, reveal = false, variant = "display", className }: SectionIntroProps) {
   const Heading = as
+  if (variant === "label") return <div className={cn("section-intro", className)} data-align={align} data-tone={tone} data-variant="label">
+    <Heading id={id} className="tag-row">{tag}</Heading>
+    {subtitle && <p className="section-intro-subtitle">{subtitle}</p>}
+  </div>
   return <div className={cn("section-intro", className)} data-align={align} data-tone={tone}>
     <p className="tag-row">{tag}</p>
     {reveal && typeof title === "string"

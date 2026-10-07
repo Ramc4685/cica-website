@@ -2,18 +2,22 @@ import { PathwayCards } from "@/components/sections/pathway-cards"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { communityPhotos } from "@/lib/community-photos"
 import { communityLinks } from "@/lib/content"
 import { pageMetadata } from "@/lib/site-metadata"
 import s from "../inner-page.module.css"
 
 export const metadata = pageMetadata("Get involved", "Find your place in CICA: ask about playing cricket, volunteer, watch a match, support the association or request community updates.", "/get-involved/")
 
+const heroPhoto = communityPhotos.find(photo => photo.id === "family-celebration") ?? communityPhotos[0]
+
 export default function GetInvolvedPage() {
   return <>
     <PageHero tag="There’s a place for you here" title={"Come for the cricket.\nStay for the *community.*"}
-      intro="Whether you want to play, help out, cheer from the boundary or simply keep in touch, let’s find your next step." />
+      intro="Whether you want to play, help out, cheer from the boundary or simply keep in touch, let’s find your next step."
+      image={heroPhoto} />
 
-    <PathwayCards className={s.flushTop} />
+    <PathwayCards introVariant="label" className={s.flushTop} />
 
     <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="where-we-play-link-title">
       <div className={`${s.card} ${s.bandGrid}`}>

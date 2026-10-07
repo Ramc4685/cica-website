@@ -57,7 +57,7 @@ export function OfficialDocuments({ headingId = "documents-title" }: { headingId
           <div className={styles.docActions}>
             {doc.pageHref && <CapsuleLink href={doc.pageHref} tone="cream">Read on this site</CapsuleLink>}
             <CapsuleLink href={doc.url} tone="cream" variant="outline" external>Open in Drive</CapsuleLink>
-            {hasLocalCopy(doc) && <a className={styles.docPdf} href={doc.localPdf} download>Download PDF copy</a>}
+            {hasLocalCopy(doc) && <p className={styles.docPdf}><a href={doc.localPdf} download>Download PDF copy<span className="sr-only"> of {doc.title}</span></a></p>}
           </div>
         </li>)}
       </ul>

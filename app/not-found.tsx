@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <PageHero tag="Page not found" title={"That page is not\non the *pitch.*"}
+    <PageHero tag="Page not found" className="utility-hero" title={"That page is not\non the *pitch.*"}
       intro="The link may be old or mistyped. These pages will get you back into the game.">
       <div className={`${s.actions} ${s.heroActions}`}>
         <CapsuleLink href="/">Home</CapsuleLink>

@@ -66,8 +66,6 @@ ol.list { list-style:decimal; }
 .heroSource { justify-content:center;margin-top:24px; }
 .heroActions { display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;margin-top:28px; }
 
-.printButton { display:inline-flex;align-items:center;gap:12px;min-height:65px;padding:5px 30px 5px 22px;border:1.5px solid var(--cica-green);border-radius:100px;background:transparent;color:var(--cica-green);font-family:var(--font-display),Georgia,serif;font-size:22px;font-weight:400;line-height:1.1;cursor:pointer;transition:background-color .2s,color .2s; }
-.printButton:hover { background:var(--cica-green);color:var(--cica-cream); }
 
 /* Quick-reference cards. */
 .quickGrid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0;padding:0;list-style:none; }
@@ -91,7 +89,9 @@ ol.list { list-style:decimal; }
 .docSummary { margin:0;max-width:640px;font-size:16px;line-height:1.6;color:var(--cica-on-dark-muted); }
 .docSummary + .docSummary { margin-top:8px; }
 .docActions { display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;align-items:center; }
-.docPdf,.bandNote a { color:var(--cica-cream);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px; }
+/* The PDF copy sits on its own line under the capsules, so the capsules stay right-aligned on every row. */
+.docPdf { flex-basis:100%;text-align:right; }
+.docPdf a,.bandNote a { color:var(--cica-cream);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px; }
 .bandNote { margin:32px 0 0; }
 
 @media (max-width:1099px) {
@@ -110,6 +110,7 @@ ol.list { list-style:decimal; }
   .body { max-width:none; }
   .docRow { grid-template-columns:1fr; }
   .docActions { justify-content:flex-start; }
+  .docPdf { text-align:left; }
 }
 @media (max-width:760px) {
   .section { padding-block:64px; }
@@ -123,7 +124,7 @@ ol.list { list-style:decimal; }
 
 /* Print: the document text only, black on white. Site header and footer are hidden in globals.css. */
 @media print {
-  .tocDesktop,.tocMobile,.printButton,.heroActions,.band,.noPrint { display:none!important; }
+  .tocDesktop,.tocMobile,.heroActions,.band,.noPrint { display:none!important; }
   .section,.sectionTight { padding-block:0; }
   .layout { display:block; }
   .layoutHeader { margin-left:0; }

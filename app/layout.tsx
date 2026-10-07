@@ -77,7 +77,7 @@ export default function RootLayout({
         <MotionProvider>
           <a href="#main-content" className="skip-link">Skip to content</a>
           <Navigation />
-          <main id="main-content" className="min-h-screen" tabIndex={-1}>{children}</main>
+          <main id="main-content" tabIndex={-1}>{children}</main>
           <Footer />
         </MotionProvider>
       </body>

@@ -1,4 +1,5 @@
 .section { composes:section from "./sections.module.css"; }
+.status { white-space:nowrap; }
 
 /* White capsule track; the active pill is green with cream text. */
 .track { display:flex;gap:4px;width:fit-content;max-width:100%;margin:0 auto 28px;padding:6px;border-radius:100px;background:var(--cica-paper);box-shadow:inset 0 0 0 1px var(--cica-hairline);overflow-x:auto;scrollbar-width:none; }
@@ -36,7 +37,9 @@
 .more { margin-top:40px;text-align:center; }
 
 @media (max-width:760px) {
-  .track { margin-inline:0; }
+  /* Wrap the pills instead of a sideways scroll that hides tabs with no cue. */
+  .track { flex-wrap:wrap;justify-content:center;width:100%;margin-inline:0;border-radius:28px;overflow:visible; }
+  .tab { padding-inline:16px; }
   .feature { flex-direction:column;gap:22px;padding:28px 22px;border-radius:28px; }
   .logo { width:72px;height:72px;border-radius:18px; }
   .logo img { width:54px;height:54px; }

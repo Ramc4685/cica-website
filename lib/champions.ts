@@ -13,6 +13,13 @@ export interface Competition {
   records: readonly ChampionRecord[]
 }
 
+/**
+ * ISO date (YYYY-MM-DD) organizers last checked the archive. While unset, the showcase says which
+ * season the records run through instead of inventing an update date.
+ * TODO(organizers): confirm the date the champions archive was last reviewed.
+ */
+export const recordsUpdated: string | undefined = undefined
+
 /** Records are newest first. Years missing from a list are not recorded on this site. */
 export const competitions: readonly Competition[] = [
   {

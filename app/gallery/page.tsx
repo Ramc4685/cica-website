@@ -6,7 +6,7 @@ import { SectionIntro } from "@/components/ui/section-intro"
 import { communityLinks } from "@/lib/content"
 import { pageMetadata } from "@/lib/site-metadata"
 import s from "../inner-page.module.css"
-import styles from "./gallery.module.css"
+import styles from "@/components/logo-grid.module.css"
 
 export const metadata = pageMetadata("Community moments", "Explore real CICA team photographs, cricket celebrations and community moments from Central Illinois.", "/gallery/")
 
@@ -26,8 +26,8 @@ export default function GalleryPage() {
       intro="The teams, the celebrations, and the people who make CICA feel like a community." />
 
     <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="photos-heading">
-      <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading"
-        subtitle="A few moments from our community collection. Select a photograph to see it in full." reveal />
+      <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading" variant="label"
+        subtitle="A few moments from our community collection. Select a photograph to see it in full." />
       <CommunityGallery />
     </section>
 
