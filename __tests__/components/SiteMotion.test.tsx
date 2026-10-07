@@ -50,12 +50,12 @@ describe('Site motion', () => {
     advanceSponsor()
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[1].name)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Pause motion across the site' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Pause site motion' }))
     expect(document.documentElement).toHaveAttribute('data-motion', 'paused')
     act(() => { jest.advanceTimersByTime(21000) })
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[1].name)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Resume motion across the site' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Pause site motion' }))
     expect(document.documentElement).toHaveAttribute('data-motion', 'running')
     advanceSponsor()
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[2].name)
@@ -65,7 +65,7 @@ describe('Site motion', () => {
     reducedMotion = true
     renderSpotlight()
     expect(document.documentElement).toHaveAttribute('data-motion', 'paused')
-    expect(screen.getByRole('button', { name: 'Motion disabled by your reduced motion preference' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Motion off (reduced motion preference)' })).toBeDisabled()
     act(() => { jest.advanceTimersByTime(21000) })
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[0].name)
 
@@ -78,7 +78,7 @@ describe('Site motion', () => {
     advanceSponsor()
     act(() => { preferenceListener?.({ matches: true } as MediaQueryListEvent) })
     expect(document.documentElement).toHaveAttribute('data-motion', 'paused')
-    expect(screen.getByRole('button', { name: 'Motion disabled by your reduced motion preference' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Motion off (reduced motion preference)' })).toBeDisabled()
     act(() => { jest.advanceTimersByTime(21000) })
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[1].name)
   })
@@ -100,7 +100,7 @@ describe('Site motion', () => {
     fireEvent.click(next)
     advanceSponsor()
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[2].name)
-    fireEvent.blur(next, { relatedTarget: screen.getByRole('button', { name: 'Pause motion across the site' }) })
+    fireEvent.blur(next, { relatedTarget: screen.getByRole('button', { name: 'Pause site motion' }) })
     advanceSponsor()
     expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent(cplSponsors[3].name)
   })

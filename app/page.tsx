@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, ArrowRight, ChevronsRight } from "lucide-react"
@@ -7,6 +8,7 @@ import { SponsorSpotlight } from "@/components/sponsor-spotlight"
 import { PremiumSponsors } from "@/components/premium-sponsors"
 import { SponsorLogoStrip } from "@/components/sponsor-logo-strip"
 import { communityPhotos } from "@/lib/community-photos"
+export const metadata: Metadata = { alternates: { canonical: "https://cicainfo.com/" } }
 const photoById = (id:string) => communityPhotos.find(photo=>photo.id===id)!
 const familyPhoto = photoById("family-celebration")
 const fieldPhoto = photoById("community-on-field")

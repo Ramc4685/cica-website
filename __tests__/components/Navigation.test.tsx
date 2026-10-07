@@ -18,7 +18,7 @@ describe('Navigation', () => {
   it('normalizes static trailing slashes for the active-page announcement', () => {
     jest.mocked(usePathname).mockReturnValue('/about/')
     render(<MotionProvider><Navigation /></MotionProvider>)
-    expect(screen.getAllByText('Our story')[0]).toHaveAttribute('aria-current', 'page')
+    expect(screen.getAllByText('Our story')[0].closest('a')).toHaveAttribute('aria-current', 'page')
     jest.mocked(usePathname).mockReturnValue('/')
   })
   it('hides mobile navigation until opened and closes on selection', () => {

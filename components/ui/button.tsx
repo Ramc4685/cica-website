@@ -18,14 +18,22 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
+        /** Form submit in the CICA capsule style: a filled green pill with the serif label. Stays a real <button>. */
+        capsule:
+          'rounded-full border-[1.5px] border-green bg-green font-display text-[1.25rem] font-normal text-cream hover:bg-green/90 [&_svg]:size-5',
       },
       size: {
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
+        /** Full-width capsule submit (pair with variant="capsule"). */
+        block: 'h-auto w-full',
       },
     },
+    compoundVariants: [
+      { variant: 'capsule', class: 'h-auto min-h-14 px-8 py-3 ring-offset-cream' },
+    ],
     defaultVariants: {
       variant: 'default',
       size: 'default',
