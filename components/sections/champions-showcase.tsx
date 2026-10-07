@@ -5,6 +5,7 @@ import { useId, type ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
 import { competitions as allCompetitions, computeChampionStats, recordsUpdated, type Competition } from "@/lib/champions"
+import { mediaFor } from "@/lib/media"
 import { cn } from "@/lib/utils"
 import { buildChampionHighlights, formatIsoDate, smallLogo, tournamentForCompetition } from "./competition-meta"
 import { useRovingTabs } from "./use-roving-tabs"
@@ -58,6 +59,7 @@ export function ChampionsShowcase({ competitions = allCompetitions, variant = "f
     </div>
     {list.map((competition, index) => <div key={competition.id} role="tabpanel" id={panelId(index)} aria-labelledby={tabId(index)} hidden={index !== active} className={styles.panel}>
       <ChampionFeature competition={competition} />
+      {!compact && <ChampionPhotos competition={competition} />}
       {!compact && competition.records.length > 0 && <ChampionTable competition={competition} />}
     </div>)}
     {compact && <div className={styles.more}><CapsuleLink href="/champions/">See every champion</CapsuleLink></div>}
@@ -82,6 +84,25 @@ function ChampionFeature({ competition }: { competition: Competition }) {
           <CapsuleLink href="/contact/" tone="cream" variant="outline">Ask an organizer</CapsuleLink>
         </div>}
   </article>
+}
+
+/** Team photos organizers attached to a record; renders nothing until one exists. */
+function ChampionPhotos({ competition }: { competition: Competition }) {
+  const photos = competition.records.filter(record => record.photo)
+  if (photos.length === 0) return null
+  return <ul className={styles.photos} aria-label={`${competition.title} champion photos`}>
+    {photos.map(record => {
+      const { gallery, full } = mediaFor(record.photo!.src)
+      return <li key={record.season}>
+        <figure className={styles.photo} data-champion-photo>
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export; derivatives are pre-sized by scripts/build-media.mjs */}
+          <img src={gallery.src} srcSet={`${gallery.src} ${gallery.width}w, ${full.src} ${full.width}w`} sizes="(max-width: 700px) 100vw, 33vw"
+            width={gallery.width} height={gallery.height} alt={record.photo!.alt} loading="lazy" decoding="async" />
+          <figcaption>{record.season} champions: {record.champion}</figcaption>
+        </figure>
+      </li>
+    })}
+  </ul>
 }
 
 function ChampionTable({ competition }: { competition: Competition }) {

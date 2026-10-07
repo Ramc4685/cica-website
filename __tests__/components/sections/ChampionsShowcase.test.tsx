@@ -7,6 +7,10 @@ import { buildChampionHighlights, ordinal } from '@/components/sections/competit
 import { nextTabIndex } from '@/components/sections/use-roving-tabs'
 import { competitions, type Competition } from '@/lib/champions'
 
+jest.mock('@/lib/media', () => ({
+  mediaFor: () => ({ width: 1200, height: 800, full: { src: '/_media/x-1600.webp', width: 1200, height: 800 }, gallery: { src: '/_media/x-640.webp', width: 640, height: 427 } }),
+}))
+
 const byId = (id: string) => competitions.find(c => c.id === id)!
 
 describe('nextTabIndex', () => {
@@ -81,5 +85,25 @@ describe('ChampionsShowcase', () => {
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /See every champion/ }).getAttribute('href')).toMatch(/^\/champions\/?$/)
     expect(screen.getByRole('region', { name: /trophy/ })).toBeInTheDocument()
+  })
+})
+
+describe('ChampionsShowcase photos', () => {
+  it('shows a champion photo with its alt text only when a record has one', () => {
+    const withPhoto = competitions.map(c => c.id === 'mains'
+      ? { ...c, records: [{ ...c.records[0], photo: { src: '/uploads/champions/team.jpg', alt: 'Test alt text' } }, ...c.records.slice(1)] } : c)
+    render(<ChampionsShowcase competitions={withPhoto} />)
+    expect(screen.getByRole('img', { name: 'Test alt text' })).toBeInTheDocument()
+    expect(screen.getByText(/2024 champions: BloomBoys/)).toBeInTheDocument()
+  })
+  it('renders no champion photos when no record has one', () => {
+    const { container } = render(<ChampionsShowcase />)
+    expect(container.querySelectorAll('[data-champion-photo]')).toHaveLength(0)
+  })
+  it('does not render photos in the compact variant', () => {
+    const withPhoto = competitions.map(c => c.id === 'mains'
+      ? { ...c, records: [{ ...c.records[0], photo: { src: '/uploads/champions/team.jpg', alt: 'Test alt text' } }, ...c.records.slice(1)] } : c)
+    const { container } = render(<ChampionsShowcase competitions={withPhoto} variant="compact" />)
+    expect(container.querySelectorAll('[data-champion-photo]')).toHaveLength(0)
   })
 })
