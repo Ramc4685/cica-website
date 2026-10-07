@@ -1,11 +1,15 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Goudy_Bookletter_1911, Inter_Tight } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { MotionProvider } from "@/components/site-motion"
+import { communityLinks } from "@/lib/content"
+import { siteUrl } from "@/lib/site-metadata"
 
-const inter = Inter({ subsets: ["latin"] })
+const display = Goudy_Bookletter_1911({ subsets: ["latin"], weight: "400", variable: "--font-display", display: "swap" })
+const body = Inter_Tight({ subsets: ["latin"], variable: "--font-body", display: "swap" })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://cicainfo.com"),
@@ -23,10 +27,10 @@ export const metadata: Metadata = {
     siteName: "CICA",
     images: [
       {
-        url: "/images/cica-logo-main.jpg",
+        url: "/images/cica-social.webp",
         width: 1200,
         height: 630,
-        alt: "CICA Logo",
+        alt: "Cricket brings us together — Central Illinois Cricket Association",
       },
     ],
   },
@@ -34,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Central Illinois Cricket Association - CICA",
     description: "Developing cricket in Bloomington/Normal, Illinois since 1998",
-    images: ["/images/cica-logo-main.jpg"],
+    images: ["/images/cica-social.webp"],
   },
   robots: {
     index: true,
@@ -44,7 +48,21 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-    generator: 'v0.app'
+}
+
+// Facts already published on the site: name, founding year, crest, area and official channels.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SportsOrganization",
+  name: "Central Illinois Cricket Association",
+  alternateName: "CICA",
+  url: `${siteUrl}/`,
+  foundingDate: "1998",
+  sport: "Cricket",
+  logo: `${siteUrl}/images/cica-logo-main.webp`,
+  email: communityLinks.email.replace(/^mailto:/, ""),
+  areaServed: "Bloomington–Normal, Illinois",
+  sameAs: [communityLinks.facebook, communityLinks.youtube, communityLinks.scores],
 }
 
 export default function RootLayout({
@@ -54,10 +72,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${display.variable} ${body.variable}`}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }} />
+        <MotionProvider>
+          <a href="#main-content" className="skip-link">Skip to content</a>
           <Navigation />
-          <main className="min-h-screen">{children}</main>
+          <main id="main-content" tabIndex={-1}>{children}</main>
           <Footer />
+        </MotionProvider>
       </body>
     </html>
   )

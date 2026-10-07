@@ -1,0 +1,36 @@
+.section { composes:section from "./sections.module.css"; }
+.cards { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch; }
+
+.questions { padding:22px;border-radius:40px;background:var(--cica-green);color:var(--cica-cream); }
+.list { display:grid;gap:2px;margin:0;padding:0;list-style:none; }
+/* Inactive questions sit at 70% (not 60%) so cream on green keeps 5:1 at 17px. */
+.question { display:flex;align-items:baseline;gap:14px;width:100%;min-height:52px;padding:16px 20px;border:0;border-radius:24px;background:transparent;color:var(--cica-cream);font-size:17px;font-weight:500;line-height:1.45;text-align:left;opacity:.7;cursor:pointer;transition:opacity .2s,background-color .2s; }
+.question:hover { opacity:1; }
+.question[aria-expanded=true] { opacity:1;background:hsl(var(--cica-cream-hsl) / .1); }
+.question:focus-visible { opacity:1;outline-offset:-3px; }
+.dot { flex-shrink:0;width:8px;height:8px;border-radius:2px;background:currentColor;transform:translateY(-2px); }
+.question[aria-expanded=true] .dot { background:var(--cica-mint); }
+
+.answer { display:flex;flex-direction:column;padding:48px;border-radius:40px;background:var(--cica-paper);box-shadow:inset 0 0 0 1px var(--cica-hairline); }
+.answerQuestion { margin:0 0 20px;font-family:var(--font-display),Georgia,serif;font-size:var(--step-h3);font-weight:400;line-height:1.05;letter-spacing:-.015em; }
+.answerText { max-width:48ch;margin:0;font-size:17px;line-height:1.7;color:var(--cica-green-soft); }
+.unsure { display:flex;flex-direction:column;align-items:flex-start;gap:18px;margin-top:auto;padding-top:36px; }
+.unsure p { margin:0;font-family:var(--font-display),Georgia,serif;font-size:24px;line-height:1.2; }
+
+.details { display:none; }
+
+@media (max-width:899px) {
+  .cards { grid-template-columns:1fr; }
+  .list,.answer { display:none; }
+  .questions { padding:10px 22px 26px;border-radius:28px; }
+  .details { display:block; }
+  .details details { border-bottom:1px solid var(--cica-on-dark-line); }
+  .details summary { position:relative;padding:20px 32px 20px 0;list-style:none;cursor:pointer;font-size:17px;font-weight:500;line-height:1.45; }
+  .details summary:after { content:'+';position:absolute;right:4px;top:16px;font-size:24px;font-weight:400; }
+  .details details[open] summary:after { content:'\2212'; }
+  .details p { margin:0;padding-bottom:20px;font-size:16px;line-height:1.7;color:var(--cica-on-dark-muted); }
+  .unsure { padding-top:28px; }
+  .details .unsure p { padding:0;font-size:22px;color:var(--cica-cream); }
+  .unsure :global(.capsule) { display:flex;width:100%; }
+  .unsure :global(.capsule-label) { flex:1;padding-inline:18px;font-size:20px; }
+}

@@ -80,32 +80,119 @@ function cica_open_private(string $path)
     return $file;
 }
 
-function cica_save_request(array $fields, string $dir, string $remoteAddress, int $now): array
+// Per-IP, global and storage limits. Over a limit the visitor gets a definite 429, never a silent failure.
+const CICA_IP_LIMIT = 10;
+const CICA_IP_WINDOW = 600;
+const CICA_HOURLY_CAP = 60;
+const CICA_DAILY_CAP = 300;
+const CICA_MAX_RECORD_BYTES = 20 * 1024 * 1024;
+const CICA_MAX_ARCHIVES = 10;
+
+class CicaRateLimited extends OverflowException
 {
+    public int $retryAfter;
+    public function __construct(string $message, int $retryAfter)
+    {
+        parent::__construct($message);
+        $this->retryAfter = $retryAfter;
+    }
+}
+
+function cica_acquire_lock($lock, int $timeoutMs = 3000): bool
+{
+    $deadline = microtime(true) + $timeoutMs / 1000;
+    do {
+        if (flock($lock, LOCK_EX | LOCK_NB)) {
+            return true;
+        }
+        usleep(50000);
+    } while (microtime(true) < $deadline);
+    return false;
+}
+
+function cica_alert_storage(string $subject, string $body): void
+{
+    @mail(
+        'organizers@cicainfo.com',
+        '[CICA website] ' . $subject,
+        wordwrap($body, 70, "\r\n"),
+        ['From' => 'CICA Website <organizers@cicainfo.com>', 'Content-Type' => 'text/plain; charset=UTF-8', 'MIME-Version' => '1.0'],
+        '-forganizers@cicainfo.com'
+    );
+}
+
+// Archives a full record file instead of refusing new requests; archives stay private and are never deleted here.
+function cica_rotate_if_full(string $dir, int $now, int $maxBytes, callable $alert): void
+{
+    $path = $dir . '/requests.jsonl';
+    clearstatcache(true, $path);
+    if (!is_file($path) || is_link($path) || filesize($path) < $maxBytes) {
+        return;
+    }
+    if (count(glob($dir . '/requests-*.jsonl') ?: []) >= CICA_MAX_ARCHIVES) {
+        throw new RuntimeException('Private storage needs organizer attention.');
+    }
+    $archive = $dir . '/requests-' . gmdate('Ymd-His', $now) . '.jsonl';
+    if (file_exists($archive) || !rename($path, $archive)) {
+        throw new RuntimeException('Private storage is unavailable.');
+    }
+    $alert('Form storage rotated', "The request file reached its size limit and was archived as " . basename($archive) . " in the private .cica-forms directory. Export or delete archived records you no longer need.");
+}
+
+function cica_save_request(array $fields, string $dir, string $remoteAddress, int $now, array $options = []): array
+{
+    $maxBytes = $options['maxBytes'] ?? CICA_MAX_RECORD_BYTES;
+    $alert = $options['alert'] ?? 'cica_alert_storage';
     $lock = cica_open_private($dir . '/requests.lock');
-    if (!flock($lock, LOCK_EX | LOCK_NB)) {
+    if (!cica_acquire_lock($lock)) {
         fclose($lock);
         throw new RuntimeException('The request service is busy.');
     }
     try {
         $stateFile = cica_open_private($dir . '/limits.json');
         $state = json_decode(stream_get_contents($stateFile), true) ?: [];
-        // Fixed buckets bound bookkeeping; raw IP addresses are not retained.
-        $bucket = substr(hash('sha256', $remoteAddress), 0, 3);
-        $recent = $state[$bucket] ?? ['start' => $now, 'count' => 0];
-        if ($now - $recent['start'] >= 600) {
-            $recent = ['start' => $now, 'count' => 0];
+        // A private salt keeps stored buckets from being reversed into IP addresses by brute force.
+        $saltFile = cica_open_private($dir . '/hash.salt');
+        $salt = trim((string)stream_get_contents($saltFile));
+        if ($salt === '') {
+            $salt = bin2hex(random_bytes(16));
+            fwrite($saltFile, $salt);
+            fflush($saltFile);
         }
-        if ($recent['count'] >= 5) {
+        fclose($saltFile);
+        $bucket = substr(hash('sha256', $salt . $remoteAddress), 0, 12);
+        $ips = $state['ips'] ?? [];
+        foreach ($ips as $key => $entry) {
+            if ($now - ($entry['start'] ?? 0) >= CICA_IP_WINDOW) {
+                unset($ips[$key]);
+            }
+        }
+        $recent = $ips[$bucket] ?? ['start' => $now, 'count' => 0];
+        $global = $state['global'] ?? [];
+        if (!isset($global['hourStart']) || $now - $global['hourStart'] >= 3600) {
+            $global['hourStart'] = $now;
+            $global['hourCount'] = 0;
+        }
+        if (!isset($global['dayStart']) || $now - $global['dayStart'] >= 86400) {
+            $global['dayStart'] = $now;
+            $global['dayCount'] = 0;
+        }
+        if ($recent['count'] >= CICA_IP_LIMIT) {
             fclose($stateFile);
-            throw new OverflowException('Too many requests. Please wait ten minutes or email the organizers.');
+            throw new CicaRateLimited('Too many requests. Please wait ten minutes or email the organizers.', max(1, CICA_IP_WINDOW - ($now - $recent['start'])));
+        }
+        if ($global['hourCount'] >= CICA_HOURLY_CAP || $global['dayCount'] >= CICA_DAILY_CAP) {
+            fclose($stateFile);
+            $retry = $global['hourCount'] >= CICA_HOURLY_CAP ? 3600 - ($now - $global['hourStart']) : 86400 - ($now - $global['dayStart']);
+            throw new CicaRateLimited('The form is receiving a lot of requests right now. Please try again later or email the organizers.', max(1, $retry));
+        }
+        try {
+            cica_rotate_if_full($dir, $now, $maxBytes, $alert);
+        } catch (Throwable $e) {
+            fclose($stateFile);
+            throw $e;
         }
         $records = cica_open_private($dir . '/requests.jsonl');
-        if (fstat($records)['size'] >= 20 * 1024 * 1024) {
-            fclose($records);
-            fclose($stateFile);
-            throw new RuntimeException('Private storage needs organizer attention.');
-        }
         $id = bin2hex(random_bytes(12));
         $record = ['id' => $id, 'receivedAt' => gmdate('c', $now), 'fields' => $fields];
         $line = json_encode($record, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE) . "\n";
@@ -115,9 +202,18 @@ function cica_save_request(array $fields, string $dir, string $remoteAddress, in
             fclose($stateFile);
             throw new RuntimeException('Unable to save the request.');
         }
+        $size = fstat($records)['size'];
         fclose($records);
         $recent['count']++;
-        $state[$bucket] = $recent;
+        $ips[$bucket] = $recent;
+        $global['hourCount']++;
+        $global['dayCount']++;
+        $state = ['ips' => $ips, 'global' => $global, 'alertedAt' => $state['alertedAt'] ?? 0];
+        // alertedAt 0 means "never alerted", not a timestamp to throttle against.
+        if ($size >= (int)($maxBytes * 0.8) && ($state['alertedAt'] === 0 || $now - $state['alertedAt'] >= 7 * 86400)) {
+            $state['alertedAt'] = $now;
+            $alert('Form storage is 80% full', "The request file is at least 80% of its size limit. When full it is archived automatically; up to " . CICA_MAX_ARCHIVES . " archives are kept before new requests are refused. Review and export records with scripts/forms-records.php.");
+        }
         rewind($stateFile);
         ftruncate($stateFile, 0);
         fwrite($stateFile, json_encode($state, JSON_THROW_ON_ERROR));
@@ -156,6 +252,23 @@ function cica_reply(int $status, array $body): never
     exit;
 }
 
+// No-JS form posts get a redirect on success and a small HTML page on failure.
+function cica_form_reply(int $status, array $body): never
+{
+    if ($status === 200) {
+        header('Location: /thank-you/?ref=' . rawurlencode((string)$body['reference']), true, 303);
+        header('Cache-Control: no-store');
+        exit;
+    }
+    http_response_code($status);
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Cache-Control: no-store');
+    header('X-Content-Type-Options: nosniff');
+    $message = htmlspecialchars((string)($body['message'] ?? 'We could not save your request.'), ENT_QUOTES, 'UTF-8');
+    echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Request not sent | CICA</title></head><body style="font-family:system-ui,sans-serif;max-width:36rem;margin:4rem auto;padding:0 1rem"><h1>Request not sent</h1><p>' . $message . '</p><p><a href="javascript:history.back()">Go back and try again</a> or email <a href="mailto:organizers@cicainfo.com">organizers@cicainfo.com</a>.</p></body></html>';
+    exit;
+}
+
 // CLI regression tests load functions without making requests or sending mail.
 if (defined('CICA_FORMS_TESTING') && CICA_FORMS_TESTING === true && PHP_SAPI === 'cli') {
     return;
@@ -166,27 +279,35 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
     cica_reply(405, ['success' => false, 'message' => 'Use the CICA website form to submit a request.']);
 }
+$contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
+$isJson = strpos($contentType, 'application/json') === 0;
+$isForm = strpos($contentType, 'application/x-www-form-urlencoded') === 0;
+$reply = $isForm ? 'cica_form_reply' : 'cica_reply';
 $resolvedRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
 $site = is_string($resolvedRoot) ? cica_site($resolvedRoot) : null;
 if ($site === null) {
     error_log('CICA form service: unexpected document root');
-    cica_reply(503, ['success' => false, 'message' => 'We could not save your request. Please email organizers@cicainfo.com.']);
+    $reply(503, ['success' => false, 'message' => 'We could not save your request. Please email organizers@cicainfo.com.']);
 }
 if (!cica_origin_allowed($site, $_SERVER['HTTP_ORIGIN'] ?? '')) {
-    cica_reply(403, ['success' => false, 'message' => 'Submit your request from the CICA website.']);
+    $reply(403, ['success' => false, 'message' => 'Submit your request from the CICA website.']);
 }
-if (stripos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== 0) {
+if (!$isJson && !$isForm) {
     cica_reply(415, ['success' => false, 'message' => 'Unsupported request format.']);
 }
 if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 16384) {
-    cica_reply(413, ['success' => false, 'message' => 'The request is too large.']);
+    $reply(413, ['success' => false, 'message' => 'The request is too large.']);
 }
 try {
-    $raw = file_get_contents('php://input', false, null, 0, 16385);
-    if ($raw === false || strlen($raw) > 16384) {
-        cica_reply(413, ['success' => false, 'message' => 'The request is too large.']);
+    if ($isForm) {
+        $input = $_POST;
+    } else {
+        $raw = file_get_contents('php://input', false, null, 0, 16385);
+        if ($raw === false || strlen($raw) > 16384) {
+            cica_reply(413, ['success' => false, 'message' => 'The request is too large.']);
+        }
+        $input = json_decode($raw, true, 16, JSON_THROW_ON_ERROR);
     }
-    $input = json_decode($raw, true, 16, JSON_THROW_ON_ERROR);
     if (!is_array($input)) {
         throw new InvalidArgumentException('Check the information you entered.');
     }
@@ -202,13 +323,13 @@ try {
         // Only the reference is logged; the saved private request remains available.
         error_log('CICA notification not queued: ' . $record['id']);
     }
-    cica_reply(200, ['success' => true, 'reference' => $record['id']]);
+    $reply(200, ['success' => true, 'reference' => $record['id']]);
 } catch (JsonException | InvalidArgumentException $e) {
-    cica_reply(422, ['success' => false, 'message' => $e instanceof JsonException ? 'Check the information you entered.' : $e->getMessage()]);
-} catch (OverflowException $e) {
-    header('Retry-After: 600');
-    cica_reply(429, ['success' => false, 'message' => $e->getMessage()]);
+    $reply(422, ['success' => false, 'message' => $e instanceof JsonException ? 'Check the information you entered.' : $e->getMessage()]);
+} catch (CicaRateLimited $e) {
+    header('Retry-After: ' . $e->retryAfter);
+    $reply(429, ['success' => false, 'message' => $e->getMessage()]);
 } catch (Throwable $e) {
     error_log('CICA form service error: ' . get_class($e));
-    cica_reply(503, ['success' => false, 'message' => 'We could not save your request. Please email organizers@cicainfo.com.']);
+    $reply(503, ['success' => false, 'message' => 'We could not save your request. Please email organizers@cicainfo.com.']);
 }

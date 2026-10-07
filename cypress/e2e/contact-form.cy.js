@@ -28,12 +28,11 @@ describe('Contact Form', () => {
     cy.findByText(/Last name is required/i).should('be.visible');
     cy.findByText(/Invalid email address/i).should('be.visible');
     cy.findByText(/Subject is required/i).should('be.visible');
-    cy.findByText(/Message must be at least 10 characters/i).should('be.visible');
+    cy.findByText(/Message is required/i).should('be.visible');
   });
 
   it('should fill and submit the form', () => {
-    // Intercept the form submission to the same-origin PHP handler
-    cy.intercept('POST', '**/forms/submit.php').as('formSubmission');
+    cy.stubFormSubmit(200, { success: true, reference: 'a1b2c3d4e5f6a1b2c3d4e5f6' });
 
     // Fill the form
     const formData = {
@@ -50,13 +49,38 @@ describe('Contact Form', () => {
     // Submit form
     cy.submitFormAndWait('Send Message');
 
-    // Verify submission attempt (we don't necessarily expect success in test environment)
-    cy.wait('@formSubmission').then((interception) => {
-      // Log request details for debugging
-      cy.log('Form submission request:', JSON.stringify(interception.request.body));
-      
-      // In a real environment, we would check for success message:
-      // cy.checkForToast(/message sent successfully/i);
+    cy.wait('@formSubmission').then(({ request, response }) => {
+      expect(request.body.type).to.eq('contact');
+      expect(request.body.website).to.eq('');
+      expect(response.statusCode).to.eq(200);
     });
+    cy.findByRole('heading', { name: /Thanks, we'll be in touch/i }).should('have.focus');
+    cy.contains('a1b2c3d4e5f6a1b2c3d4e5f6').should('be.visible');
+  });
+
+  const fillContact = () => {
+    cy.fillFormByLabels({
+      'First Name': 'Test',
+      'Last Name': 'User',
+      'Email': 'test@example.com',
+      'Subject': 'Test Message',
+      'Message': 'This is a test message from Cypress end-to-end testing.',
+    });
+    cy.submitFormAndWait('Send Message');
+  };
+
+  it('shows the server message when the request is definitely rejected', () => {
+    cy.stubFormSubmit(422, { success: false, message: 'Enter a valid email address.' });
+    fillContact();
+    cy.wait('@formSubmission');
+    cy.findByText(/Enter a valid email address\./i).should('be.visible');
+    cy.contains(/may already have been saved/i).should('not.exist');
+  });
+
+  it('shows the wait time when rate limited', () => {
+    cy.stubFormSubmit(429, { success: false, message: 'Too many requests.' }, { 'Retry-After': '600' });
+    fillContact();
+    cy.wait('@formSubmission');
+    cy.contains(/10 minutes/i).should('be.visible');
   });
 });

@@ -1,0 +1,66 @@
+/* /sponsors premium placements */
+.section { padding-block:24px 64px;color:var(--cica-green); }
+.placements { display:grid;grid-template-columns:1.05fr 1fr;gap:20px; }
+.card { display:flex;flex-direction:column;align-items:start;overflow:hidden;padding:32px;border:1px solid var(--cica-hairline);border-radius:28px; }
+.lead { grid-row:span 2;padding:42px;border-color:transparent;background:var(--cica-green);color:var(--cica-cream); }
+.supporting { background:var(--cica-paper); }
+.supporting:last-child { background:var(--cica-tint-mint); }
+.cardTop { width:100%;display:flex;justify-content:space-between;gap:20px;margin-bottom:24px;font-size:14px;font-weight:600;line-height:1.5;color:var(--cica-green-soft); }
+.lead .cardTop { color:var(--cica-on-dark-muted); }
+.invitationMark { width:72px;height:72px;display:grid;place-items:center;margin:0 0 23px;border:1px solid var(--cica-line);border-radius:50%; }
+.lead .invitationMark { width:108px;height:108px;margin:42px 0 38px;border-color:var(--cica-on-dark-line);color:var(--cica-mint); }
+.card h3 { margin:0 0 15px;font-family:var(--font-display),Georgia,serif;font-size:36px;font-weight:400;line-height:1.07;letter-spacing:-.02em;overflow-wrap:anywhere; }
+.lead h3 { max-width:450px;font-size:clamp(45px,4.6vw,67px); }
+.card>p { max-width:400px;margin:0 0 26px;font-size:15px;line-height:1.7; }
+.lead>p { font-size:17px;color:var(--cica-on-dark-muted); }
+.link { display:inline-flex;align-items:center;gap:14px;min-height:44px;margin-top:auto;padding-bottom:8px;border-bottom:1px solid currentColor;font-size:15px;font-weight:600;text-decoration:none; }
+.link svg { transition:transform .25s; }
+.link:hover svg { transform:translate(3px,-3px); }
+.logoWell { width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:25px;padding:22px;border-radius:16px;background:var(--cica-paper); }
+.logoWell img { width:100%;height:130px;object-fit:contain; }
+.lead .logoWell { margin:20px 0 35px;padding:35px; }
+.lead .logoWell img { height:210px; }
+.darkLogoWell { background:var(--cica-ink); }
+.wordmark { width:100%;min-height:150px;display:flex;align-items:center;justify-content:center;margin-block:10px 20px; }
+.wordmark h3 { margin:0;font-size:clamp(42px,5.5vw,72px); }
+.note { margin:18px 0 0;font-size:14px;line-height:1.7;color:var(--cica-green-soft); }
+
+/* Home sponsor band */
+.band { padding-block:96px 100px;border-radius:0 0 60px 60px;background:var(--cica-green);color:var(--cica-cream); }
+.premiumRow { display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin:0 0 40px;padding:0;list-style:none; }
+.premiumItem { display:flex;align-items:center;gap:20px;min-width:min(100%,360px);padding:14px 26px 14px 14px;border:1px solid var(--cica-on-dark-line);border-radius:24px; }
+.premiumLogo { display:flex;align-items:center;justify-content:center;flex-shrink:0;width:150px;height:86px;padding:10px 14px;border-radius:16px;background:var(--cica-paper); }
+.premiumLogo img { width:100%;height:100%;object-fit:contain; }
+.premiumLogo.darkLogoWell { background:var(--cica-ink); }
+.premiumMeta { display:grid;gap:4px; }
+.premiumTag { font-size:14px;color:var(--cica-mint); }
+.premiumName { font-family:var(--font-display),Georgia,serif;font-size:26px;line-height:1.1; }
+.premiumItem .link { margin:0 0 0 auto; }
+.bandCta { display:flex;justify-content:center;margin-top:48px; }
+
+@media (max-width:1000px) {
+  .card { padding:27px; }
+  .lead { padding:33px; }
+  .card h3 { font-size:31px; }
+  .lead h3 { font-size:47px; }
+  .link { gap:10px; }
+}
+@media (max-width:760px) {
+  .placements { grid-template-columns:1fr;gap:16px; }
+  .lead { grid-row:auto; }
+  .lead .invitationMark { margin:20px 0 28px; }
+  .lead h3 { font-size:49px; }
+  .lead>p { font-size:16px; }
+  .card { padding:28px; }
+  .card h3 { max-width:100%; }
+  .logoWell img { height:160px; }
+  .lead .logoWell img { height:190px; }
+  .band { padding-block:64px 72px;border-radius:0 0 36px 36px; }
+  .premiumRow { gap:14px;margin-bottom:32px; }
+  .premiumItem { width:100%;gap:14px;padding:12px 18px 12px 12px; }
+  .premiumLogo { width:112px;height:68px; }
+  .premiumName { font-size:22px; }
+  .bandCta { margin-top:36px; }
+}
+@media (prefers-reduced-motion:reduce) { .link svg { transition:none; } }
+html[data-motion=paused] .link:hover svg { transform:none; }

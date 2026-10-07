@@ -1,0 +1,64 @@
+/* Shared surfaces for the inner pages: soft cards, one roll-up band per long page, and two-column layouts. */
+.section { padding-block:96px; }
+.sectionFlush { padding-block:0 96px; }
+/* Doubled class beats a shared section module's padding when a section follows the page hero directly. */
+.flushTop.flushTop { padding-top:24px; }
+
+/* One green or ink 60px-radius roll-up band per long page. Pair with data-tone="green|ink" so focus rings turn cream. */
+.band { margin:0 clamp(8px,1.4vw,24px);padding-block:100px;border-radius:60px;background:var(--cica-green);color:var(--cica-cream); }
+.band[data-tone=ink] { background:var(--cica-ink); }
+.band:last-child { margin-bottom:96px; }
+.bandGrid { display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:end; }
+.bandGrid :global(.section-intro) { margin-bottom:0; }
+.bandBody { margin:0;font-size:17px;line-height:1.65;color:var(--cica-on-dark-muted); }
+.bandBody + .actions { margin-top:28px; }
+.bandColumns { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:56px; }
+.bandCard { display:flex;flex-direction:column;align-items:flex-start;padding:40px;border-radius:32px;background:hsl(var(--cica-cream-hsl) / .08);box-shadow:inset 0 0 0 1px var(--cica-on-dark-line); }
+.bandCard .cardTitle { color:var(--cica-cream); }
+.bandCard .bandBody { margin-bottom:28px; }
+.bandCard :global(.capsule) { margin-top:auto; }
+
+.actions { display:flex;flex-wrap:wrap;gap:14px;align-items:center; }
+.heroActions { justify-content:center;margin-top:32px; }
+
+/* Soft content card on cream: paper fill, no hairline border. */
+.card { padding:40px;border-radius:32px;background:var(--cica-paper); }
+.cardTitle { margin:0 0 14px;font-family:var(--font-display),Georgia,serif;font-size:var(--step-h3);font-weight:400;line-height:1.05;letter-spacing:-.015em; }
+.body { margin:0;font-size:17px;line-height:1.65;color:var(--cica-green-soft); }
+.body + .body { margin-top:16px; }
+.card .body + :global(.capsule),.card .body + .actions { margin-top:28px; }
+.cardGrid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px; }
+
+.split { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:72px;align-items:start; }
+.split > :first-child :global(.section-intro) { margin-bottom:28px; }
+.sticky { position:sticky;top:calc(var(--header-height) + 32px); }
+
+/* "What we offer": 48px icon boxes beside short factual lines. */
+.offerList { display:grid;margin:0;padding:0;list-style:none; }
+.offerList li { display:grid;grid-template-columns:48px minmax(0,1fr);gap:22px;padding:28px 0;border-top:1px solid var(--cica-hairline); }
+.offerList li:last-child { border-bottom:1px solid var(--cica-hairline); }
+.offerList h3 { margin:0 0 6px;font-family:var(--font-display),Georgia,serif;font-size:clamp(24px,1.2rem + .6vw,30px);font-weight:400;line-height:1.1; }
+.iconBox { display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--cica-green);color:var(--cica-cream); }
+.iconBox svg { width:24px;height:24px; }
+
+.fullBleed { margin:0 clamp(8px,1.4vw,24px);overflow:hidden;border-radius:60px; }
+.fullBleed img { width:100%;height:clamp(300px,46vw,640px); }
+
+.note { margin:32px 0 0;font-size:15px;line-height:1.6;color:var(--cica-green-soft); }
+
+@media (max-width:900px) {
+  .bandGrid,.split { grid-template-columns:1fr;gap:36px; }
+  .bandColumns,.cardGrid { grid-template-columns:1fr; }
+  .sticky { position:static; }
+}
+@media (max-width:760px) {
+  .section { padding-block:64px; }
+  .sectionFlush { padding-block:0 64px; }
+  .band { margin-inline:8px;padding-block:64px;border-radius:35px; }
+  .band:last-child { margin-bottom:64px; }
+  .bandColumns { margin-top:36px; }
+  .bandCard,.card { padding:26px 22px;border-radius:26px; }
+  .fullBleed { margin-inline:8px;border-radius:35px; }
+  .actions > :global(.capsule) { display:flex;width:100%; }
+  .actions > :global(.capsule) :global(.capsule-label) { flex:1; }
+}

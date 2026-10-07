@@ -56,7 +56,13 @@ if (JSON.parse(readFileSync(process.argv[2], 'utf8')).commit !== process.argv[3]
 NODE
   then
     curl --fail --silent --show-error --max-time 20 "$site_url/" -o /dev/null
-    echo "Verified $CICA_DEPLOY_TARGET HTTPS deployment $GITHUB_SHA"
+    # A GET must reach PHP and return its JSON 405; a 500 or served PHP source means the handler is not running.
+    forms=$(curl --silent --show-error --max-time 20 -o /dev/null -w '%{http_code} %{content_type}' "$site_url/forms/submit.php" || true)
+    if [[ "$forms" != '405 application/json'* ]]; then
+      echo "Forms handler check failed on $CICA_DEPLOY_TARGET: expected '405 application/json', got '$forms'" >&2
+      exit 1
+    fi
+    echo "Verified $CICA_DEPLOY_TARGET HTTPS deployment $GITHUB_SHA and forms handler"
     exit 0
   fi
   sleep 5

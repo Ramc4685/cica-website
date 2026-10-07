@@ -1,70 +1,66 @@
-// Google Apps Script for CICA Contact Form
-
-// Set the name of the Google Sheet where you want to store the data
+// Deploy this source as a new version of the existing Apps Script web app.
+// Source changes alone do not update the public deployment or send email.
 const SHEET_NAME = "Contact Form Submissions";
+const SHEET_HEADERS = ["Timestamp", "FirstName", "LastName", "Email", "Phone", "Subject", "Message"];
 
-// Define the headers for your Google Sheet
-const SHEET_HEADERS = [
-  "Timestamp", 
-  "FirstName", 
-  "LastName", 
-  "Email", 
-  "Phone"
-];
-
-/**
- * Handles HTTP POST requests to the web app.
- * This function is the entry point for your web app.
- */
 function doPost(e) {
-  // Use a lock to prevent concurrent modifications, which can cause issues.
   const lock = LockService.getScriptLock();
-  lock.waitLock(30000); // Wait up to 30 seconds.
-
+  let acquired = false;
   try {
-    // Open the spreadsheet and get the sheet by name.
-    const doc = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = doc.getSheetByName(SHEET_NAME);
-
-    // If the sheet doesn't exist, create it and add the headers.
+    if (!e || !e.postData || typeof e.postData.contents !== "string" || e.postData.contents.length > 12000) {
+      return jsonResponse({ success: false, message: "Invalid request." });
+    }
+    const data = JSON.parse(e.postData.contents);
+    if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Invalid input");
+    data.firstName = checkedText(data.firstName, 1, 50);
+    data.lastName = checkedText(data.lastName, 1, 50);
+    data.email = checkedText(data.email, 1, 254);
+    data.phone = checkedText(data.phone, 0, 30);
+    data.subject = checkedText(data.subject, 1, 200);
+    data.message = checkedText(data.message, 10, 3000);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) throw new Error("Invalid email");
+    if (data.phone && (!/^[+\d\s().-]+$/.test(data.phone) || data.phone.replace(/\D/g, "").length < 7 || data.phone.replace(/\D/g, "").length > 15)) throw new Error("Invalid phone");
+    acquired = lock.tryLock(5000);
+    if (!acquired) return jsonResponse({ success: false, message: "The form is busy. Please contact the organizers." });
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = spreadsheet.getSheetByName(SHEET_NAME);
     if (!sheet) {
-      sheet = doc.insertSheet(SHEET_NAME);
+      sheet = spreadsheet.insertSheet(SHEET_NAME);
       sheet.appendRow(SHEET_HEADERS);
     }
-
-    // Parse the JSON data from the request body.
-    const requestData = JSON.parse(e.postData.contents);
-
-    // Create a new row with the form data. The order must match SHEET_HEADERS.
-    const newRow = [
-      new Date(), // Timestamp
-      requestData.firstName || "",
-      requestData.lastName || "",
-      requestData.email || "",
-      requestData.phone || "",
-      requestData.subject || "",
-      requestData.message || ""
-    ];
-
-    // Append the new row to the sheet.
-    sheet.appendRow(newRow);
-
-    // Return a success response to the client.
-    return ContentService.createTextOutput(
-      JSON.stringify({ success: true, message: "Form submitted successfully" })
-    ).setMimeType(ContentService.MimeType.JSON);
-
+    // Repair only missing headings, preserving all existing columns and submissions.
+    const current = sheet.getRange(1, 1, 1, SHEET_HEADERS.length).getValues()[0];
+    SHEET_HEADERS.forEach(function(header, index) {
+      if (current[index] === "") sheet.getRange(1, index + 1).setValue(header);
+    });
+    sheet.appendRow([new Date(), safeCell(data.firstName), safeCell(data.lastName), safeCell(data.email), safeCell(data.phone), safeCell(data.subject), safeCell(data.message)]);
+    SpreadsheetApp.flush();
+    return jsonResponse({ success: true, message: "Your request has been recorded." });
   } catch (error) {
-    // Log the error for debugging.
-    console.error("Error in doPost: ", error);
-
-    // Return an error response to the client.
-    return ContentService.createTextOutput(
-      JSON.stringify({ success: false, message: "An error occurred: " + error.message })
-    ).setMimeType(ContentService.MimeType.JSON);
-
+    // Never return internal spreadsheet IDs, permissions, or submitted personal data.
+    return jsonResponse({ success: false, message: "We could not confirm your request. Please contact the organizers." });
   } finally {
-    // Release the lock.
-    lock.releaseLock();
+    if (acquired) lock.releaseLock();
   }
+}
+
+function checkedText(value, minimum, maximum) {
+  if (value == null && minimum === 0) return "";
+  if (typeof value !== "string") throw new Error("Invalid input");
+  const text = value.trim();
+  if (text.length < minimum || text.length > maximum) throw new Error("Invalid input");
+  return text;
+}
+
+function safeCell(value) {
+  // Apostrophe forces user input to remain text rather than a spreadsheet formula.
+  return /^[=+@-]/.test(value) ? "'" + value : value;
+}
+
+function doGet() {
+  return jsonResponse({ status: "active", message: "CICA form endpoint is online." });
+}
+
+function jsonResponse(data) {
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
 }

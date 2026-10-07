@@ -1,96 +1,59 @@
-/**
- * CICA Join Updates Form - Google Apps Script
- * 
- * This script handles form submissions from the "Join CICA for updates" form
- * and appends the data to a Google Sheet.
- */
-
-// Configuration
-const SHEET_ID = "1RrGkgQMNR0_8IYXwp7W0uiLu-BZJSzlWYNLrsD9XgRQ";
+// Deploy this source as a new version of the existing Apps Script web app.
+// Source changes alone do not update the public deployment or send email.
 const SHEET_NAME = "Join Updates Form";
+const SHEET_ID = "1RrGkgQMNR0_8IYXwp7W0uiLu-BZJSzlWYNLrsD9XgRQ";
+const SHEET_HEADERS = ["Timestamp", "Name", "Email", "Phone"];
 
-/**
- * doPost - Handles POST requests from the form
- * @param {Object} e - The event object containing form data
- * @return {Object} JSON response with success/error message
- */
 function doPost(e) {
   const lock = LockService.getScriptLock();
-  
+  let acquired = false;
   try {
-    // Acquire lock to prevent concurrent write operations
-    lock.waitLock(30000);
-    
-    // Validate request
-    if (!e || !e.postData || !e.postData.contents) {
-      return jsonResponse({ 
-        success: false, 
-        message: "Invalid request format" 
-      });
+    if (!e || !e.postData || typeof e.postData.contents !== "string" || e.postData.contents.length > 12000) {
+      return jsonResponse({ success: false, message: "Invalid request." });
     }
-    
-    // Parse data
     const data = JSON.parse(e.postData.contents);
-    
-    // Validate required fields
-    if (!data.name || !data.email) {
-      return jsonResponse({ 
-        success: false, 
-        message: "Name and email are required" 
-      });
-    }
-    
-    // Access spreadsheet
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    
-    // Create sheet if it doesn't exist
+    if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Invalid input");
+    data.name = checkedText(data.name, 1, 100);
+    data.email = checkedText(data.email, 1, 254);
+    data.phone = checkedText(data.phone, 0, 30);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) throw new Error("Invalid email");
+    if (data.phone && (!/^[+\d\s().-]+$/.test(data.phone) || data.phone.replace(/\D/g, "").length < 7 || data.phone.replace(/\D/g, "").length > 15)) throw new Error("Invalid phone");
+    acquired = lock.tryLock(5000);
+    if (!acquired) return jsonResponse({ success: false, message: "The form is busy. Please contact the organizers." });
+    const spreadsheet = SpreadsheetApp.openById(SHEET_ID);
+    let sheet = spreadsheet.getSheetByName(SHEET_NAME);
     if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow(["Timestamp", "Name", "Email", "Phone"]);
+      sheet = spreadsheet.insertSheet(SHEET_NAME);
+      sheet.appendRow(SHEET_HEADERS);
     }
-    
-    // Append data
-    sheet.appendRow([
-      new Date(),
-      data.name,
-      data.email,
-      data.phone || ""
-    ]);
-    
-    return jsonResponse({ 
-      success: true, 
-      message: "Thank you for joining CICA updates!" 
-    });
-    
+    sheet.appendRow([new Date(), safeCell(data.name), safeCell(data.email), safeCell(data.phone)]);
+    SpreadsheetApp.flush();
+    return jsonResponse({ success: true, message: "Your request has been recorded." });
   } catch (error) {
-    return jsonResponse({ 
-      success: false, 
-      message: "Failed to process your subscription. Please try again later." 
-    });
+    // Never return internal spreadsheet IDs, permissions, or submitted personal data.
+    return jsonResponse({ success: false, message: "We could not confirm your request. Please contact the organizers." });
   } finally {
-    // Always release the lock
-    lock.releaseLock();
+    if (acquired) lock.releaseLock();
   }
 }
 
-/**
- * doGet - Handles GET requests to check if the endpoint is working
- * @return {Object} Simple status message
- */
-function doGet() {
-  return jsonResponse({ 
-    status: "active",
-    message: "CICA Join Updates Form endpoint is online" 
-  });
+function checkedText(value, minimum, maximum) {
+  if (value == null && minimum === 0) return "";
+  if (typeof value !== "string") throw new Error("Invalid input");
+  const text = value.trim();
+  if (text.length < minimum || text.length > maximum) throw new Error("Invalid input");
+  return text;
 }
 
-/**
- * Helper function to create consistent JSON responses
- * @param {Object} data - The data to return as JSON
- * @return {TextOutput} The formatted JSON response
- */
+function safeCell(value) {
+  // Apostrophe forces user input to remain text rather than a spreadsheet formula.
+  return /^[=+@-]/.test(value) ? "'" + value : value;
+}
+
+function doGet() {
+  return jsonResponse({ status: "active", message: "CICA form endpoint is online." });
+}
+
 function jsonResponse(data) {
-  return ContentService.createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
 }

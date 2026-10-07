@@ -1,79 +1,74 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ExternalLink, Camera } from "lucide-react"
+import Image from "next/image"
+import { CommunityGallery } from "@/components/community-gallery"
+import { CapsuleLink } from "@/components/ui/capsule-link"
+import { PageHero } from "@/components/ui/page-hero"
+import { SectionIntro } from "@/components/ui/section-intro"
+import { communityLinks } from "@/lib/content"
+import { pageMetadata } from "@/lib/site-metadata"
+import s from "../inner-page.module.css"
+import styles from "@/components/logo-grid.module.css"
+
+export const metadata = pageMetadata("Community moments", "Explore real CICA team photographs, cricket celebrations and community moments from Central Illinois.", "/gallery/")
+
+const logos = [
+  { id: "main", name: "CICA" },
+  { id: "tournaments", name: "CICA Tournaments" },
+  { id: "mains", name: "CICA Mains" },
+  { id: "cpl", name: "CPL" },
+  { id: "mini", name: "CICA Mini" },
+  { id: "indoor", name: "CICA Indoor" },
+  { id: "100", name: "CICA 100" },
+]
 
 export default function GalleryPage() {
-  return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl font-bold mb-4">Photo Gallery</h1>
-        <p className="text-gray-600 mb-12">
-          Relive the excitement of CICA tournaments and events through our photo collection. From thrilling matches to
-          community celebrations, these images capture the spirit of cricket in Central Illinois.
-        </p>
+  return <>
+    <PageHero tag="Community moments" title={"More than\na *matchday.*"}
+      intro="The teams, the celebrations, and the people who make CICA feel like a community." />
 
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <Camera className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-            <h2 className="text-2xl font-semibold mb-4">Event Photos & Highlights</h2>
-            <p className="text-gray-600 mb-6">
-              Find CICA photos and highlights on our Facebook page, including updates from tournaments,
-              award ceremonies, and community events.
-            </p>
-            <Button asChild size="lg" className="whitespace-normal h-auto"><a href="https://www.facebook.com/cicacric/" target="_blank" rel="noopener noreferrer"><ExternalLink className="h-5 w-5 mr-2 shrink-0" />View Photos & Highlights on Facebook</a></Button>
-          </CardContent>
-        </Card>
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="photos-heading">
+      <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading" variant="label"
+        subtitle="A few moments from our community collection. Select a photograph to see it in full." />
+      <CommunityGallery />
+    </section>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">Tournament Action</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Capture the intensity and skill of our competitive matches across all tournament formats.
-              </p>
-              <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">Award Ceremonies</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Celebrating our champions and recognizing outstanding performances and sportsmanship.
-              </p>
-              <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">Community Events</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Special events, player orientations, and community gatherings that bring us together.
-              </p>
-              <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">Behind the Scenes</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Glimpses of tournament preparation, volunteer efforts, and the dedication that makes CICA special.
-              </p>
-              <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="channels-heading">
+      <div className={`${s.card} ${s.bandGrid}`}>
+        <div>
+          <h2 id="channels-heading" className={s.cardTitle}>Keep exploring.</h2>
+          <p className={s.body}>Find more community posts on Facebook and available cricket videos on YouTube. Some Facebook content may require you to sign in.</p>
+        </div>
+        <div className={s.actions}>
+          <CapsuleLink href={communityLinks.facebook} variant="outline" external>Facebook</CapsuleLink>
+          <CapsuleLink href={communityLinks.youtube} variant="outline" external>YouTube</CapsuleLink>
         </div>
       </div>
-    </div>
-  )
+    </section>
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="identity-heading">
+      <SectionIntro tag="Our visual identity" title={"One association.\nMany ways to *play.*"} id="identity-heading"
+        subtitle="The CICA logo family, from the association identity to its tournament artwork." reveal />
+      <ul className={styles.logos}>
+        {logos.map(logo => <li key={logo.id}>
+          <figure className={styles.logo}>
+            <Image src={`/images/cica-logo-${logo.id}.webp`} width={160} height={160} alt="" />
+            <figcaption>{logo.name}</figcaption>
+          </figure>
+        </li>)}
+      </ul>
+    </section>
+
+    <section className={s.band} data-tone="green" aria-labelledby="share-heading">
+      <div className="page-shell">
+        <div className={s.bandGrid}>
+          <SectionIntro tag="Share a moment" title={"Have a CICA moment\nto *share?*"} align="start" tone="dark" id="share-heading" reveal />
+          <div>
+            <p className={s.bandBody}>Contact the organizers about sharing photos or a community story. Please only share material you have permission to publish, including permission from the people pictured.</p>
+            <div className={s.actions}>
+              <CapsuleLink href="/contact/" tone="cream">Share with the organizers</CapsuleLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </>
 }

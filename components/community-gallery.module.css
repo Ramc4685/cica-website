@@ -1,0 +1,28 @@
+.grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 28px;margin:0;padding:0;list-style:none; }
+.figure { margin:0; }
+.trigger { position:relative;display:block;width:100%;padding:0;overflow:hidden;border:0;border-radius:28px;background:var(--cica-paper);cursor:zoom-in; }
+.trigger:focus-visible { outline:3px solid var(--focus);outline-offset:4px; }
+/* Uniform 4:3 cover crop; each photo's objectPosition keeps faces in frame. The lightbox keeps contain. */
+.thumb { aspect-ratio:4/3; }
+.expand { position:absolute;right:16px;bottom:16px;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--cica-cream);color:var(--cica-green);box-shadow:0 4px 14px hsl(var(--cica-green-hsl) / .18); }
+.caption { display:flex;align-items:flex-start;gap:16px;margin-top:16px;font-size:15px;line-height:1.6; }
+.index { flex-shrink:0;color:var(--cica-green-soft);font-variant-numeric:tabular-nums; }
+
+.dialog { width:calc(100% - 24px);max-width:72rem;max-height:94dvh;margin:auto;padding:24px;overflow:auto;border:0;border-radius:32px;background:var(--cica-cream);color:var(--cica-green);box-shadow:0 30px 80px hsl(0 0% 0% / .35); }
+/* Literal ink: older browsers do not inherit custom properties into ::backdrop. */
+.dialog::backdrop { background:hsl(180 2% 10% / .85); }
+.dialogHead,.dialogFoot { display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px; }
+.dialogHead { margin-bottom:16px; }
+.dialogTitle { margin:0;font-family:var(--font-display),Georgia,serif;font-size:24px;font-weight:400; }
+.dialogFoot { margin-top:16px; }
+.full { display:block;width:auto;max-width:100%;height:auto;max-height:65dvh;margin-inline:auto;object-fit:contain;border-radius:16px; }
+.round { display:flex;flex-shrink:0;align-items:center;justify-content:center;width:44px;height:44px;border:1.5px solid var(--cica-line);border-radius:50%;background:transparent;color:var(--cica-green);cursor:pointer; }
+.round:hover { background:hsl(var(--cica-green-hsl) / .08); }
+.controls { display:flex;gap:8px; }
+.count { margin-top:4px;font-size:13px;color:var(--cica-green-soft); }
+
+@media (max-width:760px) {
+  .grid { grid-template-columns:1fr;gap:32px; }
+  .trigger { border-radius:22px; }
+  .dialog { padding:16px;border-radius:24px; }
+}
