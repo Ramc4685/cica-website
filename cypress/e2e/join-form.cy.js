@@ -28,8 +28,7 @@ describe('Join CICA Form', () => {
   });
 
   it('should fill and submit the form', () => {
-    // Intercept the form submission to Google Apps Script
-    cy.intercept('POST', '**/script.google.com/macros/**').as('formSubmission');
+    cy.stubFormSubmit(200, { success: true, reference: 'a1b2c3d4e5f6a1b2c3d4e5f6' });
 
     // Fill the form
     const formData = {
@@ -43,13 +42,10 @@ describe('Join CICA Form', () => {
     // Submit form
     cy.submitFormAndWait('Subscribe Now');
 
-    // Verify submission attempt (we don't necessarily expect success in test environment)
-    cy.wait('@formSubmission').then((interception) => {
-      // Log request details for debugging
-      cy.log('Form submission request:', JSON.stringify(interception.request.body));
-      
-      // In a real environment, we would check for success message:
-      // cy.checkForToast(/Thank you for joining/i);
+    cy.wait('@formSubmission').then(({ request, response }) => {
+      expect(request.body.type).to.eq('updates');
+      expect(request.body.website).to.eq('');
+      expect(response.statusCode).to.eq(200);
     });
   });
 });

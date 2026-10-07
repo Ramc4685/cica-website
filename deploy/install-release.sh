@@ -50,6 +50,19 @@ tar -czf "$backup/public_html.tar.gz" -C "$target" .
 chmod 600 "$backup/public_html.tar.gz"
 if [[ -f "$manifest" ]]; then cp "$manifest" "$backup/previous-manifest"; fi
 
+# Keep host-generated PHP handler blocks (cPanel MultiPHP) that the staged .htaccess does not know about.
+preserved="$backup/preserved-htaccess"
+: > "$preserved"
+if [[ -f "$target/.htaccess" && ! -L "$target/.htaccess" ]]; then
+  awk '
+    /^# *(php -- )?BEGIN cPanel-generated/ { keep = 1 }
+    keep { print; blocks = 1 }
+    /^# *(php -- )?END cPanel-generated/ { keep = 0 }
+    !keep && !/^# *(php -- )?END cPanel-generated/ && /^[[:space:]]*(AddHandler|SetHandler|AddType[[:space:]]+application\/x-httpd-)/ { loose = loose $0 "\n" }
+    END { if (!blocks && loose != "") printf "%s", loose }
+  ' "$target/.htaccess" > "$preserved"
+fi
+
 rollback() {
   trap - ERR
   set +e
@@ -100,6 +113,9 @@ for owned in _next admin admin-login admin.html admin.txt admin-login.html admin
 done
 cp -R "$stage/." "$target/"
 rm -- "$target/.cica-manifest"
+if [[ -s "$preserved" ]]; then
+  { printf '\n# Preserved from the previous .htaccess by install-release.sh\n'; cat "$preserved"; } >> "$target/.htaccess"
+fi
 cp "$stage/.cica-manifest" "$manifest"
 while IFS= read -r file; do
   [[ -n "$file" ]] || continue

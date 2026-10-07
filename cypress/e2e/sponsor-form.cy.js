@@ -37,8 +37,7 @@ describe('Sponsor Form', () => {
   });
 
   it('should fill and submit the form', () => {
-    // Intercept the form submission to Google Apps Script
-    cy.intercept('POST', '**/script.google.com/macros/**').as('formSubmission');
+    cy.stubFormSubmit(200, { success: true, reference: 'a1b2c3d4e5f6a1b2c3d4e5f6' });
 
     // Scroll to the form section
     cy.findByText(/Contact Form/i).scrollIntoView();
@@ -54,13 +53,10 @@ describe('Sponsor Form', () => {
     // Submit form
     cy.submitFormAndWait('Submit');
 
-    // Verify submission attempt (we don't necessarily expect success in test environment)
-    cy.wait('@formSubmission').then((interception) => {
-      // Log request details for debugging
-      cy.log('Form submission request:', JSON.stringify(interception.request.body));
-      
-      // In a real environment, we would check for success message:
-      // cy.checkForToast(/sponsorship request submitted/i);
+    cy.wait('@formSubmission').then(({ request, response }) => {
+      expect(request.body.type).to.eq('sponsor');
+      expect(request.body.website).to.eq('');
+      expect(response.statusCode).to.eq(200);
     });
   });
 });
