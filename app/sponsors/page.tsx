@@ -12,21 +12,20 @@ import { Label } from "@/components/ui/label"
 import { ExternalLink, Mail, Phone, Building, Loader2, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+import { nameField, emailField, phoneField, messageField, submitForm, UNCERTAIN_SUBMISSION } from "@/lib/form-submission"
 
-// Zod schema for sponsor form validation
+// Limits mirror public/forms/submit.php so the server accepts anything the form allows.
 const sponsorFormSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  company: z.string().min(1, "Company name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
-  interest: z.string().min(1, "Sponsorship interest is required"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  website: z.string().max(200),
+  fullName: nameField("Full name"),
+  company: nameField("Company name", 200),
+  email: emailField,
+  phone: phoneField,
+  interest: nameField("Sponsorship interest", 200),
+  message: messageField,
 });
 
 type SponsorFormValues = z.infer<typeof sponsorFormSchema>;
-
-// TODO:// Google Apps Script URL for form submission
-const FORM_SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbzzQZ0zYjbjJRppNKz7YOmeGpSAEGvhv3jCXaOhDo5xGJg5gdPxcZLZcxrosa5rCkqw5w/exec";
 
 export default function SponsorsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,6 +38,7 @@ export default function SponsorsPage() {
     formState: { errors },
   } = useForm<SponsorFormValues>({
     resolver: zodResolver(sponsorFormSchema),
+    defaultValues: { website: "", fullName: "", company: "", email: "", phone: "", interest: "", message: "" },
   });
 
   const onSubmit = async (data: SponsorFormValues) => {
@@ -46,26 +46,12 @@ export default function SponsorsPage() {
     setSubmitSuccess(false);
 
     try {
-      const response = await fetch(FORM_SUBMISSION_URL, {
-        method: "POST",
-        headers: {
-          // Apps Script does not serve CORS preflight; send JSON as a simple request.
-          "Content-Type": "text/plain;charset=UTF-8",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast.success("Your sponsorship inquiry has been sent!");
-        setSubmitSuccess(true);
-        reset();
-      } else {
-        toast.error(result.message || "An error occurred.");
-      }
-    } catch (error) {
-      toast.error("Failed to send inquiry. Please try again later.");
+      await submitForm("sponsor", data);
+      toast.success("Your sponsorship inquiry has been sent!");
+      setSubmitSuccess(true);
+      reset();
+    } catch {
+      toast.error(UNCERTAIN_SUBMISSION);
     } finally {
       setIsSubmitting(false);
     }
@@ -177,6 +163,11 @@ export default function SponsorsPage() {
               </div>
             ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Honeypot: people never see this field; submit.php rejects requests that fill it. */}
+              <div hidden aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input id="website" tabIndex={-1} autoComplete="off" {...register("website")} />
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                                 <div>
                   <Label htmlFor="fullName">Full Name</Label>

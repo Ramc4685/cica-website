@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -54,12 +54,12 @@ export function LogoCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (isAnimating) return
     setIsAnimating(true)
     setCurrentIndex((prevIndex) => (prevIndex + 1) % logos.length)
     setTimeout(() => setIsAnimating(false), 500)
-  }
+  }, [isAnimating])
 
   const prevSlide = () => {
     if (isAnimating) return
@@ -73,7 +73,7 @@ export function LogoCarousel() {
       nextSlide()
     }, 4000)
     return () => clearInterval(interval)
-  }, [currentIndex, isAnimating])
+  }, [currentIndex, nextSlide])
 
   return (
     <section className="py-20 bg-gradient-to-r from-gray-50 to-gray-100">

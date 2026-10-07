@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Move the contact, join and sponsorship forms from Google Apps Script to a same-origin Namecheap PHP handler with private records, organizer notifications, server validation, a honeypot and submission limits.
+- Show a do-not-resubmit notice when a form submission cannot be confirmed, since the request may already be saved.
+- Replace the broken `next lint` script with a working ESLint gate, and add lint plus PHP backend checks to CI.
+
 - Add an optional static build for Namecheap cPanel hosting, with directory routes and Apache response headers.
 - Use cicainfo.com for absolute social preview image URLs.
 - Remove the exposed demo admin password and browser-only login; display unavailable notices on the existing admin URLs.

@@ -37,8 +37,8 @@ describe('Sponsor Form', () => {
   });
 
   it('should fill and submit the form', () => {
-    // Intercept the form submission to Google Apps Script
-    cy.intercept('POST', '**/script.google.com/macros/**').as('formSubmission');
+    // Intercept the form submission to the same-origin PHP handler
+    cy.intercept('POST', '**/forms/submit.php').as('formSubmission');
 
     // Scroll to the form section
     cy.findByText(/Contact Form/i).scrollIntoView();
