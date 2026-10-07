@@ -4,17 +4,17 @@ The owner supplied and approved publication of the CICA artwork, CPL team logos 
 
 ## CICA identity family
 
-The 21 PNGs are seven identities in transparent, blue-background and yellow-background treatments. The transparent treatment is used on the website so the logo sits naturally on the warm page background. Alternate treatments remain preserved in the source folder and are intentionally not repeated as different identities.
+The 21 PNGs are seven identities in transparent, blue-background and yellow-background treatments. The transparent treatment is used across the website. The blue- and yellow-background treatments are published as 360×360 WebP derivatives in `public/images/logos-family/` for the About page family wall, where each identity appears once per treatment; they are the same identities, not additional ones.
 
-| Identity | Transparent source | Alternate backgrounds | Public derivative |
-|---|---|---|---|
-| CICA Tournaments | cricket association-01.png | 02 / 03 | cica-logo-tournaments.webp |
-| CICA Mains | cricket association-04.png | 05 / 06 | cica-logo-mains.webp |
-| CPL | cricket association-07.png | 08 / 09 | cica-logo-cpl.webp |
-| CICA Mini | cricket association-10.png | 11 / 12 | cica-logo-mini.webp |
-| CICA Indoor | cricket association-13.png | 14 / 15 | cica-logo-indoor.webp |
-| CICA 100 | cricket association-16.png | 17 / 18 | cica-logo-100.webp |
-| CICA main identity | cricket association-19.png | 20 / 21 | cica-logo-main.webp |
+| Identity | Transparent source | Alternate backgrounds | Public derivative | Blue / yellow derivatives |
+|---|---|---|---|---|
+| CICA Tournaments | cricket association-01.png | 02 / 03 | cica-logo-tournaments.webp | cica-logo-tournaments-blue.webp / -yellow.webp |
+| CICA Mains | cricket association-04.png | 05 / 06 | cica-logo-mains.webp | cica-logo-mains-blue.webp / -yellow.webp |
+| CPL | cricket association-07.png | 08 / 09 | cica-logo-cpl.webp | cica-logo-cpl-blue.webp / -yellow.webp |
+| CICA Mini | cricket association-10.png | 11 / 12 | cica-logo-mini.webp | cica-logo-mini-blue.webp / -yellow.webp |
+| CICA Indoor | cricket association-13.png | 14 / 15 | cica-logo-indoor.webp | cica-logo-indoor-blue.webp / -yellow.webp |
+| CICA 100 | cricket association-16.png | 17 / 18 | cica-logo-100.webp | cica-logo-100-blue.webp / -yellow.webp |
+| CICA main identity | cricket association-19.png | 20 / 21 | cica-logo-main.webp | cica-logo-main-blue.webp / -yellow.webp |
 
 Matching JPGs and the `CICA files` subset duplicate this artwork. The logo family appears on Gallery; relevant identities appear on tournament cards, global branding and the home hero. CICA 100 is presented as supplied artwork, not as an asserted currently open competition.
 

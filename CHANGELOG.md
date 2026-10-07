@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replace the About banner photo with a wall of all seven CICA identities in their transparent, blue and yellow treatments; its motion stops under reduced motion and the site Pause control.
 - Remove the retired Google Apps Script form handlers, their live-endpoint test scripts, handler tests and Sheet templates now that the web apps are undeployed.
 - Add a staging site at staging.cicainfo.com: every `main` build deploys there first, and production deploys the same artifact only after an approver signs off. Staging forms keep separate records and `[STAGING]` notifications.
 - Add bylaws and indoor rules pages reproducing the official documents verbatim, with a sticky contents list, print and PDF copies.
