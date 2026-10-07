@@ -35,17 +35,57 @@ try {
     $saved = json_decode(trim(file_get_contents($dir . '/requests.jsonl')), true);
     check($saved['fields']['lastName'] === '李' && !isset($saved['ip']), 'Private record content, no raw IP');
     check((fileperms($dir . '/requests.jsonl') & 0777) === 0600, 'Private file mode');
-    for ($i = 0; $i < 4; $i++) { cica_save_request($clean, $dir, '127.0.0.1', 1001); }
-    try { cica_save_request($clean, $dir, '127.0.0.1', 1002); check(false, 'Rate limit'); }
-    catch (OverflowException $e) { check(true, 'Rate limit'); }
-    check(count(file($dir . '/requests.jsonl')) === 5, 'Rejected request is not persisted');
-    cica_save_request($clean, $dir, '127.0.0.1', 1601);
-    check(count(file($dir . '/requests.jsonl')) === 6, 'Rate window expires');
+    $alerts = [];
+    $options = ['alert' => function (string $subject) use (&$alerts) { $alerts[] = $subject; }];
+    for ($i = 0; $i < CICA_IP_LIMIT - 1; $i++) { cica_save_request($clean, $dir, '127.0.0.1', 1001, $options); }
+    try { cica_save_request($clean, $dir, '127.0.0.1', 1002, $options); check(false, 'Rate limit'); }
+    catch (CicaRateLimited $e) { check($e->retryAfter > 0 && $e->retryAfter <= CICA_IP_WINDOW, 'Rate limit with Retry-After'); }
+    check(count(file($dir . '/requests.jsonl')) === CICA_IP_LIMIT, 'Rejected request is not persisted');
+    cica_save_request($clean, $dir, '127.0.0.1', 1001 + CICA_IP_WINDOW, $options);
+    check(count(file($dir . '/requests.jsonl')) === CICA_IP_LIMIT + 1, 'Rate window expires');
+    check(!str_contains(file_get_contents($dir . '/limits.json'), '127.0.0.1'), 'No raw IP in rate state');
+
+    // A different IP is not throttled by another visitor's bucket.
+    cica_save_request($clean, $dir, '10.0.0.2', 1001 + CICA_IP_WINDOW, $options);
+
+    // Global hourly cap applies across IP addresses.
+    $capDir = $dir . '/cap';
+    mkdir($capDir, 0700);
+    for ($i = 0; $i < CICA_HOURLY_CAP; $i++) { cica_save_request($clean, $capDir, '10.1.' . intdiv($i, 250) . '.' . ($i % 250), 5000, $options); }
+    try { cica_save_request($clean, $capDir, '10.9.9.9', 5001, $options); check(false, 'Global cap'); }
+    catch (CicaRateLimited $e) { check($e->retryAfter > 0 && $e->retryAfter <= 3600, 'Global hourly cap'); }
+    cica_save_request($clean, $capDir, '10.9.9.9', 5000 + 3600, $options);
+    check(true, 'Global cap resets after the hour');
+
+    // Storage: alert near 80%, rotate (not fail) when full.
+    $fullDir = $dir . '/full';
+    mkdir($fullDir, 0700);
+    $small = ['maxBytes' => 1500] + $options;
+    $alerts = [];
+    for ($i = 0; $i < 4; $i++) { cica_save_request($clean, $fullDir, '10.2.0.' . $i, 9000, $small); }
+    check(in_array('Form storage is 80% full', $alerts, true), 'Storage-fill alert');
+    for ($i = 4; $i < 7; $i++) { cica_save_request($clean, $fullDir, '10.2.0.' . $i, 9000, $small); }
+    check(count(glob($fullDir . '/requests-*.jsonl')) >= 1, 'Full file is archived');
+    check(in_array('Form storage rotated', $alerts, true), 'Rotation alert');
+    check(count(file($fullDir . '/requests.jsonl')) >= 1, 'New records continue after rotation');
+    check(count($alerts) === 2 || count($alerts) === 3, 'Storage alert is not repeated each request');
+
+    // A held lock is retried briefly instead of failing at once.
+    $holder = fopen($dir . '/requests.lock', 'c+');
+    flock($holder, LOCK_EX);
+    $started = microtime(true);
+    try { cica_save_request($clean, $dir, '10.3.0.1', 9500, $options); check(false, 'Lock timeout'); }
+    catch (RuntimeException $e) { check(microtime(true) - $started >= 2.5, 'Blocking lock retries before giving up'); }
+    flock($holder, LOCK_UN);
+    fclose($holder);
+
     symlink($dir . '/requests.jsonl', $dir . '/unsafe');
     try { cica_open_private($dir . '/unsafe'); check(false, 'Symlink rejected'); }
     catch (RuntimeException $e) { check(true, 'Symlink rejected'); }
 } finally {
-    foreach (glob($dir . '/*') as $file) { unlink($file); }
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $file) {
+        $file->isDir() && !$file->isLink() ? rmdir($file->getPathname()) : unlink($file->getPathname());
+    }
     rmdir($dir);
 }
 echo 'PASS: ' . $checks . " backend checks; no mail sent.\n";
