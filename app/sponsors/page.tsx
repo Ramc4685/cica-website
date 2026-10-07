@@ -49,7 +49,8 @@ export default function SponsorsPage() {
       const response = await fetch(FORM_SUBMISSION_URL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          // Apps Script does not serve CORS preflight; send JSON as a simple request.
+          "Content-Type": "text/plain;charset=UTF-8",
         },
         body: JSON.stringify(data),
       });

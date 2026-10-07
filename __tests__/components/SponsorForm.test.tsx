@@ -136,10 +136,18 @@ describe('Sponsor Form', () => {
       expect(global.fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain;charset=UTF-8',
         }),
         body: expect.any(String),
       }));
+    });
+
+    const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    expect(request.mode).not.toBe('no-cors');
+    expect(JSON.parse(request.body)).toEqual({
+      fullName: 'Test Sponsor', company: 'Test Company LLC', email: 'sponsor@example.com',
+      phone: '123-456-7890', interest: 'Tournament Sponsorship',
+      message: 'This is a test message for the sponsor form.',
     });
 
     // Verify success toast was shown

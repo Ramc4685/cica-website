@@ -19,7 +19,7 @@ async function testJoinForm() {
     const response = await fetch(FORM_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain;charset=UTF-8',
       },
       body: JSON.stringify(testData),
     });

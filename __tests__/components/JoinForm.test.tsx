@@ -126,6 +126,8 @@ describe('Join CICA Form', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
     const request = (global.fetch as jest.Mock).mock.calls[0][1];
     expect(request.method).toBe('POST');
+    expect(request.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
+    expect(request.mode).not.toBe('no-cors');
     expect(JSON.parse(request.body)).toEqual({ name: 'Test User', email: 'user@example.com', phone: '123-456-7890' });
   });
 });

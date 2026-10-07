@@ -9,4 +9,5 @@
 - Fix broken public links, missing footer assets, mobile menu access and narrow-screen action buttons.
 - Preserve the existing contact, join and sponsorship Apps Script forms, with passing submission and navigation regression tests.
 - Enforce TypeScript build validation and repair theme provider children typing.
-- Consolidate work into the existing Mac checkout, repair Jest/pnpm configuration, and update Next.js to the patched 15.2.9 release.
+- Consolidate work into the existing Mac checkout, repair Jest/pnpm configuration, and update Next.js to the patched 15.5.27 release.
+- Fix Apps Script browser form requests to avoid unsupported CORS preflight, with mocked request and response regression coverage.

@@ -63,4 +63,29 @@ describe('Contact Form', () => {
       expect(screen.getByText(/Message must be at least 10 characters/i)).toBeInTheDocument();
     });
   });
+  it('submits readable JSON in a simple request without a CORS preflight', async () => {
+    render(<ContactPage />);
+    const fields = [
+      [/First Name/i, 'Test'], [/Last Name/i, 'User'], [/Email/i, 'contact@example.com'],
+      [/Phone \(Optional\)/i, '123-456-7890'], [/Subject/i, 'Tournament inquiry'],
+      [/Message/i, 'Please share information about joining the next tournament.'],
+    ] as const;
+    for (const [label, value] of fields) {
+      fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    }
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Send Message/i }));
+    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    expect(request.method).toBe('POST');
+    expect(request.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
+    expect(request.mode).not.toBe('no-cors');
+    expect(JSON.parse(request.body)).toEqual({
+      firstName: 'Test', lastName: 'User', email: 'contact@example.com', phone: '123-456-7890',
+      subject: 'Tournament inquiry', message: 'Please share information about joining the next tournament.',
+    });
+    expect(screen.getByText(/Your message has been sent successfully/i)).toBeInTheDocument();
+  });
+
 });
