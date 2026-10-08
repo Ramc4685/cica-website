@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Rewrite the README and maintainer docs as a handoff guide covering setup, deploys, forms and content editing, and ignore local tool output (`.playwright-mcp/`, `.serena/`, `.claude/worktrees/`, `.swc/`).
 - Gallery now shows all 29 community photographs (up from 10): the 10 photos that only appeared in the home page banner, plus 9 new photos from the supplied collection. Four of the new photos also join the home page banner.
 - Make the home page banner photo choice easy to find: the Pages CMS section is now "Photos (Gallery and home page banner)" with a "Show in the home page banner" tick box, and /admin/ explains how to add a banner photo and no longer says edits wait for owner approval.
 - Pages CMS edits now publish to production automatically when only `content/` changed since what production serves; code changes, and content edits stacked on code still awaiting approval, keep the approval gate.

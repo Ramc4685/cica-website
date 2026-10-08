@@ -1,8 +1,28 @@
 # UI verification
 
+Screenshots and manual checks recorded as the design changed, newest first. Test counts are
+left out on purpose: run `pnpm test` for the current suite.
+
+## Marvy Labs footer credit, October 8, 2026
+
+The footer credit links to Marvy Labs with its small mark (`components/footer.tsx`).
+
+![Footer before the credit](marvy-credit-before.jpg)
+![Footer with the credit, desktop](marvy-credit-after.jpg)
+![Footer with the credit, mobile](marvy-credit-after-mobile.jpg)
+
+## 320px header overflow fix, October 7, 2026
+
+At 320px the header row was 16px too wide and the page scrolled sideways. Tighter nav gaps at
+360px and below fixed it; a Cypress spec checks scroll width at 320, 375 and 390px.
+
+![Header overflowing at 320px](overflow-320-before.png)
+![Header fitting at 320px](overflow-320-after.png)
+
 ## Rotating hero and premium sponsors
 
-The hero now cycles through twenty community photographs every six seconds, with
+The hero cycles through the community photographs ticked "Show in the home page banner" in
+`content/photos.json` (twenty when these screenshots were taken) every six seconds, with
 manual previous/next controls. Regression tests verify that the previous photograph
 remains visible until its replacement loads, and returning to a cached photograph
 does not require another load event. The photo counter tracks the displayed frame.
@@ -20,7 +40,7 @@ control or reduced-motion preference.
 ![Full group on mobile](cica-twenty-photo-hero-mobile.jpg)
 ![Premium placements](cica-premium-sponsors-placements.jpg)
 
-The current suite has 41 passing Jest checks. Chrome checked Home and Sponsors at
+Chrome checked Home and Sponsors at
 320, 390, 768, 1100 and 1440px without horizontal overflow or clipped headings.
 Physical-device performance and mail delivery remain separate release checks.
 
@@ -48,8 +68,7 @@ dismissal and thumbnail focus restoration were checked in Chrome.
 
 Four additional unit tests verify pause/resume, initial reduced-motion preference,
 runtime preference changes, and hover/keyboard interaction stopping sponsor timers.
-There are 37 passing Jest checks, plus TypeScript, lint, static export, three
-deployment regressions and two built-admin security checks. Reduced motion is
+Reduced motion is
 covered in source and unit tests, not by changing the Mac's system preference.
 Physical iOS/Android performance, screen readers and Core Web Vitals are not certified.
 

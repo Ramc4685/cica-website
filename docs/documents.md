@@ -15,7 +15,8 @@ page links back to the Drive file it came from.
 
 `lib/documents.ts` holds the titles, links and "last updated" dates shown on the pages.
 `lib/rules/quick-reference.ts` holds the quick-reference cards on `/rules/`; each card names its
-source document. The rules-backed FAQ answers in `lib/season.ts` cite their source in a comment.
+source document. The rules-backed FAQ answers live in `content/faq.json` (editable in Pages CMS); their
+sources are listed at the end of [content-editing.md](content-editing.md#for-developers).
 
 ## Updating after a document changes
 
@@ -32,8 +33,10 @@ The sync is manual on purpose. Someone should read the change before it goes liv
 3. **Update the text module.** Copy the changed wording into `lib/bylaws.ts` or `lib/rules/*.ts`.
    Then update `updated` (the Drive modified date) in `lib/documents.ts`. If a quick-reference fact
    or an FAQ answer depends on the change, update it too.
-4. **Rebuild and deploy** (`pnpm build:namecheap`). A PDF link only appears on the site once its
-   file exists in `public/documents/`, which is checked at build time.
+4. **Commit to `main`.** CI builds and deploys it; because `lib/` changed, production waits for approval. A
+   PDF link only appears on the site once its file exists in `public/documents/`, which is checked at
+   build time (`app/rules/_components/official-documents.tsx`). `pnpm build:namecheap` builds the
+   same static export locally if you want to check first.
 
 When you add a new Google Doc, add it to `officialDocuments` in `lib/documents.ts` *and* to `DOCS`
 in `scripts/sync-documents.mjs`.

@@ -27,9 +27,9 @@ every changed file since then is under `content/`, the `deploy-content` job depl
 staging-verified artifact to production without approval (environment `production-content`), after
 re-checking against the live commit just before it deploys. Anything else, including a content
 edit stacked on a code change that is still waiting for approval, an unreadable live commit or
-rewritten history, goes to the approval-gated `deploy` job as before. The decision uses the files
+rewritten history, goes to the approval-gated `deploy` job. The decision uses the files
 changed, never the commit author or message. The `check` job fails the build on invalid content or an unsafe upload (wrong type,
-over 10 MB, outside `content/uploads/{champions,photos}`, or any original under `public/uploads`), naming the field or file. See
+over 10 MB, outside `content/uploads/{champions,photos,logos}`, or any original under `public/uploads`), naming the field or file. See
 [editing website content](../docs/content-editing.md).
 
 Staging is a shared preview: deploying a branch replaces whatever staging showed
@@ -53,14 +53,19 @@ before. The installer adds a `noindex` header there, and staging forms save to
    on GitHub Free; other repository visibility/plans need eligibility verification.
 5. Create a GitHub environment named **staging** with no reviewers or branch
    restriction, and enter the same five secrets there.
-6. In cPanel **Domains**, create `staging.cicainfo.com` with document root
+6. Create a GitHub environment named **production-content**, restrict its
+   branches to `main`, and add no reviewers (GitHub also creates it on the first
+   automatic content deploy, without a branch restriction). The `deploy-content`
+   job needs the same five secrets, here or as repository secrets; without them
+   it fails with `Missing required configuration`.
+7. In cPanel **Domains**, create `staging.cicainfo.com` with document root
    `/home/cicanrkn/staging_html`. At GoDaddy, add an `A` record `staging` →
    `192.64.118.48`, then run cPanel **SSL/TLS Status → Run AutoSSL** so staging
    has trusted HTTPS (deployment verification requires it).
-7. Push/merge the reviewed changes to `main`, verify staging, approve production,
+8. Push/merge the reviewed changes to `main`, verify staging, approve production,
    then verify the live commit recorded in `https://cicainfo.com/deployment.json`.
 
-| Production secret | Value |
+| Secret (in each of the three environments) | Value |
 | --- | --- |
 | `NAMECHEAP_SSH_HOST` | `server315.web-hosting.com`, verify in cPanel |
 | `NAMECHEAP_SSH_USER` | `cicanrkn` |
@@ -76,12 +81,15 @@ keys/passwords in chat. Code alone does not activate unattended deployment:
 SSH authorization and these GitHub secrets must first be configured.
 
 Recommended `main` protection: require **Typecheck and static export**, PR review,
-and no force pushes. v0 sync must obey the same protections before publishing.
+and no force pushes. Pages CMS commits straight to `main`, so it must be allowed
+to push there; the classifier, not branch protection, keeps its edits to `content/`.
 
 ## What deployment does
 
 OpenSSH and rsync stage a complete validated artifact before changing live files.
-Strict SSH host-key checking and public-key authentication are mandatory. A
+Strict SSH host-key checking and public-key authentication are mandatory. The
+artifact is staged in `/home/cicanrkn/.cica-deploy/<target>-<release>` and removed
+after a successful install. A
 private backup is saved outside the webroot at
 `/home/cicanrkn/.cica-backups/<sha>-<run>-<attempt>/public_html.tar.gz`
 (staging: `.cica-backups/staging-<sha>-<run>-<attempt>/`). Production and staging
@@ -101,8 +109,8 @@ See `docs/forms/namecheap.md` for the storage and notification contract.
 An installation error automatically restores previous managed website files and
 the prior manifest, preserving unrelated hosting files. The copy is not an atomic
 whole-site swap, so there can be a brief transition between asset versions.
-Trusted HTTPS must then return the exact deployment commit and a successful
-homepage. A post-install HTTPS verification failure fails Actions and calls for
+Trusted HTTPS must then return the exact deployment commit, a successful
+homepage, and a JSON 405 from `GET /forms/submit.php` (proving PHP runs the handler). A post-install HTTPS verification failure fails Actions and calls for
 investigation; it does not automatically roll back a successfully installed tree
 because DNS/cache/network failures can be unrelated to installation.
 
@@ -133,9 +141,47 @@ node deploy/prepare-release.mjs out "$(git rev-parse HEAD)"
 uncommitted build with an old SHA. Manual cPanel uploads must remove the uploaded
 `.cica-manifest` from the webroot and retire stale `_next`/admin assets too.
 
-DNS remains at GoDaddy. Both website and the subsequently corrected mail A
-record use `192.64.118.48`. Website and mail certificates expire April 23, 2027.
-This pipeline does not renew hosting subscriptions or SSL certificates.
+## Hosting facts
+
+Hosting is the existing Namecheap Stellar annual subscription (cPanel account
+`cicanrkn`). Domain registration and DNS remain at GoDaddy. Website and mail A
+records use `192.64.118.48`. Website and mail certificates expire April 23, 2027.
+This pipeline does not renew hosting subscriptions or SSL certificates, and
+deployments never change mailboxes, mail routing or DNS.
+
+## Deploy failed: what to check
+
+Open the failed run in GitHub Actions and read the last lines of the failing step.
+
+- **Typecheck and static export failed.** Nothing was deployed. Content or upload
+  errors name the field or file; fix them in Pages CMS or `content/`. Otherwise run
+  the matching command from Local checks.
+- **Production job is waiting.** That is the approval gate, not a failure. Check
+  staging, then **Review deployments**.
+- **"A newer ... will deploy; skipping this older build."** Not a failure; the newer run
+  deploys instead.
+- **`Missing required configuration: <NAME>`.** That secret is missing from the
+  environment the job uses (`staging`, `production` or `production-content`).
+- **`Known-hosts secret lacks the configured host and port`, `Host key verification
+  failed` or `Permission denied (publickey)`.** The known-hosts line must identify
+  `[server315.web-hosting.com]:21098` (the host and port secrets); the host key may have changed (verify
+  it independently before replacing); or the public key is no longer authorized
+  in cPanel **SSH Access**. Confirm SSH is still enabled in **Manage Shell**.
+- **`Unsafe file in deployment manifest` or `Symlink ...`.** The installer refused
+  before touching the live site. Inspect the named path on the host.
+- **`Installation failed; previous website and manifest restored.`** The live site
+  is unchanged. Fix the cause shown above that line and re-run the job.
+- **`Installation and automatic rollback failed`.** Restore manually from the
+  backup the log names; see the backup notes above.
+- **`Deployment HTTPS verification failed`.** Files are installed but
+  `<site>/deployment.json` did not show this commit. Check trusted HTTPS
+  (cPanel **SSL/TLS Status**, run AutoSSL), DNS, and caching, then re-run.
+- **`Forms handler check failed`.** PHP is not running `forms/submit.php`. Check
+  the domain's PHP version in cPanel **MultiPHP Manager** (8.1 or later) and that
+  its handler lines survived in `.htaccess`.
+- **`Re-check that only content changed since production` failed.** Production
+  moved or now differs by more than `content/`. Production is unchanged; re-run
+  all jobs so the change is reclassified and goes through approval.
 
 Official references: [Namecheap SSH and port](https://www.namecheap.com/support/knowledgebase/article.aspx/1016/89/how-to-access-a-hosting-account-via-ssh/),
 [enable SSH](https://www.namecheap.com/support/knowledgebase/article.aspx/10040/2210/how-to-enable-ssh-shell-in-cpanel/),

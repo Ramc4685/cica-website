@@ -1,35 +1,78 @@
 # CICA website
 
-Public website for the Central Illinois Cricket Association, hosted at [cicainfo.com](https://cicainfo.com) on Namecheap cPanel.
+Public website for the Central Illinois Cricket Association at [cicainfo.com](https://cicainfo.com), with a staging copy at [staging.cicainfo.com](https://staging.cicainfo.com). It is a Next.js 15 / React 19 site exported as static files and served from Namecheap cPanel shared hosting. No Node.js runs on the host; the only server code is the PHP form handler.
 
-## Develop and validate
+Taking over the site? Start with [docs/HANDOFF.md](docs/HANDOFF.md).
 
-Use Node.js 22 and pnpm 11.13.0. This checkout is the single working copy at `/Users/ramc/Documents/Code/Git/cica-website`.
+## Stack
+
+- Next.js 15 (App Router, static export), React 19, TypeScript, Tailwind CSS 3 and CSS modules
+- Content in `content/*.json`, validated by `lib/content-schema.ts` and edited through [Pages CMS](https://pagescms.org) (`.pages.yml`)
+- Forms post to `public/forms/submit.php` (PHP 8.1+) on the same host
+- Jest and Testing Library for components, Cypress for end-to-end forms, `node --test` for deployment and export checks
+- GitHub Actions builds, checks and deploys over SSH (`.github/workflows/namecheap.yml`)
+
+## Quick start
+
+Use Node.js 22 and pnpm 11.13.0 (pinned in `packageManager`).
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev
-pnpm typecheck
-pnpm lint
-pnpm test --runInBand
-pnpm build:namecheap
-CICA_TEST_EXPORT_DIR=out node --test tests/admin-security.test.mjs
 ```
 
-The static build exports to `out/`. [CI setup and rollback](deploy/CI.md) describes the checked GitHub Actions pipeline, production secrets and backups. PRs are checked; successful builds from main deploy automatically using a dedicated SSH key and verified server host identity. Deployment credentials never belong in source or client bundles.
+`pnpm dev` first builds the media derivatives, then starts Next.js at http://localhost:3000.
 
-## Forms and administration
+## Scripts
 
-The contact, updates and sponsorship forms submit to a same-origin PHP backend on Namecheap. Requests are validated and saved privately outside the public website folder, with notifications to the organizers. Read [hosted form operation](docs/forms/namecheap.md) for storage, limits, testing and delivery verification. An updates request is separate from playing or tournament registration; the Get Involved page explains participation pathways. The former Google Apps Script handlers have been undeployed and removed.
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Build media derivatives, then run the dev server |
+| `pnpm media` | Validate `content/uploads` and build WebP derivatives into `public/_media` |
+| `pnpm typecheck` | Build media, then `tsc --noEmit` |
+| `pnpm lint` | ESLint over `app`, `components` and `lib` with zero warnings allowed |
+| `pnpm test` | Build media, then run Jest (CI uses `pnpm test --runInBand`) |
+| `pnpm test:forms` | PHP lint and backend tests for the form handler (no mail sent) |
+| `pnpm build:namecheap` | Static export to `out/`, as deployed |
+| `pnpm test:e2e` | Static export, then Cypress form specs against a local server with a mock form endpoint |
+| `pnpm sync:documents` | Refresh PDF copies of the public Google Docs in `public/documents/` |
 
-The old prototype admin remains disabled and the site contains no login. Organizer-owned facts (champions with optional team photos, community photos, tournaments, announcements, events, FAQ) live in `content/*.json`, validated by `lib/content-schema.ts` and edited through [Pages CMS](https://pagescms.org) using the forms in `.pages.yml`. Uploads go to `content/uploads/{champions,photos}` (outside `public/`, so originals and their EXIF data are never published); `pnpm media` validates them and builds the metadata-free WebP derivatives in `public/_media`. Edits are Git commits to `main`, so content-only edits publish to staging and production automatically, while code changes keep the owner-approved production gate. See [editing website content](docs/content-editing.md) for the owner and volunteer guide.
+`pnpm build` and `pnpm start` are the plain Next.js server build, which is not what production uses. The full local check that mirrors CI is listed in [deploy/CI.md](deploy/CI.md#local-checks).
 
-## Design and content
+## Layout
 
-The public design follows CICA branding and a warm community/family direction inspired by Growlio’s editorial layout. Shared tokens, responsive navigation and reduced-motion behavior are defined in app/globals.css. Logo derivatives are sized for static hosting; preserve original logo proportions. Do not publish sample endorsements, unsourced statistics, fabricated dates or generic photos presented as CICA events. Current event details come from organizers and CricClubs; specific tournament rules defer to official documents.
+| Path | Contents |
+| --- | --- |
+| `app/` | Routes (one folder per page), global styles, sitemap, robots and manifest |
+| `components/` | Page sections, forms, hero rotator, sponsor strips and small UI primitives in `components/ui/` |
+| `lib/` | Typed data and loaders, the content schema, rules and bylaws text, form submission client |
+| `content/` | Organizer-editable JSON and original uploads (`content/uploads/`, never published as-is) |
+| `public/` | Static files: images, document PDFs and `forms/submit.php` |
+| `deploy/` | Release packaging, change classifier, SSH installer, `.htaccess` and their tests |
+| `scripts/` | Media build, document sync, e2e server and the SSH form-records helper |
+| `tests/` | Admin security check against the built export and PHP form backend tests |
+| `__tests__/` | Jest component and library tests |
+| `cypress/` | End-to-end form and layout specs |
+| `docs/` | Operating guides, provenance records and UI screenshots |
 
-The curved hero ribbon interleaves CICA, team and sponsor logos. Twenty authentic community photographs rotate every six seconds with manual controls; the current photograph stays visible until the next loads. All photos retain their full frame, with group photos separated from the branding overlay so nobody at the edges is cropped. Home and Sponsors feature premium placements configured in `lib/premium-sponsors.ts` (GPT and Lumin Innovations, plus an inquiry space), and continuously moving logo strips. The shared motion control pauses automatic movement across routes; system reduced-motion preferences disable it. Hero rotation pauses during pointer or keyboard interaction, while decorative sponsor strips continue. Ten authentic community photographs appear in the keyboard-accessible Gallery; see [photo provenance and sizing](docs/community-imagery.md).
+## Deploys
 
-The domain and DNS remain at GoDaddy; website and mail hosting remain at Namecheap. Website and mail A records use `192.64.118.48`, while SPF preserves the provider's separate outbound IP. The deployment does not change mailbox settings or renew SSL/hosting subscriptions.
+Every pull request runs typecheck, lint, PHP form checks, Jest, deployment tests and a static export. Every push to `main` deploys the built artifact to staging, then waits for an approver on the GitHub `production` environment before promoting the same artifact to cicainfo.com. Pushes that change only `content/` since what production serves (Pages CMS edits) go to production automatically. Each deploy records its commit at https://cicainfo.com/deployment.json. See [deploy/CI.md](deploy/CI.md) for setup, secrets, backups and rollback.
 
-Issues [#1](https://github.com/Ramc4685/cica-website/issues/1), [#2](https://github.com/Ramc4685/cica-website/issues/2) and [#3](https://github.com/Ramc4685/cica-website/issues/3) track the security, deployment and UI corrections. Historical sample news/testimonials were removed from public presentation.
+## Docs
+
+- [docs/HANDOFF.md](docs/HANDOFF.md): accounts, secrets and steps for transferring ownership
+- [deploy/CI.md](deploy/CI.md): CI pipeline, deployment setup, backups and rollback
+- [deploy/README.md](deploy/README.md): what each file in `deploy/` does
+- [docs/content-editing.md](docs/content-editing.md): volunteer guide to editing content in Pages CMS
+- [docs/forms/namecheap.md](docs/forms/namecheap.md): form handler, storage, limits and managing records
+- [docs/documents.md](docs/documents.md): bylaws and rules sources in Google Drive and how they are reproduced
+- [docs/brand-assets.md](docs/brand-assets.md): logo and sponsor artwork inventory
+- [docs/community-imagery.md](docs/community-imagery.md): community photo provenance and sizing
+- [docs/ui/README.md](docs/ui/README.md): UI verification notes and before/after screenshots
+- [docs/superpowers/](docs/superpowers/README.md): design spec and implementation plans for the logo wall and content editing work
+- [CHANGELOG.md](CHANGELOG.md): user-visible changes
+
+## Content rules
+
+Publish only what organizers have confirmed: no sample endorsements, unsourced statistics, invented dates or generic photos presented as CICA events. Event details come from organizers and [CricClubs](https://cricclubs.com/CICA); tournament rules defer to the official documents. Never commit credentials, `.env` files or form records.
