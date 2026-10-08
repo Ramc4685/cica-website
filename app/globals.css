@@ -336,6 +336,9 @@ main:has(.utility-hero) + .site-footer .footer-top { padding-top:56px; }
 .footer-contact>a { display:inline-block;margin-top:16px;font-weight:600;text-decoration:underline;text-underline-offset:4px;word-break:break-word; }
 .footer-bottom { display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-top:25px;border-top:1px solid hsl(var(--cica-cream-hsl) / .25);font-size:14px;color:var(--cica-on-dark-muted); }
 .footer-bottom a { text-decoration:underline;text-underline-offset:4px; }
+.footer-bottom .footer-credit { display:inline-flex;align-items:center;gap:8px;text-decoration:none; }
+.footer-credit img { width:24px;height:24px;padding:2px;border-radius:6px;background:#fff; }
+.footer-credit strong { color:var(--cica-cream);font-weight:600;text-decoration:underline;text-underline-offset:4px; }
 @media (max-width:1099px) {
   .footer-top { grid-template-columns:1fr 1fr; }
   .footer-columns { grid-column:1/-1;grid-row:2; }

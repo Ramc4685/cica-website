@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Credit Marvy Labs as the site's designer and developer with a logo link to marvy-labs.com in the footer and in the page author metadata.
 - Venues, sponsorship options, premium and CPL sponsors, CPL teams, board members, testimonials (shown only with the speaker's consent), site links and the FAQ now live in `content/*.json` and are editable in Pages CMS, with a logo upload folder (PNG, JPG or WebP; originals still never ship).
 - Add a low-key "Suggest an update" link beside data sections and in the footer that opens the contact form with the subject prefilled, and list every editable section with a "use this for" hint on /admin/.
 - Rewrite the Pages CMS forms in plain language in the order a volunteer thinks, and the editing guide as a one-page volunteer guide.
