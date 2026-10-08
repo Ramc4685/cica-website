@@ -2,6 +2,7 @@ import Image from "next/image"
 import type { CSSProperties, ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { tournaments as allTournaments, type Tournament } from "@/lib/content"
 import { cn } from "@/lib/utils"
 import { competitionForTournament, registrationLabel, smallLogo } from "./competition-meta"
@@ -42,6 +43,7 @@ export function CompetitionCards({ tournaments = allTournaments, variant = "home
   if (tournaments.length === 0) return null
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <OrganizerEditLink section="tournaments" label="tournaments" />
     <ol className={styles.stack}>
       {tournaments.map((tournament, index) => {
         const tone: Tone = tones[index % tones.length]

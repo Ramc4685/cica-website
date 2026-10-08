@@ -2,16 +2,17 @@
 # Forms for organizer-owned facts. Edits are committed to main and follow the normal
 # staging -> owner-approved production deploy. See docs/content-editing.md.
 # Every key in content/*.json must be declared here (tested in __tests__/lib/pages-config.test.ts).
+# The content/media names are also listed in lib/cms.ts for the /admin/ deep links (tested in __tests__/lib/cms.test.ts).
 
 media:
   - name: champion-photos
-    label: Champion team photos
+    label: Champion team photos (upload folder)
     input: content/uploads/champions
     output: /uploads/champions
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: community-photos
-    label: Community photos
+    label: Gallery photos (upload folder)
     input: content/uploads/photos
     output: /uploads/photos
     rename: safe
@@ -34,133 +35,147 @@ content:
     fields:
       - name: recordsUpdated
         label: Archive last checked on
-        description: Date an organizer last checked the champions list. Leave blank if unsure.
+        description: "The day an organizer last checked this list is complete and correct. Shown on the Champions page. Leave blank if unsure."
         type: date
         default: ""
         options:
           format: yyyy-MM-dd
       - name: competitions
         label: Competitions
-        description: One entry per competition. Add seasons in any order; the site sorts them newest first.
+        description: "One block per competition (for example CICA Mains). Open a competition to add or fix a season."
         type: object
-        list: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
         fields:
-          - name: id
-            label: Internal ID (do not change)
-            type: string
-            readonly: true
           - name: title
             label: Competition name
+            description: "Shown on the website. Example: CICA Mains"
             type: string
             required: true
             options:
               maxlength: 80
           - name: records
-            label: Seasons
-            description: One entry per season, in any order (the site sorts them). Only enter results organizers have confirmed.
+            label: Seasons and winners
+            description: "One entry per season, in any order (the site sorts newest first). Only enter results organizers have confirmed, and enter each season once."
             type: object
-            list: true
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{season}: {champion}"
             fields:
               - name: season
                 label: Season (year)
+                description: "Four-digit year. Example: 2025"
                 type: number
                 required: true
                 options:
                   min: 1998
                   max: 2100
               - name: champion
-                label: Champion
-                description: Team name exactly as it should appear.
+                label: Champion team
+                description: "Team name exactly as it should appear. Example: Normal Strikers"
                 type: string
                 required: true
                 options:
                   maxlength: 80
               - name: runnerUp
-                label: Runner-up
-                description: Optional. Leave blank if not confirmed.
+                label: Runner-up (optional)
+                description: "Leave blank if not confirmed."
                 type: string
                 options:
                   maxlength: 80
               - name: notes
-                label: Notes
-                description: Optional short note about the season.
+                label: Short note (optional)
+                description: "One line of context. Example: Won the final by 12 runs."
                 type: string
                 options:
                   maxlength: 300
               - name: photo
-                label: Team photo
-                description: Optional. Only add a photo with the team's consent.
+                label: Team photo (optional)
+                description: "Only add a photo with the team's consent. If you add one, the photo description is required."
                 type: object
                 fields:
                   - name: src
                     label: Photo
-                    description: JPG, PNG or WebP under 10 MB.
+                    description: "JPG, PNG or WebP under 10 MB."
                     type: image
                     options:
                       media: champion-photos
                   - name: alt
-                    label: Photo description
-                    description: Describe the photo for people using screen readers (required with a photo).
+                    label: Photo description (for screen readers)
+                    description: "Say what the photo shows. Example: Normal Strikers holding the trophy on the pitch."
                     type: string
                     required: true
                     options:
                       maxlength: 200
+          - name: id
+            label: Internal ID (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
 
   - name: photos
-    label: Community photos
+    label: Gallery photos
     type: file
     path: content/photos.json
     format: json
     fields:
       - name: photos
         label: Photos
-        description: Photos shown in the gallery and the home page rotation.
+        description: "Photos shown on the Gallery page and in the home page rotation. Use the add button to add one."
         type: object
-        list: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{caption}"
         fields:
-          - name: id
-            label: Short ID
-            description: Lowercase words joined by hyphens, for example family-picnic. Do not change an existing ID, the site uses some of them.
-            type: string
-            required: true
-            options:
-              maxlength: 80
           - name: src
             label: Photo
-            description: JPG, PNG or WebP under 10 MB.
+            description: "JPG, PNG or WebP under 10 MB."
             type: image
             required: true
             options:
               media: community-photos
-          - name: alt
-            label: Photo description
-            description: Describe the photo for people using screen readers (required).
-            type: string
-            required: true
-            options:
-              maxlength: 200
           - name: caption
             label: Caption
+            description: "Short line shown under the photo. Example: Family picnic after the season opener"
             type: string
             required: true
             options:
               maxlength: 160
+          - name: alt
+            label: Photo description (for screen readers)
+            description: "Say what the photo shows, for people who cannot see it. Example: Players and families sitting on the grass after a match."
+            type: string
+            required: true
+            options:
+              maxlength: 200
+          - name: gallery
+            label: Show on the Gallery page
+            type: boolean
+            default: true
+          - name: hero
+            label: Show in the home page rotation
+            description: "Only tick for wide, bright photos that work as a banner."
+            type: boolean
+            default: false
           - name: objectPosition
-            label: Focal point
-            description: Where the crop centres, as two percentages such as 50% 35% (left-right, top-bottom). Use 50% 50% if unsure.
+            label: Crop focus (advanced)
+            description: "Where the crop centres, as two percentages: left-right then top-bottom. Example: 50% 35%. Use 50% 50% if unsure."
             type: string
             required: true
             default: 50% 50%
             options:
               maxlength: 12
-          - name: gallery
-            label: Show in the gallery
-            type: boolean
-            default: true
-          - name: hero
-            label: Show in the home page rotation
-            type: boolean
-            default: false
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example family-picnic. Never change an existing ID, the site uses some of them."
+            type: string
+            required: true
+            options:
+              maxlength: 80
 
   - name: tournaments
     label: Tournaments
@@ -170,36 +185,29 @@ content:
     fields:
       - name: tournaments
         label: Tournaments
-        description: Edit the details of each tournament. Do not add or remove tournaments here, ask the website maintainer.
+        description: "Open a tournament to update its details. Do not add or remove tournaments here, ask the website maintainer."
         type: object
-        list: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
         fields:
-          - name: id
-            label: Internal ID (do not change)
-            type: string
-            readonly: true
           - name: name
             label: Tournament name
             type: string
             required: true
             options:
               maxlength: 80
-          - name: setting
-            label: Setting (do not change)
-            type: string
-            readonly: true
-          - name: logo
-            label: Logo file (do not change)
-            type: string
-            readonly: true
           - name: description
             label: Description
+            description: "Two or three plain sentences about the competition."
             type: text
             required: true
             options:
               maxlength: 400
           - name: registrationStatus
-            label: Registration
+            label: Registration status
+            description: "Choose To be confirmed unless organizers have announced it."
             type: select
             required: true
             options:
@@ -213,25 +221,31 @@ content:
                 - name: closed
                   label: Closed
           - name: registrationDeadline
-            label: Registration deadline
-            description: Optional. Leave blank if unknown.
+            label: Registration deadline (optional)
+            description: "Pick the last day to register. Leave blank if unknown."
             type: date
             default: ""
             options:
               format: yyyy-MM-dd
           - name: registrationUrl
-            label: Registration link
-            description: Optional. Must start with https://
+            label: Registration link (optional)
+            description: "Must start with https://"
             type: string
             options:
               maxlength: 500
           - name: format
-            label: Format
+            label: Match format
             type: object
             fields:
               - name: overs
                 label: Overs per side
-                description: A number such as 13, or tbc if not confirmed.
+                description: "A number such as 13, or tbc if not confirmed."
+                type: string
+                options:
+                  maxlength: 5
+              - name: squadSize
+                label: Squad size
+                description: "A number such as 15, or tbc if not confirmed."
                 type: string
                 options:
                   maxlength: 5
@@ -246,40 +260,46 @@ content:
                       label: Leather
                     - name: tennis
                       label: Tennis
-              - name: squadSize
-                label: Squad size
-                description: A number such as 15, or tbc if not confirmed.
-                type: string
-                options:
-                  maxlength: 5
               - name: rulesPdf
-                label: Rules document link
-                description: Optional. Must start with https://
+                label: Rules document link (optional)
+                description: "Must start with https://"
                 type: string
                 options:
                   maxlength: 500
+          - name: id
+            label: Internal ID (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
+          - name: setting
+            label: Setting (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
+          - name: logo
+            label: Logo file (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
 
   - name: season
-    label: Season news, events and FAQ
+    label: News, events and FAQ
     type: file
     path: content/season.json
     format: json
     fields:
       - name: announcements
         label: Announcements
-        description: Newest first. Only publish what organizers have confirmed.
+        description: "News items, newest first. Only publish what organizers have confirmed."
         type: object
-        list: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{date}: {title}"
         fields:
-          - name: id
-            label: Short ID
-            description: Lowercase words joined by hyphens, for example season-opener. Must be unique.
-            type: string
-            required: true
-            options:
-              maxlength: 80
           - name: title
-            label: Title
+            label: Headline
+            description: "Example: Season opener this Saturday"
             type: string
             required: true
             options:
@@ -292,32 +312,36 @@ content:
               format: yyyy-MM-dd
           - name: body
             label: Message
-            description: Plain text only.
+            description: "Plain text only, no formatting."
             type: text
             required: true
             options:
               maxlength: 2000
           - name: url
-            label: Link
-            description: Optional. Must start with https://
+            label: Link (optional)
+            description: "Must start with https://"
             type: string
             options:
               maxlength: 500
-      - name: events
-        label: Events
-        description: Upcoming matches and gatherings.
-        type: object
-        list: true
-        fields:
           - name: id
             label: Short ID
-            description: Lowercase words joined by hyphens. Must be unique.
+            description: "Lowercase words joined by hyphens, for example season-opener. Must be unique."
             type: string
             required: true
             options:
               maxlength: 80
+      - name: events
+        label: Events
+        description: "Upcoming matches and gatherings shown on the Tournaments page."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{date}: {title}"
+        fields:
           - name: title
-            label: Title
+            label: Event name
+            description: "Example: CICA Mains opening day"
             type: string
             required: true
             options:
@@ -328,52 +352,64 @@ content:
             required: true
             options:
               format: yyyy-MM-dd
-          - name: competitionId
-            label: Competition ID
-            description: Optional. The internal ID of the tournament, for example cica-mains.
-            type: string
-            options:
-              maxlength: 80
-          - name: venueId
-            label: Venue ID
-            description: Optional. Leave blank unless the website maintainer gave you one.
-            type: string
-            options:
-              maxlength: 80
           - name: summary
-            label: Summary
-            description: Optional. Plain text only.
+            label: Summary (optional)
+            description: "One or two plain sentences."
             type: text
             options:
               maxlength: 400
           - name: url
-            label: Link
-            description: Optional. Must start with https://
+            label: Link (optional)
+            description: "Must start with https://"
             type: string
             options:
               maxlength: 500
-      - name: faq
-        label: Frequently asked questions
-        description: Answers shown on the FAQ page. Plain text only; do not guess policies.
-        type: object
-        list: true
-        fields:
+          - name: competitionId
+            label: Competition ID (optional)
+            description: "The internal ID of the tournament, for example cica-mains."
+            type: string
+            options:
+              maxlength: 80
+          - name: venueId
+            label: Venue ID (optional)
+            description: "Leave blank unless the website maintainer gave you one."
+            type: string
+            options:
+              maxlength: 80
           - name: id
             label: Short ID
-            description: Lowercase words joined by hyphens. Do not change an existing ID.
+            description: "Lowercase words joined by hyphens, for example opening-day. Must be unique."
             type: string
             required: true
             options:
               maxlength: 80
+      - name: faq
+        label: Frequently asked questions
+        description: "Answers shown on the Rules and Tournaments pages. Plain text only; do not guess policies."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{question}"
+        fields:
           - name: question
             label: Question
+            description: "Example: How do I register a team?"
             type: string
             required: true
             options:
               maxlength: 200
           - name: answer
             label: Answer
+            description: "Plain text only. Link to the rules rather than restating them."
             type: text
             required: true
             options:
               maxlength: 5000
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens. Do not change an existing ID."
+            type: string
+            required: true
+            options:
+              maxlength: 80

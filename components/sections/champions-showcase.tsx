@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useId, type ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { competitions as allCompetitions, computeChampionStats, recordsUpdated, type Competition } from "@/lib/champions"
 import { mediaFor } from "@/lib/media"
 import { cn } from "@/lib/utils"
@@ -52,6 +53,7 @@ export function ChampionsShowcase({ competitions = allCompetitions, variant = "f
       variant={introVariant}
       reveal
     />
+    <OrganizerEditLink section="champions" label="champions" />
     <div className={styles.track} role="tablist" aria-label="Competitions" onKeyDown={onKeyDown}>
       {list.map((competition, index) => <button key={competition.id} ref={registerTab(index)} type="button" role="tab" id={tabId(index)}
         aria-selected={index === active} aria-controls={panelId(index)} tabIndex={index === active ? 0 : -1}

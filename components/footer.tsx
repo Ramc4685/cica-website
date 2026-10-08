@@ -77,6 +77,7 @@ export function Footer() {
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Central Illinois Cricket Association</span>
         <Link href="/privacy/">Privacy &amp; data</Link>
+        <Link href="/admin/" className="organizer-login">Organizer login</Link>
         <span>Rooted in community since 1998.</span>
       </div>
     </div>

@@ -1,5 +1,9 @@
 # Editing website content
 
+**Start here: go to cicainfo.com/admin/.** That page links straight to the content editor and to each section (Champions, Tournaments, News/events/FAQ, Gallery photos). There is also a small "Organizer login" link at the bottom of every page. The page holds no password and no secrets; it only links to the hosted editor.
+
+Tip: on the Organizer tools page, switch on "Show edit links on this device" and a small "Edit this section" link appears beside the champions, tournaments, events, FAQ and gallery on the public pages. It is stored only in your browser and visitors never see it.
+
 Organizers can update champions, community photos, tournament details, announcements, events and the FAQ through [Pages CMS](https://pagescms.org), a hosted editor that works on the files in `content/`. The website itself has no login and no editing code. Every edit is a Git commit to `main`, built and checked like any other change, and **nothing reaches cicainfo.com until the site owner approves the production deploy**.
 
 ## For the site owner
@@ -8,7 +12,7 @@ Organizers can update champions, community photos, tournament details, announcem
 
 1. Sign in at https://app.pagescms.org with GitHub and install the Pages CMS GitHub App on `Ramc4685/cica-website` only (not on every repository).
 2. Open the repository in Pages CMS. The forms come from `.pages.yml` in the repository root.
-3. Under the repository's collaborators in Pages CMS, invite each volunteer by email. They sign in from the invite. Remove them at the end of the season.
+3. Under the repository's collaborators in Pages CMS (see https://pagescms.org/docs/configuration/collaborators/), invite each volunteer by email. Only you can do this, and volunteers do not need a GitHub account. They sign in from the invite. Remove them at the end of the season.
 4. Pages CMS commits as the GitHub App identity (`settings.commit.identity: app` in `.pages.yml`), so volunteer emails never appear in public Git history. Do not change this.
 
 ### What happens after someone saves
@@ -45,7 +49,7 @@ Content lives in `content/*.json` and is parsed by the schemas in `lib/content-s
 
 ## For volunteers
 
-You can edit five things. Sign in from the email invite you received at https://app.pagescms.org and choose the CICA website.
+You can edit five things. Go to cicainfo.com/admin/, choose Open the content editor and sign in from the email invite you received. If you have no invite, ask the site owner to add your email as a collaborator.
 
 - **Champions:** pick a competition, add a season anywhere in its list (the site orders seasons newest first automatically, and the newest season becomes the highlighted current champion), and enter the champion exactly as the team name should appear. Runner-up and notes are optional. Enter each season only once per competition; a repeated season stops the build. Only enter results organizers have confirmed. If you leave something unknown, leave it blank.
 - **Champion team photo:** optional, per season. Use a JPG, PNG or WebP under 10 MB, and only with the team's consent. A short description of the photo for people using screen readers is required.
