@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Venues, sponsorship options, premium and CPL sponsors, CPL teams, board members, testimonials (shown only with the speaker's consent), site links and the FAQ now live in `content/*.json` and are editable in Pages CMS, with a logo upload folder (PNG, JPG or WebP; originals still never ship).
+- Add a low-key "Suggest an update" link beside data sections and in the footer that opens the contact form with the subject prefilled, and list every editable section with a "use this for" hint on /admin/.
+- Rewrite the Pages CMS forms in plain language in the order a volunteer thinks, and the editing guide as a one-page volunteer guide.
 - Turn /admin/ into an Organizer tools page with a link to the content editor, a shortcut to each editable section and a short publishing guide, and add a low-key Organizer login link to the footer.
 - Organizers can opt in on /admin/ to see small "Edit this section" links beside champions, tournaments, events, the FAQ and the gallery; visitors never see them.
 - Clearer Pages CMS forms: plain-language labels, examples, collapsible lists with readable item titles and technical fields moved to the bottom.

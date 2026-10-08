@@ -4,7 +4,13 @@ import champions from '@/content/champions.json'
 import photos from '@/content/photos.json'
 import tournaments from '@/content/tournaments.json'
 import season from '@/content/season.json'
-import { championsFileSchema, parseContent, photosFileSchema, seasonFileSchema, tournamentsFileSchema } from '@/lib/content-schema'
+import faq from '@/content/faq.json'
+import venues from '@/content/venues.json'
+import sponsors from '@/content/sponsors.json'
+import teams from '@/content/teams.json'
+import board from '@/content/board.json'
+import site from '@/content/site.json'
+import { boardFileSchema, championsFileSchema, faqFileSchema, parseContent, photosFileSchema, seasonFileSchema, siteFileSchema, sponsorsFileSchema, teamsFileSchema, tournamentsFileSchema, venuesFileSchema } from '@/lib/content-schema'
 
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value))
 
@@ -14,6 +20,12 @@ describe('content schemas', () => {
     expect(() => parseContent(photosFileSchema, photos, 'photos.json')).not.toThrow()
     expect(() => parseContent(tournamentsFileSchema, tournaments, 'tournaments.json')).not.toThrow()
     expect(() => parseContent(seasonFileSchema, season, 'season.json')).not.toThrow()
+    expect(() => parseContent(faqFileSchema, faq, 'faq.json')).not.toThrow()
+    expect(() => parseContent(venuesFileSchema, venues, 'venues.json')).not.toThrow()
+    expect(() => parseContent(sponsorsFileSchema, sponsors, 'sponsors.json')).not.toThrow()
+    expect(() => parseContent(teamsFileSchema, teams, 'teams.json')).not.toThrow()
+    expect(() => parseContent(boardFileSchema, board, 'board.json')).not.toThrow()
+    expect(() => parseContent(siteFileSchema, site, 'site.json')).not.toThrow()
   })
   it('rejects unknown keys', () => {
     const bad = clone(champions) as any
@@ -31,9 +43,9 @@ describe('content schemas', () => {
     const bad = clone(tournaments) as any
     bad.tournaments[0].registrationUrl = 'javascript:alert(1)'
     expect(() => parseContent(tournamentsFileSchema, bad, 'tournaments.json')).toThrow(/registrationUrl/)
-    const long = clone(season) as any
+    const long = clone(faq) as any
     long.faq[0].answer = 'x'.repeat(5001)
-    expect(() => parseContent(seasonFileSchema, long, 'season.json')).toThrow(/answer/)
+    expect(() => parseContent(faqFileSchema, long, 'faq.json')).toThrow(/answer/)
   })
   it('rejects photos outside the allowed folders and unsafe focal points', () => {
     const bad = clone(photos) as any
@@ -82,10 +94,19 @@ function sanitize(value: unknown): unknown {
 }
 
 describe('content after a Pages CMS save strips blank values and empty lists', () => {
-  const files = [['champions.json', championsFileSchema, champions], ['photos.json', photosFileSchema, photos], ['tournaments.json', tournamentsFileSchema, tournaments], ['season.json', seasonFileSchema, season]] as const
+  const files = [['champions.json', championsFileSchema, champions], ['photos.json', photosFileSchema, photos], ['tournaments.json', tournamentsFileSchema, tournaments], ['season.json', seasonFileSchema, season], ['faq.json', faqFileSchema, faq], ['venues.json', venuesFileSchema, venues], ['sponsors.json', sponsorsFileSchema, sponsors], ['teams.json', teamsFileSchema, teams], ['board.json', boardFileSchema, board], ['site.json', siteFileSchema, site]] as const
   it.each(files)('%s still parses to the same app data', (file, schema, data) => {
     const saved = sanitize(clone(data))
     expect(parseContent(schema as never, saved, file)).toEqual(parseContent(schema as never, data, file))
+  })
+  it('keeps a testimonial hidden unless consent is ticked, and rejects logos from other folders', () => {
+    const quote = { id: 'a-quote', quote: 'Great season.', name: 'A Player', consent: false }
+    expect(parseContent(seasonFileSchema, { voices: [quote] }, 'season.json').voices[0].consent).toBe(false)
+    const bad = clone(teams) as any
+    bad.teams[0].logo = '/uploads/photos/x.png'
+    expect(() => parseContent(teamsFileSchema, bad, 'teams.json')).toThrow(/logo/)
+    bad.teams[0].logo = '/uploads/logos/x.svg'
+    expect(() => parseContent(teamsFileSchema, bad, 'teams.json')).toThrow(/logo/)
   })
   it('accepts a competition whose seasons were all removed', () => {
     const data = clone(champions) as any

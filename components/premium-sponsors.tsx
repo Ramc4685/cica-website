@@ -17,7 +17,7 @@ const invitations = [
 /** The marquee carries the CPL sponsors; premium sponsors already have their own placement above it. */
 const premiumLogoSrcs = new Set(premiumSponsors.map(sponsor => sponsor.logo))
 const marqueeLogos: readonly SponsorLogo[] = cplSponsors
-  .map(sponsor => ({ name: sponsor.name, src: `/images/sponsors/${sponsor.id}.webp` }))
+  .map(sponsor => ({ name: sponsor.name, src: sponsor.logo }))
   .filter(logo => !premiumLogoSrcs.has(logo.src))
 
 /** Only absolute http(s) URLs or same-site paths become links. */

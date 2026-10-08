@@ -18,6 +18,14 @@ media:
     rename: safe
     extensions: [jpg, jpeg, png, webp]
 
+  - name: logos
+    label: Logos (upload folder)
+    input: content/uploads/logos
+    output: /uploads/logos
+    rename: safe
+    # PNG, JPG and WebP only: SVG is not accepted because uploads are checked by raster file signature.
+    extensions: [jpg, jpeg, png, webp]
+
 settings:
   # Keep any key the forms below do not know about instead of rewriting the file without it.
   content:
@@ -27,6 +35,255 @@ settings:
     identity: app
 
 content:
+  - name: season
+    label: Season, events and news
+    type: file
+    path: content/season.json
+    format: json
+    fields:
+      - name: announcements
+        label: Announcements
+        description: "News items, newest first. Only publish what organizers have confirmed."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{date}: {title}"
+        fields:
+          - name: title
+            label: Headline
+            description: "Example: Season opener this Saturday"
+            type: string
+            required: true
+            options:
+              maxlength: 120
+          - name: date
+            label: Date
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+          - name: body
+            label: Message
+            description: "Plain text only, no formatting."
+            type: text
+            required: true
+            options:
+              maxlength: 2000
+          - name: url
+            label: Link (optional)
+            description: "Must start with https://"
+            type: string
+            options:
+              maxlength: 500
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example season-opener. Must be unique."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+      - name: events
+        label: Events
+        description: "Upcoming matches and gatherings shown on the Tournaments page."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{date}: {title}"
+        fields:
+          - name: title
+            label: Event name
+            description: "Example: CICA Mains opening day"
+            type: string
+            required: true
+            options:
+              maxlength: 120
+          - name: date
+            label: Date
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+          - name: summary
+            label: Summary (optional)
+            description: "One or two plain sentences."
+            type: text
+            options:
+              maxlength: 400
+          - name: url
+            label: Link (optional)
+            description: "Must start with https://"
+            type: string
+            options:
+              maxlength: 500
+          - name: competitionId
+            label: Competition ID (optional)
+            description: "The internal ID of the tournament, for example cica-mains."
+            type: string
+            options:
+              maxlength: 80
+          - name: venueId
+            label: Venue ID (optional)
+            description: "Leave blank unless the website maintainer gave you one."
+            type: string
+            options:
+              maxlength: 80
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example opening-day. Must be unique."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+      - name: voices
+        label: Testimonials
+        description: "Short quotes from players, families or sponsors. A quote is shown on the website only when the consent box is ticked."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}: {quote}"
+        fields:
+          - name: quote
+            label: What they said
+            description: "Their own words, kept short. Example: It feels like family every Saturday."
+            type: text
+            required: true
+            options:
+              maxlength: 500
+          - name: name
+            label: Their name
+            description: "Exactly as they agreed to be named. Example: Priya S."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: role
+            label: Who they are (optional)
+            description: "Example: Player, Normal Strikers"
+            type: string
+            options:
+              maxlength: 80
+          - name: consent
+            label: Speaker gave written consent to publish this
+            description: "Tick only if you hold their written consent (an email or message is fine). Unticked quotes are never shown."
+            type: boolean
+            required: true
+            default: false
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example priya-family. Must be unique."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+
+  - name: tournaments
+    label: Tournaments
+    type: file
+    path: content/tournaments.json
+    format: json
+    fields:
+      - name: tournaments
+        label: Tournaments
+        description: "Open a tournament to update its details. Do not add or remove tournaments here, ask the website maintainer."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Tournament name
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: description
+            label: Description
+            description: "Two or three plain sentences about the competition."
+            type: text
+            required: true
+            options:
+              maxlength: 400
+          - name: registrationStatus
+            label: Registration status
+            description: "Choose To be confirmed unless organizers have announced it."
+            type: select
+            required: true
+            options:
+              values:
+                - name: tbc
+                  label: To be confirmed
+                - name: upcoming
+                  label: Opening soon
+                - name: open
+                  label: Open
+                - name: closed
+                  label: Closed
+          - name: registrationDeadline
+            label: Registration deadline (optional)
+            description: "Pick the last day to register. Leave blank if unknown."
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
+          - name: registrationUrl
+            label: Registration link (optional)
+            description: "Must start with https://"
+            type: string
+            options:
+              maxlength: 500
+          - name: format
+            label: Match format
+            type: object
+            fields:
+              - name: overs
+                label: Overs per side
+                description: "A number such as 13, or tbc if not confirmed."
+                type: string
+                options:
+                  maxlength: 5
+              - name: squadSize
+                label: Squad size
+                description: "A number such as 15, or tbc if not confirmed."
+                type: string
+                options:
+                  maxlength: 5
+              - name: ballType
+                label: Ball type
+                type: select
+                options:
+                  values:
+                    - name: tbc
+                      label: To be confirmed
+                    - name: leather
+                      label: Leather
+                    - name: tennis
+                      label: Tennis
+              - name: rulesPdf
+                label: Rules document link (optional)
+                description: "Must start with https://"
+                type: string
+                options:
+                  maxlength: 500
+          - name: id
+            label: Internal ID (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
+          - name: setting
+            label: Setting (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
+          - name: logo
+            label: Logo file (set by the website maintainer)
+            description: "Do not change."
+            type: string
+            readonly: true
+
   - name: champions
     label: Champions
     type: file
@@ -177,15 +434,67 @@ content:
             options:
               maxlength: 80
 
-  - name: tournaments
-    label: Tournaments
+  - name: sponsors
+    label: Sponsors
     type: file
-    path: content/tournaments.json
+    path: content/sponsors.json
     format: json
     fields:
-      - name: tournaments
-        label: Tournaments
-        description: "Open a tournament to update its details. Do not add or remove tournaments here, ask the website maintainer."
+      - name: premiumSponsors
+        label: Premium sponsors
+        description: "Up to three, shown in order: the first is the lead placement. Only add a sponsor that has agreed to be listed."
+        type: object
+        list:
+          max: 3
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Business name
+            description: "Example: Global Prime Taxation LLC"
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: logo
+            label: Logo (optional)
+            description: "PNG, JPG or WebP under 10 MB, ideally on a transparent or white background. Without a logo the name is shown."
+            type: image
+            options:
+              media: logos
+          - name: logoTone
+            label: Logo works best on
+            description: "Choose Dark background if the logo is white or light-colored."
+            type: select
+            options:
+              values:
+                - name: light
+                  label: Light background
+                - name: dark
+                  label: Dark background
+          - name: href
+            label: Website (optional)
+            description: "The sponsor's website, starting with https://. Only add it once the sponsor has confirmed it."
+            type: string
+            options:
+              maxlength: 500
+          - name: description
+            label: One-line description (optional)
+            description: "A single factual line the sponsor has approved."
+            type: text
+            options:
+              maxlength: 300
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example lumin. Never change an existing ID."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+      - name: cplSponsors
+        label: CPL team sponsors
+        description: "Businesses that sponsor a CPL team. They appear on the Sponsors page and in the logo strip on the home page."
         type: object
         list:
           collapsible:
@@ -193,196 +502,290 @@ content:
             summary: "{name}"
         fields:
           - name: name
-            label: Tournament name
+            label: Business name
+            description: "Example: Bloom Barista"
             type: string
             required: true
             options:
               maxlength: 80
-          - name: description
-            label: Description
-            description: "Two or three plain sentences about the competition."
-            type: text
+          - name: logo
+            label: Logo
+            description: "PNG, JPG or WebP under 10 MB."
+            type: image
             required: true
             options:
-              maxlength: 400
-          - name: registrationStatus
-            label: Registration status
-            description: "Choose To be confirmed unless organizers have announced it."
+              media: logos
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example bloom-barista. Never change an existing ID."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+      - name: tiers
+        label: Ways to sponsor
+        description: "The sponsorship options people can ask about. Do not add prices; benefits only once organizers have confirmed them."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Option name
+            description: "Example: Matchday & community supporter"
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: summary
+            label: One-line summary
+            description: "Example: Support matchdays and community events."
+            type: string
+            required: true
+            options:
+              maxlength: 200
+          - name: benefits
+            label: What is included (optional)
+            description: "One item per line in the list. Leave empty until organizers confirm the benefits."
+            type: string
+            list: true
+            options:
+              maxlength: 200
+          - name: id
+            label: Short ID (do not change)
+            description: "The website uses this to pre-select the option on the sponsor form."
+            type: string
+            readonly: true
+
+  - name: teams
+    label: CPL teams
+    type: file
+    path: content/teams.json
+    format: json
+    fields:
+      - name: teams
+        label: Teams
+        description: "The Cricket Premier League teams shown on the Tournaments page and in the home page logo ribbon."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Team name
+            description: "Exactly as on the team's logo. Example: Bloom Barista Bulls"
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: logo
+            label: Team logo
+            description: "PNG, JPG or WebP under 10 MB, ideally on a transparent background."
+            type: image
+            required: true
+            options:
+              media: logos
+          - name: id
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example bloom-barista-bulls. Never change an existing ID."
+            type: string
+            required: true
+            options:
+              maxlength: 80
+
+  - name: venues
+    label: Venues
+    type: file
+    path: content/venues.json
+    format: json
+    fields:
+      - name: venues
+        label: Grounds and courts
+        description: "Where matches are played. Leave the address blank if organizers have not confirmed it; the site then says it is to be confirmed."
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Venue name
+            description: "Example: Baywood cricket ground"
+            type: string
+            required: true
+            options:
+              maxlength: 80
+          - name: type
+            label: Outdoor or indoor
             type: select
             required: true
             options:
               values:
-                - name: tbc
-                  label: To be confirmed
-                - name: upcoming
-                  label: Opening soon
-                - name: open
-                  label: Open
-                - name: closed
-                  label: Closed
-          - name: registrationDeadline
-            label: Registration deadline (optional)
-            description: "Pick the last day to register. Leave blank if unknown."
-            type: date
-            default: ""
+                - name: outdoor
+                  label: Outdoor ground
+                - name: indoor
+                  label: Indoor court
+          - name: address
+            label: Street address (optional)
+            description: "Example: 4101 Wicker Rd, Bloomington, IL 61704"
+            type: string
             options:
-              format: yyyy-MM-dd
-          - name: registrationUrl
-            label: Registration link (optional)
-            description: "Must start with https://"
+              maxlength: 200
+          - name: mapUrl
+            label: Map link (optional)
+            description: "Paste a Google Maps share link, starting with https://"
             type: string
             options:
               maxlength: 500
-          - name: format
-            label: Match format
-            type: object
-            fields:
-              - name: overs
-                label: Overs per side
-                description: "A number such as 13, or tbc if not confirmed."
-                type: string
-                options:
-                  maxlength: 5
-              - name: squadSize
-                label: Squad size
-                description: "A number such as 15, or tbc if not confirmed."
-                type: string
-                options:
-                  maxlength: 5
-              - name: ballType
-                label: Ball type
-                type: select
-                options:
-                  values:
-                    - name: tbc
-                      label: To be confirmed
-                    - name: leather
-                      label: Leather
-                    - name: tennis
-                      label: Tennis
-              - name: rulesPdf
-                label: Rules document link (optional)
-                description: "Must start with https://"
-                type: string
-                options:
-                  maxlength: 500
+          - name: parking
+            label: Parking (optional)
+            description: "Example: Use the designated parking areas."
+            type: text
+            options:
+              maxlength: 300
+          - name: notes
+            label: Things to know (optional)
+            description: "Rules of the ground or facility, in plain sentences."
+            type: text
+            options:
+              maxlength: 600
           - name: id
-            label: Internal ID (set by the website maintainer)
-            description: "Do not change."
+            label: Short ID
+            description: "Lowercase words joined by hyphens, for example baywood. Never change an existing ID; events refer to it."
             type: string
-            readonly: true
-          - name: setting
-            label: Setting (set by the website maintainer)
-            description: "Do not change."
-            type: string
-            readonly: true
-          - name: logo
-            label: Logo file (set by the website maintainer)
-            description: "Do not change."
-            type: string
-            readonly: true
+            required: true
+            options:
+              maxlength: 80
 
-  - name: season
-    label: News, events and FAQ
+  - name: board
+    label: Board and organizers
     type: file
-    path: content/season.json
+    path: content/board.json
     format: json
     fields:
-      - name: announcements
-        label: Announcements
-        description: "News items, newest first. Only publish what organizers have confirmed."
+      - name: asOfSeason
+        label: Roles confirmed for season
+        description: "The year these roles were last confirmed. Shown above the list. Example: 2026"
+        type: number
+        required: true
+        options:
+          min: 1998
+          max: 2100
+      - name: members
+        label: People
+        description: "Directors and organizers shown on the Our board page. Only add what each person has agreed to share."
         type: object
         list:
           collapsible:
             collapsed: true
-            summary: "{date}: {title}"
+            summary: "{name}: {role}"
         fields:
-          - name: title
-            label: Headline
-            description: "Example: Season opener this Saturday"
+          - name: name
+            label: Full name
+            description: "Example: Ayaskant Rout"
             type: string
             required: true
             options:
-              maxlength: 120
-          - name: date
-            label: Date
-            type: date
+              maxlength: 80
+          - name: role
+            label: Role
+            description: "Example: Director"
+            type: string
             required: true
             options:
-              format: yyyy-MM-dd
-          - name: body
-            label: Message
-            description: "Plain text only, no formatting."
+              maxlength: 80
+          - name: playerRole
+            label: Playing role (optional)
+            description: "Example: All-rounder"
+            type: string
+            options:
+              maxlength: 60
+          - name: bio
+            label: Short biography
+            description: "One or two factual sentences. Example: Director who has contributed to CICA since 2019."
             type: text
             required: true
             options:
-              maxlength: 2000
-          - name: url
-            label: Link (optional)
-            description: "Must start with https://"
-            type: string
-            options:
               maxlength: 500
-          - name: id
-            label: Short ID
-            description: "Lowercase words joined by hyphens, for example season-opener. Must be unique."
+          - name: specialties
+            label: Focus areas (optional)
+            description: "Short phrases, one per item. Example: Scheduling"
             type: string
-            required: true
+            list: true
             options:
               maxlength: 80
-      - name: events
-        label: Events
-        description: "Upcoming matches and gatherings shown on the Tournaments page."
-        type: object
-        list:
-          collapsible:
-            collapsed: true
-            summary: "{date}: {title}"
-        fields:
-          - name: title
-            label: Event name
-            description: "Example: CICA Mains opening day"
+          - name: achievements
+            label: Community contributions (optional)
+            description: "One contribution per item. Only confirmed facts."
             type: string
-            required: true
+            list: true
             options:
-              maxlength: 120
-          - name: date
-            label: Date
-            type: date
-            required: true
-            options:
-              format: yyyy-MM-dd
-          - name: summary
-            label: Summary (optional)
-            description: "One or two plain sentences."
-            type: text
-            options:
-              maxlength: 400
-          - name: url
-            label: Link (optional)
-            description: "Must start with https://"
-            type: string
-            options:
-              maxlength: 500
-          - name: competitionId
-            label: Competition ID (optional)
-            description: "The internal ID of the tournament, for example cica-mains."
-            type: string
-            options:
-              maxlength: 80
-          - name: venueId
-            label: Venue ID (optional)
-            description: "Leave blank unless the website maintainer gave you one."
-            type: string
-            options:
-              maxlength: 80
-          - name: id
-            label: Short ID
-            description: "Lowercase words joined by hyphens, for example opening-day. Must be unique."
-            type: string
-            required: true
-            options:
-              maxlength: 80
+              maxlength: 200
+
+  - name: site
+    label: Site links
+    type: file
+    path: content/site.json
+    format: json
+    fields:
+      - name: scores
+        label: Fixtures and scores page
+        description: "Where the Fixtures & scores buttons go. Example: https://cricclubs.com/CICA"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: rules
+        label: Rules folder
+        description: "Link to the rules documents, starting with https://"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: bylaws
+        label: Bylaws document
+        description: "Link to the bylaws, starting with https://"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: facebook
+        label: Facebook page
+        description: "Example: https://www.facebook.com/cicacric/"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: youtube
+        label: YouTube channel
+        description: "Example: https://www.youtube.com/@CICA-CRIC"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: whatsapp
+        label: WhatsApp community invite
+        description: "The invite link, starting with https://chat.whatsapp.com/"
+        type: string
+        required: true
+        options:
+          maxlength: 500
+      - name: email
+        label: Organizers' email address
+        description: "Shown to visitors and used for mailto links. Example: organizers@cicainfo.com"
+        type: string
+        required: true
+        options:
+          maxlength: 254
+
+  - name: faq
+    label: Frequently asked questions
+    type: file
+    path: content/faq.json
+    format: json
+    fields:
       - name: faq
         label: Frequently asked questions
         description: "Answers shown on the Rules and Tournaments pages. Plain text only; do not guess policies."

@@ -54,7 +54,7 @@ export default function OrganizerTools() {
     <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="edit-links-title">
       <div className={s.card}>
         <h2 id="edit-links-title" className={s.cardTitle}>Edit links on the public pages</h2>
-        <p className={s.body}>Turn this on to see a small &quot;Edit this section&quot; link beside champions, tournaments, events, the FAQ and the gallery. It is saved only in this browser, and visitors never see it.</p>
+        <p className={s.body}>Turn this on to see a small &quot;Edit this section&quot; link beside champions, tournaments, events, sponsors, venues and the FAQ. It is saved only in this browser, and visitors never see it.</p>
         <OrganizerToggle />
       </div>
     </section>

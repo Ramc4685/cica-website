@@ -14,7 +14,7 @@ const errors = []
 errors.push(...await checkUploadTree(root))
 
 // Every image referenced by content must exist and be valid; build derivatives and the manifest.
-const sources = collectImageSources({ champions: await readJson("content/champions.json"), photos: await readJson("content/photos.json") })
+const sources = collectImageSources({ champions: await readJson("content/champions.json"), photos: await readJson("content/photos.json"), teams: await readJson("content/teams.json"), sponsors: await readJson("content/sponsors.json") })
 await mkdir(outDir, { recursive: true })
 await mkdir(path.dirname(manifestFile), { recursive: true })
 const manifest = {}

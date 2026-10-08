@@ -31,8 +31,14 @@ const entry = (file: string) => config.content.find((item: { path: string }) => 
 const optionalKeys: Record<string, string[]> = {
   'champions.json': ['competitions.records.runnerUp', 'competitions.records.notes', 'competitions.records.photo', 'competitions.records.photo.src', 'competitions.records.photo.alt'],
   'tournaments.json': ['tournaments.registrationDeadline', 'tournaments.registrationUrl', 'tournaments.format.rulesPdf'],
-  'season.json': ['events.id', 'events.title', 'events.date', 'events.competitionId', 'events.venueId', 'events.summary', 'events.url', 'announcements.id', 'announcements.title', 'announcements.date', 'announcements.body', 'announcements.url'],
+  'season.json': ['events.id', 'events.title', 'events.date', 'events.competitionId', 'events.venueId', 'events.summary', 'events.url', 'announcements.id', 'announcements.title', 'announcements.date', 'announcements.body', 'announcements.url', 'voices.id', 'voices.quote', 'voices.name', 'voices.role', 'voices.consent'],
   'photos.json': [],
+  'faq.json': [],
+  'venues.json': ['venues.address', 'venues.mapUrl', 'venues.parking', 'venues.notes'],
+  'sponsors.json': ['premiumSponsors.logo', 'premiumSponsors.logoTone', 'premiumSponsors.href', 'premiumSponsors.description', 'tiers.benefits'],
+  'teams.json': [],
+  'board.json': ['members.playerRole', 'members.specialties', 'members.achievements'],
+  'site.json': [],
 }
 
 describe('.pages.yml', () => {
@@ -75,9 +81,10 @@ describe('.pages.yml', () => {
     expect(byInput['content/uploads/champions'].output).toBe('/uploads/champions')
     expect(byInput['content/uploads/photos'].output).toBe('/uploads/photos')
     for (const item of media) {
-      expect([...item.extensions].sort()).toEqual(['jpeg', 'jpg', 'png', 'webp'])
+      expect([...item.extensions].sort()).toEqual(['jpeg', 'jpg', 'png', 'webp']) // never svg: uploads are checked by raster file signature
     }
-    expect(media).toHaveLength(2)
+    expect(byInput['content/uploads/logos'].output).toBe('/uploads/logos')
+    expect(media).toHaveLength(3)
   })
 
   it('binds each image field to its media entry and never uses user identity for commits', () => {

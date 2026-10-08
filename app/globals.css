@@ -380,7 +380,7 @@ html[data-motion=paused] .text-link:hover svg { transform:none; }
 @media print { .site-header,.site-footer { display:none!important; } .page-shell { width:100%; } }
 
 /* Organizer-only "Edit this section" link (rendered after mount, only when opted in at /admin/). */
-.organizer-edit { margin:12px 0 0;text-align:center;font-size:13px; }
+.organizer-edit { display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin:12px 0 0;font-size:13px; }
 .organizer-edit a { display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px; }
 .organizer-edit a:hover,.organizer-edit a:focus-visible { opacity:1; }
 .footer-bottom .organizer-login { font-size:13px;opacity:.75; }

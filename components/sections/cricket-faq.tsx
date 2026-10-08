@@ -37,7 +37,7 @@ export function CricketFaq({ items = faq, tag = "Before you register", title = "
   const answerId = `${baseId}-answer`
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
-    <OrganizerEditLink section="season" label="FAQ answers" />
+    <OrganizerEditLink section="faq" label="FAQ answers" />
     <div className={styles.cards}>
       <div className={styles.questions} data-tone="green">
         <ul className={styles.list}>
