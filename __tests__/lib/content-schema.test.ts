@@ -92,4 +92,11 @@ describe('content after a Pages CMS save strips blank values and empty lists', (
     data.competitions[0].records = []
     expect(parseContent(championsFileSchema, sanitize(data), 'champions.json').competitions[0].records).toEqual([])
   })
+
+  it('rejects the same season entered twice for one competition', () => {
+    const data = clone(champions) as any
+    const mains = data.competitions.find((c: any) => c.id === 'mains')
+    mains.records.push({ ...mains.records[0], champion: 'Someone else' })
+    expect(() => parseContent(championsFileSchema, data, 'champions.json')).toThrow(/CICA Mains has season 2024 more than once/)
+  })
 })

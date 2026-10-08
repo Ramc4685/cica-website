@@ -25,8 +25,13 @@ const championsContent = parseContent(championsFileSchema, championsFile, "champ
  */
 export const recordsUpdated: string | undefined = championsContent.recordsUpdated || undefined
 
-/** Records are newest first. Edited through Pages CMS in content/champions.json; see docs/content-editing.md. */
-export const competitions: readonly Competition[] = championsContent.competitions
+/** Each competition's records sorted newest season first, so editors can add seasons in any order. */
+export function newestSeasonFirst(list: readonly Competition[]): Competition[] {
+  return list.map(competition => ({ ...competition, records: [...competition.records].sort((a, b) => b.season - a.season) }))
+}
+
+/** Records are newest first (the first record is the current champion). Edited through Pages CMS in content/champions.json; see docs/content-editing.md. */
+export const competitions: readonly Competition[] = newestSeasonFirst(championsContent.competitions)
 
 export interface TitleCount {
   team: string
