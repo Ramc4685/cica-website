@@ -1,6 +1,6 @@
 # Pages CMS configuration (https://pagescms.org/docs/configuration/).
-# Forms for organizer-owned facts. Edits are committed to main and follow the normal
-# staging -> owner-approved production deploy. See docs/content-editing.md.
+# Forms for organizer-owned facts. Edits are committed to main and, when only content/ changed
+# since what production serves, publish to staging and production automatically. See docs/content-editing.md.
 # Every key in content/*.json must be declared here (tested in __tests__/lib/pages-config.test.ts).
 # The content/media names are also listed in lib/cms.ts for the /admin/ deep links (tested in __tests__/lib/cms.test.ts).
 

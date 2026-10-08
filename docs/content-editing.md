@@ -34,11 +34,11 @@ Keep each Short ID as lowercase words joined by hyphens, and never change an exi
 
 ### 3. When is it live?
 
-Press Save and your change appears on https://staging.cicainfo.com within a few minutes. It goes live on cicainfo.com after the site owner approves it, so nothing you save goes public straight away. If a build fails, nothing changes on the live site, and the error names the field to fix (for example `content/champions.json: competitions.0.records.3.photo.alt: Required`). Fix it in the editor and the next build runs by itself.
+Press Save and your change is checked, then published to https://staging.cicainfo.com and to cicainfo.com automatically, usually within about 10 minutes. There is no separate approval step, so double-check names, dates and links before you save. If a build fails, nothing changes on the live site, and the error names the field to fix (for example `content/champions.json: competitions.0.records.3.photo.alt: Required`). Fix it in the editor and the next build runs by itself.
 
 ### 4. Undo
 
-Tell the site owner, or if you are the owner revert the commit in GitHub. The revert goes through staging and your approval the same way. Uploaded pictures can also be replaced in the editor.
+Tell the site owner, or if you are the owner revert the commit in GitHub. A revert of a content edit also publishes automatically. Uploaded pictures can also be replaced in the editor.
 
 Questions: organizers@cicainfo.com.
 
@@ -47,7 +47,8 @@ Questions: organizers@cicainfo.com.
 1. Sign in at https://app.pagescms.org with GitHub and install the Pages CMS GitHub App on `Ramc4685/cica-website` only.
 2. Invite each volunteer by email under the repository's collaborators (https://pagescms.org/docs/configuration/collaborators/). Only you can do this. Remove them at the end of the season.
 3. Pages CMS commits as the GitHub App identity (`settings.commit.identity: app` in `.pages.yml`), so volunteer emails never appear in public Git history. Do not change this.
-4. After a save, the "CI and Namecheap deployment" workflow validates, builds and deploys to staging. The production job waits for you: review staging, then in GitHub Actions open the run, choose Review deployments, tick Production and approve. Rejecting or ignoring it leaves the live site unchanged.
+4. After a save, the "CI and Namecheap deployment" workflow validates, builds, deploys to staging and then deploys to production automatically ("Deploy content to production (automatic)"), because only `content/` changed since what production serves. Code changes still wait for your approval, and a content edit made while a code change is waiting also waits, so unapproved code never goes live with it. To pause automatic publishing (for example while volunteers change over), set a required reviewer on the `production-content` environment in GitHub Settings → Environments; edits then wait for approval like code.
+5. In GitHub Settings → Environments → `production-content`, set Deployment branches to `main` only. GitHub creates this environment on the first automatic deploy.
 
 ## For developers
 
