@@ -6,7 +6,7 @@ export const CMS_SECTIONS = [
   { name: "season", kind: "content", label: "Season, events and news", hint: "Use this for announcements, upcoming events and testimonials." },
   { name: "tournaments", kind: "content", label: "Tournaments", hint: "Use this for registration status, deadlines, links and match format." },
   { name: "champions", kind: "content", label: "Results (champions)", hint: "Use this to add a season's winner, runner-up and team photo." },
-  { name: "photos", kind: "content", label: "Photos", hint: "Use this to add gallery and home page photos." },
+  { name: "photos", kind: "content", label: "Photos", hint: "Upload photos for the Gallery and choose which ones rotate in the home page banner." },
   { name: "sponsors", kind: "content", label: "Sponsors", hint: "Use this to add or update sponsors, their logos and sponsorship options." },
   { name: "teams", kind: "content", label: "CPL teams", hint: "Use this to add or rename a Cricket Premier League team and its logo." },
   { name: "venues", kind: "content", label: "Venues", hint: "Use this for grounds and courts: addresses, map links, parking and ground rules." },

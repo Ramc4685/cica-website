@@ -28,7 +28,7 @@ export default function GalleryPage() {
 
     <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="photos-heading">
       <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading" variant="label"
-        subtitle="A few moments from our community collection. Select a photograph to see it in full." />
+        subtitle="Moments from our community collection. Select a photograph to see it in full." />
       <OrganizerEditLink section="photos" label="gallery photos" />
       <CommunityGallery />
     </section>

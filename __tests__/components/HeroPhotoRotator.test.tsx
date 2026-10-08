@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { HeroPhotoRotator } from '@/components/hero-photo-rotator'
 import { MotionControl, MotionProvider } from '@/components/site-motion'
 import { heroPhotos } from '@/lib/community-photos'
+import photosFile from '@/content/photos.json'
 import type { ImgHTMLAttributes } from 'react'
 
 // Make image readiness deterministic without Next Image's asynchronous decode handling.
@@ -70,8 +71,8 @@ describe('Hero community photos', () => {
     expectPhoto(0)
   })
 
-  it('rotates through all 20 photos, wraps to the first, and pauses with the site motion control', () => {
-    expect(heroPhotos).toHaveLength(20)
+  it('rotates through every banner photo, wraps to the first, and pauses with the site motion control', () => {
+    expect(heroPhotos.map(p => p.id)).toEqual(photosFile.photos.filter(p => p.hero).map(p => p.id))
     renderPhotos()
     expectPhoto(0)
     advancePhoto()

@@ -374,14 +374,14 @@ content:
             readonly: true
 
   - name: photos
-    label: Gallery photos
+    label: Photos (Gallery and home page banner)
     type: file
     path: content/photos.json
     format: json
     fields:
       - name: photos
         label: Photos
-        description: "Photos shown on the Gallery page and in the home page rotation. Use the add button to add one."
+        description: "Every photo here can appear on the Gallery page, in the rotating banner at the top of the home page, or both. Use the add button, upload the picture, then tick where it should appear."
         type: object
         list:
           collapsible:
@@ -414,8 +414,8 @@ content:
             type: boolean
             default: true
           - name: hero
-            label: Show in the home page rotation
-            description: "Only tick for wide, bright photos that work as a banner."
+            label: Show in the home page banner
+            description: "Tick to add this photo to the rotating banner at the top of the home page. Wide, bright group photos work best."
             type: boolean
             default: false
           - name: objectPosition

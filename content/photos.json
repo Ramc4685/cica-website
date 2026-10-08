@@ -15,7 +15,7 @@
       "alt": "Two adults holding a cricket bat together on an outdoor field.",
       "caption": "A shared love of the game.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -24,7 +24,7 @@
       "alt": "Two cricketers holding a trophy with community members beside them indoors.",
       "caption": "Celebrating together, on and off the field.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -114,7 +114,7 @@
       "alt": "Four cricket supporters posing together beside a cricket ground.",
       "caption": "Friends sharing the cricket spirit.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -123,7 +123,7 @@
       "alt": "Three cricketers standing together with a trophy on an outdoor field.",
       "caption": "Recognition shared on the field.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -132,7 +132,7 @@
       "alt": "Cricketers in blue shirts posing with trophies on an indoor sports court.",
       "caption": "A team celebration together.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -141,7 +141,7 @@
       "alt": "Cricketers in blue and yellow shirts gathered with trophies indoors.",
       "caption": "Many teams, a shared love of cricket.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -150,7 +150,7 @@
       "alt": "A cricket team posing with trophies on an outdoor field.",
       "caption": "Team pride beyond the boundary.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -159,7 +159,7 @@
       "alt": "Cricketers standing together behind a row of trophies on grass.",
       "caption": "Together for the game.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -168,7 +168,7 @@
       "alt": "Cricketers in red and blue shirts posing together on an outdoor field.",
       "caption": "A shared team moment.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
     },
     {
@@ -177,8 +177,89 @@
       "alt": "Two groups of cricketers posing together on a field under a blue sky.",
       "caption": "Cricket brings people together.",
       "objectPosition": "50% 50%",
-      "gallery": false,
+      "gallery": true,
       "hero": true
+    },
+    {
+      "id": "dome-community-gathering",
+      "src": "/images/community/dome-community-gathering.webp",
+      "alt": "A large group of players, families and children gathered behind rows of trophies inside an indoor sports dome.",
+      "caption": "The whole community under one roof.",
+      "objectPosition": "50% 55%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "outdoor-navy-team",
+      "src": "/images/community/outdoor-navy-team.webp",
+      "alt": "A cricket team in navy uniforms lined up on an outdoor field beneath a blue sky.",
+      "caption": "Lined up and ready on match day.",
+      "objectPosition": "50% 70%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "outdoor-sky-blue-team",
+      "src": "/images/community/outdoor-sky-blue-team.webp",
+      "alt": "A cricket team in light blue uniforms standing together on an outdoor field.",
+      "caption": "Team spirit under open skies.",
+      "objectPosition": "50% 65%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "indoor-turf-celebration",
+      "src": "/images/community/indoor-turf-celebration.webp",
+      "alt": "Players, families and children posing with trophies on an indoor turf field.",
+      "caption": "Players and families together on the indoor turf.",
+      "objectPosition": "50% 50%",
+      "gallery": true,
+      "hero": true
+    },
+    {
+      "id": "trophy-table-lineup",
+      "src": "/images/community/trophy-table-lineup.webp",
+      "alt": "Seven people standing behind a table filled with trophies inside an indoor sports dome.",
+      "caption": "Ready for the trophy presentation.",
+      "objectPosition": "50% 50%",
+      "gallery": true,
+      "hero": false
+    },
+    {
+      "id": "trophy-handover",
+      "src": "/images/community/trophy-handover.webp",
+      "alt": "Two people holding trophies together beside a trophy table inside an indoor sports dome.",
+      "caption": "Handing over the silverware.",
+      "objectPosition": "50% 40%",
+      "gallery": true,
+      "hero": false
+    },
+    {
+      "id": "sunset-trophies",
+      "src": "/images/community/sunset-trophies.webp",
+      "alt": "An adult and two children sitting behind a row of trophies and cricket bats on an outdoor field in evening light.",
+      "caption": "Trophies lined up in the evening light.",
+      "objectPosition": "50% 60%",
+      "gallery": true,
+      "hero": false
+    },
+    {
+      "id": "indoor-practice-batting",
+      "src": "/images/community/indoor-practice-batting.webp",
+      "alt": "Players practicing cricket on a matting pitch laid across an indoor gymnasium floor.",
+      "caption": "Indoor practice on the gym court.",
+      "objectPosition": "50% 55%",
+      "gallery": true,
+      "hero": false
+    },
+    {
+      "id": "indoor-practice-crease",
+      "src": "/images/community/indoor-practice-crease.webp",
+      "alt": "View from behind a batter at the crease during an indoor practice session in a gymnasium.",
+      "caption": "Waiting for the next ball at indoor practice.",
+      "objectPosition": "50% 60%",
+      "gallery": true,
+      "hero": false
     }
   ]
 }
