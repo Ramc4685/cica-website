@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Champions: seasons are ordered newest first automatically, so organizers can add a winner anywhere in the list, and a season entered twice for one competition stops the build with a message naming it.
+- Fix the 10px sideways scroll on 320px phones by tightening the header spacing at 360px and below; a Cypress spec checks 320, 375 and 390px.
 - Organizers can update champions (with optional team photos), community photos, tournament details, announcements, events and FAQ through Pages CMS; uploads are validated and optimized at build (originals stay unpublished; only metadata-free WebP copies ship), and edits go live after the owner approves the production deploy.
 - Replace the About banner photo with a wall of all seven CICA identities in their transparent, blue and yellow treatments; its motion stops under reduced motion and the site Pause control.
 - Remove the retired Google Apps Script form handlers, their live-endpoint test scripts, handler tests and Sheet templates now that the web apps are undeployed.

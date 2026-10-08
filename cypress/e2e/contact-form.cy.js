@@ -15,7 +15,7 @@ describe('Contact Form', () => {
     cy.findByLabelText(/Email/i).should('be.visible');
     cy.findByLabelText(/Phone \(Optional\)/i).should('be.visible');
     cy.findByLabelText(/Subject/i).should('be.visible');
-    cy.findByLabelText(/Message/i).should('be.visible');
+    cy.findByLabelText(/^Message/i).should('be.visible');
     cy.findByRole('button', { name: /Send Message/i }).should('be.visible');
   });
 
