@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     "Promoting cricket and developing the sport in Bloomington/Normal, Illinois since 1998. Join our tournaments, events, and cricket community.",
   keywords:
     "cricket, Illinois, Bloomington, Normal, CICA, tournaments, sports, community, CPL, indoor cricket, outdoor cricket",
+  authors: [{ name: "Marvy Labs", url: "https://marvy-labs.com" }],
+  creator: "Marvy Labs",
   openGraph: {
     title: "Central Illinois Cricket Association - CICA",
     description: "Developing cricket in Bloomington/Normal, Illinois since 1998",

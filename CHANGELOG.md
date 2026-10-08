@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Credit Marvy Labs as the site's designer and developer with a logo link to marvy-labs.com in the footer and in the page author metadata.
+
 - Champions: seasons are ordered newest first automatically, so organizers can add a winner anywhere in the list, and a season entered twice for one competition stops the build with a message naming it.
 - Fix the 10px sideways scroll on 320px phones by tightening the header spacing at 360px and below; a Cypress spec checks 320, 375 and 390px.
 - Organizers can update champions (with optional team photos), community photos, tournament details, announcements, events and FAQ through Pages CMS; uploads are validated and optimized at build (originals stay unpublished; only metadata-free WebP copies ship), and edits go live after the owner approves the production deploy.

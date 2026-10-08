@@ -78,6 +78,12 @@ export function Footer() {
         <span>© {new Date().getFullYear()} Central Illinois Cricket Association</span>
         <Link href="/privacy/">Privacy &amp; data</Link>
         <span>Rooted in community since 1998.</span>
+        <a href="https://marvy-labs.com" target="_blank" rel="noopener" className="footer-credit">
+          <span>Designed &amp; developed by</span>
+          <Image src="/images/logos-sm/marvy-labs-mark.webp" alt="" width={24} height={24} />
+          <strong>Marvy Labs</strong>
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
       </div>
     </div>
   </footer>
