@@ -32,8 +32,8 @@ export async function validateStatic(directory) {
   for (const file of files.filter(file => file.endsWith('.html'))) {
     const html = await readFile(path.join(root, file), 'utf8')
     if (file === 'admin/index.html' || file === 'admin-login/index.html') {
-      if (!html.includes('Administration is unavailable')) {
-        throw new Error(`Admin unavailable notice missing: ${file}`)
+      if (!html.includes('Organizer tools')) {
+        throw new Error(`Organizer tools heading missing: ${file}`)
       }
       if (/<form\b|<input\b[^>]*\btype=["']password["']/i.test(html)) {
         throw new Error(`Public admin authentication form remains: ${file}`)

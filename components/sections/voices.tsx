@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { voices as allVoices, type Voice } from "@/lib/season"
 import { cn } from "@/lib/utils"
 import shared from "./sections.module.css"
@@ -19,6 +20,7 @@ export function Voices({ voices = allVoices, tag = "Voices from the boundary", t
   if (voices.length === 0) return null
   return <section className={cn(shared.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} id={headingId} reveal />
+    <OrganizerEditLink section="season" label="testimonials" />
     <ul className={styles.grid}>
       {voices.map(voice => <li key={voice.id}>
         <figure className={styles.figure}>

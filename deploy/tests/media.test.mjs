@@ -33,8 +33,10 @@ test("collects every image referenced by content", () => {
   const sources = collectImageSources({
     champions: { competitions: [{ records: [{ photo: { src: "/uploads/champions/a.jpg" } }, {}] }] },
     photos: { photos: [{ src: "/images/community/b.webp" }] },
+    teams: { teams: [{ logo: "/uploads/logos/t.png" }, { logo: "/images/teams/old.webp" }] },
+    sponsors: { cplSponsors: [{ logo: "/images/sponsors/s.webp" }], premiumSponsors: [{ logo: "/uploads/logos/p.webp" }, {}] },
   })
-  assert.deepEqual(sources.sort(), ["/images/community/b.webp", "/uploads/champions/a.jpg"])
+  assert.deepEqual(sources.sort(), ["/images/community/b.webp", "/uploads/champions/a.jpg", "/uploads/logos/p.webp", "/uploads/logos/t.png"])
 })
 
 test("derivative names stay unique for sources that differ only by dot or hyphen", () => {
@@ -52,8 +54,8 @@ async function stage(files) {
   return root
 }
 
-test("upload tree accepts only valid images in champions and photos", async () => {
-  const root = await stage({ "content/uploads/champions/a.jpg": jpeg, "content/uploads/photos/.gitkeep": "" })
+test("upload tree accepts only valid images in champions, photos and logos", async () => {
+  const root = await stage({ "content/uploads/champions/a.jpg": jpeg, "content/uploads/photos/.gitkeep": "", "content/uploads/logos/team.jpg": jpeg })
   try { assert.deepEqual(await checkUploadTree(root), []) } finally { await rm(root, { recursive: true, force: true }) }
 })
 
@@ -68,7 +70,7 @@ test("upload tree rejects stray files, extra folders, fake images and published 
   try {
     await symlink(path.join(root, "content/uploads/x.jpg"), path.join(root, "content/uploads/champions/link.jpg"))
     const errors = (await checkUploadTree(root)).join("\n")
-    assert.match(errors, /uploads\/x\.jpg: only the champions and photos folders/)
+    assert.match(errors, /uploads\/x\.jpg: only the champions, photos and logos folders/)
     assert.match(errors, /champions-old/)
     assert.match(errors, /fake\.jpg: not a real/)
     assert.match(errors, /public\/uploads/)

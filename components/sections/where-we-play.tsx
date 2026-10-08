@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { venues as allVenues, type Venue } from "@/lib/season"
 import { cn } from "@/lib/utils"
 import shared from "./sections.module.css"
@@ -20,6 +21,7 @@ export function WhereWePlay({ venues = allVenues, tag = "Where we play", title =
   if (venues.length === 0) return null
   return <section className={cn(shared.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <OrganizerEditLink section="venues" label="venues" />
     <ul className={styles.grid}>
       {venues.map(venue => <li key={venue.id}>
         <article className={styles.card} data-venue-type={venue.type} aria-labelledby={`venue-${venue.id}`}>

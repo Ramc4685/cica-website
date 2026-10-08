@@ -3,7 +3,12 @@
 ## Unreleased
 
 - Credit Marvy Labs as the site's designer and developer with a logo link to marvy-labs.com in the footer and in the page author metadata.
-
+- Venues, sponsorship options, premium and CPL sponsors, CPL teams, board members, testimonials (shown only with the speaker's consent), site links and the FAQ now live in `content/*.json` and are editable in Pages CMS, with a logo upload folder (PNG, JPG or WebP; originals still never ship).
+- Add a low-key "Suggest an update" link beside data sections and in the footer that opens the contact form with the subject prefilled, and list every editable section with a "use this for" hint on /admin/.
+- Rewrite the Pages CMS forms in plain language in the order a volunteer thinks, and the editing guide as a one-page volunteer guide.
+- Turn /admin/ into an Organizer tools page with a link to the content editor, a shortcut to each editable section and a short publishing guide, and add a low-key Organizer login link to the footer.
+- Organizers can opt in on /admin/ to see small "Edit this section" links beside champions, tournaments, events, the FAQ and the gallery; visitors never see them.
+- Clearer Pages CMS forms: plain-language labels, examples, collapsible lists with readable item titles and technical fields moved to the bottom.
 - Champions: seasons are ordered newest first automatically, so organizers can add a winner anywhere in the list, and a season entered twice for one competition stops the build with a message naming it.
 - Fix the 10px sideways scroll on 320px phones by tightening the header spacing at 360px and below; a Cypress spec checks 320, 375 and 390px.
 - Organizers can update champions (with optional team photos), community photos, tournament details, announcements, events and FAQ through Pages CMS; uploads are validated and optimized at build (originals stay unpublished; only metadata-free WebP copies ship), and edits go live after the owner approves the production deploy.

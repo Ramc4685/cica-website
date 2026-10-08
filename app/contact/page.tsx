@@ -15,6 +15,9 @@ const fields: readonly CommunityField[] = [
   { name: "message", label: "Message", type: "textarea", maxLength: 3000 },
 ]
 
+// /contact/?topic=update#contact-form (the "Suggest an update" links) prefills the subject.
+const topicPrefill = { param: "topic", field: "subject", values: { update: "Suggest a correction or update" } } as const
+
 export default function ContactPage() {
   return <>
     <PageHero tag="Contact CICA" title="A conversation *starts here.*"
@@ -31,7 +34,7 @@ export default function ContactPage() {
           <CapsuleLink href="/tournaments/#where-we-play" variant="outline" className="mt-5">See the venues</CapsuleLink>
         </div>
       </aside>
-      <CommunityForm kind="contact" fields={fields} tag="Let us know" title="Send us a message" submitLabel="Send message"
+      <CommunityForm kind="contact" fields={fields} topicPrefill={topicPrefill} tag="Let us know" title="Send us a message" submitLabel="Send message"
         successCopy={{ body: "Thank you for reaching out. For time-sensitive questions, contact the organizers directly." }} />
     </div>
   </>

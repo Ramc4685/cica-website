@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
-import AdminUnavailable from "./login-info"
+import OrganizerTools from "./organizer-tools"
 
 export const metadata: Metadata = {
-  title: "Administration unavailable | CICA",
+  title: "Organizer tools | CICA",
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 export default function AdminPage() {
-  return <AdminUnavailable />
+  return <OrganizerTools />
 }

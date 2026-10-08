@@ -1,0 +1,74 @@
+{
+  "tiers": [
+    {
+      "id": "premium",
+      "name": "Premium partner",
+      "summary": "Lead placement across the CICA site."
+    },
+    {
+      "id": "cpl-team",
+      "name": "CPL team partner",
+      "summary": "A team in the Cricket Premier League carries the partner’s name."
+    },
+    {
+      "id": "matchday",
+      "name": "Matchday & community supporter",
+      "summary": "Support matchdays and community events."
+    }
+  ],
+  "premiumSponsors": [
+    {
+      "id": "gpt",
+      "name": "Global Prime Taxation LLC",
+      "logo": "/images/sponsors/global-prime-taxation.webp"
+    },
+    {
+      "id": "lumin",
+      "name": "Lumin Innovations",
+      "logo": "/images/sponsors/lumin-innovations.webp",
+      "logoTone": "dark"
+    }
+  ],
+  "cplSponsors": [
+    {
+      "id": "bloom-barista",
+      "name": "Bloom Barista",
+      "logo": "/images/sponsors/bloom-barista.webp"
+    },
+    {
+      "id": "bloom-bazaar",
+      "name": "Bloom Bazaar",
+      "logo": "/images/sponsors/bloom-bazaar.webp"
+    },
+    {
+      "id": "bloom-events",
+      "name": "Bloom Events",
+      "logo": "/images/sponsors/bloom-events.webp"
+    },
+    {
+      "id": "global-prime-taxation",
+      "name": "Global Prime Taxation LLC",
+      "logo": "/images/sponsors/global-prime-taxation.webp"
+    },
+    {
+      "id": "gnr-systems",
+      "name": "GNR Systems",
+      "logo": "/images/sponsors/gnr-systems.webp"
+    },
+    {
+      "id": "my-craft-barn",
+      "name": "My Craft Barn",
+      "logo": "/images/sponsors/my-craft-barn.webp"
+    },
+    {
+      "id": "parke-regency",
+      "name": "Parke Regency Hotel & Conference Center",
+      "logo": "/images/sponsors/parke-regency.webp"
+    },
+    {
+      "id": "techie-brains",
+      "name": "Techie Brains Inc.",
+      "logo": "/images/sponsors/techie-brains.webp"
+    }
+  ]
+}

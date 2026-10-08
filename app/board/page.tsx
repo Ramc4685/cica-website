@@ -1,55 +1,16 @@
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
+import boardFile from "@/content/board.json"
+import { boardFileSchema, parseContent } from "@/lib/content-schema"
 import { pageMetadata } from "@/lib/site-metadata"
 import s from "../inner-page.module.css"
 import styles from "./board.module.css"
 export const metadata = pageMetadata("Our leadership", "Meet CICA’s directors and organizing team, supporting cricket and community in Central Illinois.", "/board/")
 
-/** Season the roles and bios below were last confirmed for. */
-const asOfSeason = 2026 // TODO(organizers): confirm current roles and tenures for this season.
-
-const boardMembers = [
-  {
-    name: "RamC Venkatasamy",
-    role: "Director",
-    bio: "Director and organizer who has contributed to CICA since 2012.",
-    specialties: ["Ground Management", "Tournament Innovation", "Facility Development"],
-    achievements: [
-      "Contributing to CICA since 2012",
-      "Introduced multiple cricket divisions",
-      "Moved tournament play to the 20-over format",
-      "Led the Baywood ground arrangement through a city partnership",
-      "Manages the CPL player auctions",
-      "Secured indoor facilities for year-round cricket"
-    ],
-    playerRole: "All-rounder"
-  },
-  {
-    name: "Ayaskant Rout",
-    role: "Director",
-    bio: "Director and tournament organizer who has contributed to CICA since 2019.",
-    specialties: ["Community Building", "Tournament Organization"],
-    achievements: [
-      "Contributing since 2019",
-      "Community engagement",
-      "Tournament coordination"
-    ],
-    playerRole: "All-rounder"
-  },
-  {
-    name: "Senthil Krishnan",
-    role: "CICA Organizing Committee",
-    bio: "Organizing committee member since 2021, responsible for tournament scheduling and coordination.",
-    specialties: ["Tournament Organization", "Scheduling"],
-    achievements: [
-      "Organizing since 2021",
-      "Tournament scheduling",
-      "Event coordination"
-    ],
-    playerRole: "Organizer"
-  }
-]
+/** Directors and organizers are edited through Pages CMS in content/board.json. */
+const { asOfSeason, members: boardMembers } = parseContent(boardFileSchema, boardFile, "board.json")
 
 export default function BoardPage() {
   return <>
@@ -58,6 +19,7 @@ export default function BoardPage() {
 
     <section className={`page-shell ${s.sectionFlush}`} aria-label="Directors and organizers">
       <p className={styles.season}>Roles listed for the {asOfSeason} season.</p>
+      <OrganizerEditLink section="board" label="board members" />
       <ul className={styles.list}>
         {boardMembers.map(member => <li key={member.name}>
           <article className={styles.member} aria-labelledby={`member-${slug(member.name)}`}>
@@ -66,18 +28,18 @@ export default function BoardPage() {
               <div>
                 <p className="tag-row">{member.role}</p>
                 <h2 id={`member-${slug(member.name)}`} className={styles.name}>{member.name}</h2>
-                <p className={styles.playerRole}>{member.playerRole}</p>
+                {member.playerRole && <p className={styles.playerRole}>{member.playerRole}</p>}
               </div>
             </div>
             <div className={styles.detail}>
               <p className={styles.bio}>{member.bio}</p>
-              <ul className={styles.specialties} aria-label="Focus areas">
+              {member.specialties.length > 0 && <ul className={styles.specialties} aria-label="Focus areas">
                 {member.specialties.map(item => <li key={item}>{item}</li>)}
-              </ul>
-              <details className={styles.contributions}>
+              </ul>}
+              {member.achievements.length > 0 && <details className={styles.contributions}>
                 <summary>Community contributions</summary>
                 <ul>{member.achievements.map(item => <li key={item}>{item}</li>)}</ul>
-              </details>
+              </details>}
             </div>
           </article>
         </li>)}

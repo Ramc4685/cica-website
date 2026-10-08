@@ -16,7 +16,7 @@ test('static validator rejects missing assets, links, protected directories, and
   const root = await fixture(t)
   for (const directory of ['_next/static', 'admin', 'admin-login']) await mkdir(path.join(root, directory), { recursive: true })
   for (const file of ['index.html', '404.html', '.htaccess', '_next/static/app.js', 'admin/index.html', 'admin-login/index.html']) {
-    await writeFile(path.join(root, file), file.includes('admin') ? 'Administration is unavailable' : '')
+    await writeFile(path.join(root, file), file.includes('admin') ? 'Organizer tools' : '')
   }
   await validateStatic(root)
   await writeFile(path.join(root, 'index.html'), '<img src="/missing.png">')

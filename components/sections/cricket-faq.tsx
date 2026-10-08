@@ -3,6 +3,7 @@
 import { useId, useState, type ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { faq, type FaqEntry } from "@/lib/season"
 import { cn } from "@/lib/utils"
 import styles from "./cricket-faq.module.css"
@@ -36,6 +37,7 @@ export function CricketFaq({ items = faq, tag = "Before you register", title = "
   const answerId = `${baseId}-answer`
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <OrganizerEditLink section="faq" label="FAQ answers" />
     <div className={styles.cards}>
       <div className={styles.questions} data-tone="green">
         <ul className={styles.list}>
