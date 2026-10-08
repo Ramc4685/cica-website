@@ -21,7 +21,7 @@ Tip: switch on "Show edit links on this device" on the Organizer tools page and 
 | Post news or an event | Season, events and news | Open Announcements or Events, press the add button, fill in the headline or event name, date and a plain-text message. Links start with https://. |
 | Update registration | Tournaments | Open the tournament, set Registration status, the deadline and the registration link. Type a number for overs and squad size, or tbc. |
 | Record a winner | Results (champions) | Open the competition, then Seasons and winners, add the year and champion team. Runner-up, note and photo are optional. Enter each season once. Add a photo only with the team's consent and describe it for screen readers. |
-| Add a photo | Photos | Add an entry, upload the picture (JPG, PNG or WebP under 10 MB), write a caption and a description for screen readers. Tick where it should appear. |
+| Add a photo | Photos | Add an entry, upload the picture (JPG, PNG or WebP under 10 MB), write a caption and a description for screen readers. Tick "Show on the Gallery page", "Show in the home page banner", or both. |
 | Add or change a sponsor | Sponsors | Premium sponsors are the lead placements (at most three). CPL team sponsors need a name and logo. Add a website only once the sponsor has confirmed it. Do not publish prices. |
 | Add or rename a CPL team | CPL teams | Add the team name exactly as on its logo and upload the logo (PNG, JPG or WebP). |
 | Update a ground or court | Venues | Open the venue and fill in the address, a map link, parking and ground rules. Leave the address blank if it is not confirmed. |

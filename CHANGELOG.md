@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Gallery now shows all 29 community photographs (up from 10): the 10 photos that only appeared in the home page banner, plus 9 new photos from the supplied collection. Four of the new photos also join the home page banner.
+- Make the home page banner photo choice easy to find: the Pages CMS section is now "Photos (Gallery and home page banner)" with a "Show in the home page banner" tick box, and /admin/ explains how to add a banner photo and no longer says edits wait for owner approval.
 - Pages CMS edits now publish to production automatically when only `content/` changed since what production serves; code changes, and content edits stacked on code still awaiting approval, keep the approval gate.
 - Credit Marvy Labs as the site's designer and developer with a logo link to marvy-labs.com in the footer and in the page author metadata.
 - Venues, sponsorship options, premium and CPL sponsors, CPL teams, board members, testimonials (shown only with the speaker's consent), site links and the FAQ now live in `content/*.json` and are editable in Pages CMS, with a logo upload folder (PNG, JPG or WebP; originals still never ship).

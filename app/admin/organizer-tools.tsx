@@ -7,14 +7,19 @@ import s from "../inner-page.module.css"
 const steps = [
   "Open the content editor and sign in with the email invite you received.",
   "Choose a section below, make your change and press Save.",
-  "Check your change on staging.cicainfo.com within a few minutes.",
-  "The site owner approves it, and it appears on cicainfo.com.",
+  "Your change is checked and appears on cicainfo.com automatically, usually within about 10 minutes.",
+]
+
+const photoSteps = [
+  "Open the Photos section and press the add button.",
+  "Upload the picture (JPG, PNG or WebP under 10 MB), then write a caption and a description for screen readers.",
+  "Tick \"Show on the Gallery page\", \"Show in the home page banner\", or both, and press Save.",
 ]
 
 export default function OrganizerTools() {
   return <>
     <PageHero tag="Organizers" className="utility-hero" title={<>Organizer tools</>}
-      intro="Update champions, tournaments, news, events, the FAQ and gallery photos without touching any code. Nothing you save goes public until the site owner approves it.">
+      intro="Update champions, tournaments, news, events, the FAQ, gallery photos and the home page banner without touching any code. Content you save is checked and published automatically.">
       <div className={`${s.actions} ${s.heroActions}`}>
         <CapsuleLink href={cmsEditorUrl} external>Open the content editor</CapsuleLink>
         <CapsuleLink href="/" variant="outline">Return to website</CapsuleLink>
@@ -33,6 +38,15 @@ export default function OrganizerTools() {
             </a>
           </li>)}
         </ul>
+      </div>
+    </section>
+
+    <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="add-photo-title">
+      <div className={s.card}>
+        <h2 id="add-photo-title" className={s.cardTitle}>Add a photo to the Gallery or home page banner</h2>
+        <ol className="organizer-steps">{photoSteps.map(step => <li key={step}>{step}</li>)}</ol>
+        <p className={s.body}>Wide, bright group photos work best in the banner. Only add photos you have permission to publish, including from the people pictured.</p>
+        <CapsuleLink href={cmsSectionUrl("photos")} variant="outline" external>Open the Photos section</CapsuleLink>
       </div>
     </section>
 
