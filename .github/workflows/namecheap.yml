@@ -17,8 +17,13 @@ jobs:
     env:
       # This job runs Jest and static checks; do not download unused Cypress binaries.
       CYPRESS_INSTALL_BINARY: '0'
+    outputs:
+      content_only: ${{ steps.classify.outputs.content_only }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # Full history so the classifier can diff against the commit production serves.
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
@@ -36,6 +41,11 @@ jobs:
         run: pnpm test --runInBand
       - name: Deployment regression checks
         run: node --test deploy/tests/*.test.mjs
+      # Content-only changes since what production serves (Pages CMS edits) publish without approval.
+      - name: Classify change
+        id: classify
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: node deploy/classify-change.mjs https://cicainfo.com/deployment.json "$GITHUB_SHA"
       - run: pnpm build:namecheap
       - name: Verify disabled admin in built export
         run: CICA_TEST_EXPORT_DIR=out node --test tests/admin-security.test.mjs
@@ -100,7 +110,7 @@ jobs:
   deploy:
     name: Deploy to production (after approval)
     needs: [check, deploy-staging]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check.outputs.content_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -125,6 +135,57 @@ jobs:
             echo 'deploy=false' >> "$GITHUB_OUTPUT"
             echo 'A newer main commit will deploy; skipping this older build.'
           fi
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        if: steps.current.outputs.deploy == 'true'
+        with:
+          name: cica-site-${{ github.sha }}
+          path: artifact
+      - name: Deploy through verified SSH
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          CICA_DEPLOY_TARGET: production
+          NAMECHEAP_SSH_HOST: ${{ secrets.NAMECHEAP_SSH_HOST }}
+          NAMECHEAP_SSH_USER: ${{ secrets.NAMECHEAP_SSH_USER }}
+          NAMECHEAP_SSH_PORT: ${{ secrets.NAMECHEAP_SSH_PORT }}
+          NAMECHEAP_SSH_PRIVATE_KEY: ${{ secrets.NAMECHEAP_SSH_PRIVATE_KEY }}
+          NAMECHEAP_SSH_KNOWN_HOSTS: ${{ secrets.NAMECHEAP_SSH_KNOWN_HOSTS }}
+        run: bash deploy/deploy-namecheap.sh
+
+  # Organizer content edits (only content/ changed since what production serves) skip the approval gate.
+  # The job re-checks against the live commit right before deploying, so code waiting for approval never rides along.
+  deploy-content:
+    name: Deploy content to production (automatic)
+    needs: [check, deploy-staging]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check.outputs.content_only == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production-content
+      url: https://cicainfo.com
+    # Never cancel a deployment after it starts writing the document root.
+    concurrency:
+      group: cica-namecheap-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Skip superseded commits
+        id: current
+        run: |
+          latest=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'deploy=false' >> "$GITHUB_OUTPUT"
+            echo 'A newer main commit will deploy; skipping this older build.'
+          fi
+      - name: Re-check that only content changed since production
+        if: steps.current.outputs.deploy == 'true'
+        run: node deploy/classify-change.mjs --require https://cicainfo.com/deployment.json "$GITHUB_SHA"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         if: steps.current.outputs.deploy == 'true'
         with:

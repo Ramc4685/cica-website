@@ -21,9 +21,14 @@ superseded commits. Build jobs and pull requests never receive deployment creden
    `gh workflow run namecheap.yml --ref <branch>`). Manual runs deploy to staging
    only; production deploys only from `main`.
 
-Content edits made through Pages CMS (`content/*.json` and `content/uploads`) are ordinary
-commits to `main` and follow this same staging, then Production-approval path; there is no
-fast lane. The `check` job fails the build on invalid content or an unsafe upload (wrong type,
+Content edits made through Pages CMS publish automatically. `deploy/classify-change.mjs` compares
+the pushed commit with the commit production serves (`https://cicainfo.com/deployment.json`). When
+every changed file since then is under `content/`, the `deploy-content` job deploys the
+staging-verified artifact to production without approval (environment `production-content`), after
+re-checking against the live commit just before it deploys. Anything else, including a content
+edit stacked on a code change that is still waiting for approval, an unreadable live commit or
+rewritten history, goes to the approval-gated `deploy` job as before. The decision uses the files
+changed, never the commit author or message. The `check` job fails the build on invalid content or an unsafe upload (wrong type,
 over 10 MB, outside `content/uploads/{champions,photos}`, or any original under `public/uploads`), naming the field or file. See
 [editing website content](../docs/content-editing.md).
 
