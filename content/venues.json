@@ -1,0 +1,31 @@
+{
+  "venues": [
+    {
+      "id": "eastview",
+      "name": "Eastview Cricket Field",
+      "type": "outdoor",
+      "notes": "Under the control of Eastview Christian Church. It is private property: use it only as directed and according to the church’s rules."
+    },
+    {
+      "id": "normal",
+      "name": "Normal cricket ground",
+      "type": "outdoor",
+      "notes": "Under the control of the City of Normal and CICA. Use it according to CICA’s rules and those of the Normal Park District."
+    },
+    {
+      "id": "baywood",
+      "name": "Baywood cricket ground",
+      "type": "outdoor",
+      "notes": "Under the control of CICA, with Bloomington Parks rules. Captains remind players about the speed limit in the Baywood neighborhood."
+    },
+    {
+      "id": "btt",
+      "name": "Bloomington Table Tennis (BTT)",
+      "type": "indoor",
+      "address": "4101 Wicker Rd, Bloomington, IL 61704",
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=4101%20Wicker%20Rd%2C%20Bloomington%2C%20IL%2061704",
+      "parking": "Teams and spectators use the designated parking areas.",
+      "notes": "Indoor turf for the 2025 indoor tournaments. Every player signs the BTT waiver before playing. No smoking on the premises, and the tennis courts are off limits."
+    }
+  ]
+}

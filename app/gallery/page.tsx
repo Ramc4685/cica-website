@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { CommunityGallery } from "@/components/community-gallery"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { PageHero } from "@/components/ui/page-hero"
@@ -28,6 +29,7 @@ export default function GalleryPage() {
     <section className={`page-shell ${s.sectionFlush}`} aria-labelledby="photos-heading">
       <SectionIntro tag="Our people, our game" title="This is *CICA.*" id="photos-heading" variant="label"
         subtitle="A few moments from our community collection. Select a photograph to see it in full." />
+      <OrganizerEditLink section="photos" label="gallery photos" />
       <CommunityGallery />
     </section>
 

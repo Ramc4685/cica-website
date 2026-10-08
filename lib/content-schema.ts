@@ -83,7 +83,49 @@ export const tournamentsFileSchema = z.object({
 export const seasonFileSchema = z.object({
   events: z.array(z.object({ id: slug, title: text(120), date: isoDate, competitionId: optionalSlug, venueId: optionalSlug, summary: optionalText(400), url: optionalHttpsUrl }).strict()).default([]),
   announcements: z.array(z.object({ id: slug, title: text(120), date: isoDate, body: text(2000), url: optionalHttpsUrl }).strict()).default([]),
+  // Quotes appear only when the speaker's written consent box is ticked.
+  voices: z.array(z.object({ id: slug, quote: text(500), name: text(80), role: optionalText(80), consent: z.boolean().default(false) }).strict()).default([]),
+}).strict()
+
+export const faqFileSchema = z.object({
   faq: z.array(z.object({ id: slug, question: text(200), answer: text(5000) }).strict()).default([]),
+}).strict()
+
+export const venuesFileSchema = z.object({
+  venues: z.array(z.object({
+    id: slug, name: text(80), type: z.enum(["outdoor", "indoor"]),
+    address: optionalText(200), mapUrl: optionalHttpsUrl, parking: optionalText(300), notes: optionalText(600),
+  }).strict()).default([]),
+}).strict()
+
+// Logos are either committed site images or uploads made through the editor.
+const logoPath = imagePath(/^\/(?:uploads\/logos|images\/(?:sponsors|teams))\/[A-Za-z0-9._-]+$/)
+const optionalLogoPath = z.preprocess(blankToUndefined, logoPath.optional())
+
+export const sponsorsFileSchema = z.object({
+  tiers: z.array(z.object({ id: slug, name: text(80), summary: text(200), benefits: z.array(text(200)).default([]) }).strict()).default([]),
+  premiumSponsors: z.array(z.object({
+    id: slug, name: text(80), logo: optionalLogoPath, logoTone: z.enum(["dark", "light"]).optional(),
+    href: optionalHttpsUrl, description: optionalText(300),
+  }).strict()).default([]),
+  cplSponsors: z.array(z.object({ id: slug, name: text(80), logo: logoPath }).strict()).default([]),
+}).strict()
+
+export const teamsFileSchema = z.object({
+  teams: z.array(z.object({ id: slug, name: text(80), logo: logoPath }).strict()).default([]),
+}).strict()
+
+export const boardFileSchema = z.object({
+  asOfSeason: z.number().int().min(1998).max(2100),
+  members: z.array(z.object({
+    name: text(80), role: text(80), playerRole: optionalText(60), bio: text(500),
+    specialties: z.array(text(80)).default([]), achievements: z.array(text(200)).default([]),
+  }).strict()).default([]),
+}).strict()
+
+export const siteFileSchema = z.object({
+  scores: httpsUrl, rules: httpsUrl, bylaws: httpsUrl, facebook: httpsUrl, youtube: httpsUrl, whatsapp: httpsUrl,
+  email: z.string().email().max(254),
 }).strict()
 
 export function parseContent<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, data: unknown, file: string): T {

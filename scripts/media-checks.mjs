@@ -25,10 +25,13 @@ export function checkUpload({ name, size, head }) {
   return null
 }
 
-export function collectImageSources({ champions, photos }) {
+export function collectImageSources({ champions, photos, teams = {}, sponsors = {} }) {
   const sources = new Set()
   for (const competition of champions.competitions ?? []) for (const record of competition.records ?? []) if (record.photo?.src) sources.add(record.photo.src)
   for (const photo of photos.photos ?? []) if (photo.src) sources.add(photo.src)
+  // Logos: only editor uploads need processing; committed site logos under /images are served as they are.
+  const logos = [...(teams.teams ?? []), ...(sponsors.cplSponsors ?? []), ...(sponsors.premiumSponsors ?? [])]
+  for (const item of logos) if (item.logo?.startsWith("/uploads/")) sources.add(item.logo)
   return [...sources]
 }
 
@@ -39,11 +42,11 @@ export function derivativeName(src, max) {
   return `${slug}-${hash}-${max}.webp`
 }
 
-export const UPLOAD_FOLDERS = ["champions", "photos"]
+export const UPLOAD_FOLDERS = ["champions", "photos", "logos"]
 
 /**
  * Scans the original-uploads tree (content/uploads) and returns organizer-readable problems.
- * Only the champions and photos folders, holding plain image files, are allowed; originals must
+ * Only the champions, photos and logos folders, holding plain image files, are allowed; originals must
  * never sit under public/ because they would ship with their EXIF metadata.
  */
 export async function checkUploadTree(root) {
@@ -54,7 +57,7 @@ export async function checkUploadTree(root) {
   }
   for (const entry of await readdir(uploadsDir, { withFileTypes: true }).catch(() => [])) {
     if (entry.name === ".gitkeep" && entry.isFile()) continue
-    if (!UPLOAD_FOLDERS.includes(entry.name) || !entry.isDirectory()) errors.push(`uploads/${entry.name}: only the champions and photos folders are allowed`)
+    if (!UPLOAD_FOLDERS.includes(entry.name) || !entry.isDirectory()) errors.push(`uploads/${entry.name}: only the champions, photos and logos folders are allowed`)
   }
   for (const folder of UPLOAD_FOLDERS) {
     const dir = path.join(uploadsDir, folder)

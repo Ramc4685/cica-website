@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { cplSponsors } from "@/lib/brand-assets"
 import { premiumSponsors } from "@/lib/premium-sponsors"
 import s from "../inner-page.module.css"
@@ -14,6 +15,7 @@ export function SponsorList() {
     <div className="page-shell">
       <SectionIntro tag="Our sponsors" title={"The local names\nbehind the *game.*"} tone="dark" id="sponsor-list-title" reveal
         subtitle="Businesses that support CICA tournaments and the community around them." />
+      <OrganizerEditLink section="sponsors" label="sponsors" />
 
       {premiumSponsors.length > 0 && <>
         <h3 className={styles.groupTitle}>Premium sponsors</h3>
@@ -40,7 +42,7 @@ export function SponsorList() {
       <h3 className={styles.groupTitle}>CPL team sponsors</h3>
       <ul className={styles.cpl}>
         {cplSponsors.map(sponsor => <li key={sponsor.id} className={styles.cplItem}>
-          <span className={styles.cplLogo}><Image src={`/images/sponsors/${sponsor.id}.webp`} alt="" width={160} height={88} loading="lazy" /></span>
+          <span className={styles.cplLogo}><Image src={sponsor.logo} alt="" width={160} height={88} loading="lazy" /></span>
           <span>{sponsor.name}</span>
         </li>)}
       </ul>

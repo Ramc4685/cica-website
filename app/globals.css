@@ -378,3 +378,19 @@ html[data-motion=paused] .text-link:hover svg { transform:none; }
   :is(.capsule):hover,.text-link:hover svg { transform:none; }
 }
 @media print { .site-header,.site-footer { display:none!important; } .page-shell { width:100%; } }
+
+/* Organizer-only "Edit this section" link (rendered after mount, only when opted in at /admin/). */
+.organizer-edit { display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin:12px 0 0;font-size:13px; }
+.organizer-edit a { display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px; }
+.organizer-edit a:hover,.organizer-edit a:focus-visible { opacity:1; }
+.footer-bottom .organizer-login { font-size:13px;opacity:.75; }
+
+/* /admin/ organizer tools */
+.organizer-sections { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0 0;padding:0;list-style:none; }
+.organizer-sections a { display:flex;flex-direction:column;gap:4px;height:100%;padding:16px 18px;border-radius:18px;border:1px solid hsl(var(--cica-cream-hsl) / .0);background:var(--cica-cream);color:inherit;text-decoration:none; }
+.organizer-sections a:hover { text-decoration:underline;text-underline-offset:4px; }
+.organizer-sections span { font-size:15px;line-height:1.5; }
+.organizer-steps { margin:16px 0;padding-left:1.3em;font-size:17px;line-height:1.65; }
+.organizer-toggle { display:inline-flex;align-items:center;gap:12px;margin-top:20px;font-size:17px;cursor:pointer; }
+.organizer-toggle input { width:22px;height:22px;accent-color:var(--cica-green); }
+@media (max-width:760px) { .organizer-sections { grid-template-columns:1fr; } }

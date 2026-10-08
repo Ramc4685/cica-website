@@ -37,6 +37,17 @@ describe('Contact request form', () => {
     expect(screen.queryByText(/shortly|successfully sent|now on our updates list/i)).not.toBeInTheDocument();
   });
 
+  it('prefills the subject from ?topic=update and leaves it blank otherwise', async () => {
+    window.history.pushState({}, '', '/contact/?topic=update');
+    const { unmount } = render(<ContactPage />);
+    await waitFor(() => expect(screen.getByLabelText('Subject')).toHaveValue('Suggest a correction or update'));
+    unmount();
+    window.history.pushState({}, '', '/contact/?topic=nonsense');
+    render(<ContactPage />);
+    expect(screen.getByLabelText('Subject')).toHaveValue('');
+    window.history.pushState({}, '', '/');
+  });
+
   it('rejects a whitespace-only first field and links the error', async () => {
     render(<ContactPage />);
     fillForm();

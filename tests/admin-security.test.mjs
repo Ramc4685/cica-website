@@ -4,14 +4,14 @@ import path from "node:path"
 import test from "node:test"
 
 const root = process.cwd()
-const adminFiles = ["app/admin/page.tsx", "app/admin/login-info.tsx", "app/admin-login/page.tsx"]
+const adminFiles = ["app/admin/page.tsx", "app/admin/organizer-tools.tsx", "app/admin-login/page.tsx"]
 
 test("public admin routes offer no client authentication or editing controls", async () => {
   const sources = await Promise.all(adminFiles.map((file) => readFile(path.join(root, file), "utf8")))
   for (const source of sources) {
     assert.doesNotMatch(source, /use client|useState|handleLogin|isAuthenticated|type=["']password|<form\b|default password/i)
   }
-  assert.match(sources[1], /Administration is unavailable/)
+  assert.match(sources[1], /Organizer tools/)
   assert.match(sources[1], /mailto:organizers@cicainfo\.com/)
   for (const route of [sources[0], sources[2]]) {
     assert.match(route, /index: false/)
@@ -46,14 +46,15 @@ if (process.env.CICA_TEST_EXPORT_DIR) {
         }
       }
     }
-    for (const route of ["admin", "admin-login"]) {
+    for (const [route, heading] of [["admin", /Organizer tools/], ["admin-login", /Organizer tools have moved/]]) {
       const html = await readFile(path.join(exportRoot, route, "index.html"), "utf8")
-      assert.match(html, /Administration is unavailable/)
+      assert.match(html, heading)
       assert.doesNotMatch(html, /<input[^>]+type="password"/i)
       assert.match(html, /name="robots" content="noindex, nofollow"/)
     }
   })
 
+  // Deep links to the hosted editor (app.pagescms.org) are fine; only editor code or config must not ship.
   test("export ships no CMS configuration or editor bundle", async () => {
     const exportRoot = path.resolve(root, process.env.CICA_TEST_EXPORT_DIR)
     await assert.rejects(access(path.join(exportRoot, ".pages.yml")), { code: "ENOENT" })
@@ -63,7 +64,7 @@ if (process.env.CICA_TEST_EXPORT_DIR) {
       for (const entry of await readdir(directory, { withFileTypes: true })) {
         const file = path.join(directory, entry.name)
         if (entry.isDirectory()) pending.push(file)
-        else if (/\.(?:html|js)$/.test(entry.name)) assert.doesNotMatch(await readFile(file, "utf8"), /pagescms|decap-cms|netlify-cms/i, `CMS code in ${path.relative(exportRoot, file)}`)
+        else if (/\.(?:html|js)$/.test(entry.name)) assert.doesNotMatch((await readFile(file, "utf8")).replaceAll("app.pagescms.org", ""), /pagescms|decap-cms|netlify-cms/i, `CMS code in ${path.relative(exportRoot, file)}`)
       }
     }
   })

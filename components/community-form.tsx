@@ -47,6 +47,8 @@ export interface CommunityFormProps {
   successCopy: { title?: string; body: string }
   /** Name of a select field to prefill from the matching query parameter on load. */
   prefillParam?: string
+  /** Prefill a free-text field from a query value, e.g. `?topic=update` sets the subject to a fixed sentence. Unknown values are ignored. */
+  topicPrefill?: { param: string; field: string; values: Readonly<Record<string, string>> }
   className?: string
 }
 
@@ -68,7 +70,7 @@ function schemaFor(fields: readonly CommunityField[]) {
 
 const subscribeNothing = () => () => {}
 
-export function CommunityForm({ kind, fields, tag, title, submitLabel, successCopy, prefillParam, className }: CommunityFormProps) {
+export function CommunityForm({ kind, fields, tag, title, submitLabel, successCopy, prefillParam, topicPrefill, className }: CommunityFormProps) {
   const schema = useMemo(() => schemaFor(fields), [fields])
   const defaultValues = useMemo(() => Object.fromEntries([["website", ""], ...fields.map(field => [field.name, ""])]) as Values, [fields])
   const { register, handleSubmit, reset, setValue, setFocus, formState: { errors, isSubmitting } } = useForm<Values>({ resolver: zodResolver(schema), defaultValues })
@@ -86,6 +88,13 @@ export function CommunityForm({ kind, fields, tag, title, submitLabel, successCo
     const match = wanted && field?.options?.find(option => [option.value, option.slug].some(key => key?.toLowerCase() === wanted))
     if (match) setValue(prefillParam, match.value)
   }, [fields, prefillParam, setValue])
+
+  useEffect(() => {
+    if (!topicPrefill) return
+    const wanted = new URLSearchParams(window.location.search).get(topicPrefill.param)?.trim().toLowerCase()
+    const text = wanted ? topicPrefill.values[wanted] : undefined
+    if (text) setValue(topicPrefill.field, text)
+  }, [topicPrefill, setValue])
 
   useEffect(() => {
     if (outcome.phase === "success") successHeading.current?.focus()

@@ -1,14 +1,18 @@
+import siteFile from "@/content/site.json"
 import tournamentsFile from "@/content/tournaments.json"
-import { parseContent, tournamentsFileSchema } from "@/lib/content-schema"
+import { parseContent, siteFileSchema, tournamentsFileSchema } from "@/lib/content-schema"
 
+const site = parseContent(siteFileSchema, siteFile, "site.json")
+
+/** Edited through Pages CMS in content/site.json ("Site links"). */
 export const communityLinks = {
-  scores: "https://cricclubs.com/CICA",
-  rules: "https://drive.google.com/drive/folders/16mFxdlNfcbK8_1_z5CNhLpFD5WPh4Asy",
-  bylaws: "https://docs.google.com/document/d/1v6EnSnmrLFJKiB6InjcRulaQI3VA_eFTQvDvKLPTXsg/view",
-  facebook: "https://www.facebook.com/cicacric/",
-  youtube: "https://www.youtube.com/@CICA-CRIC",
-  whatsapp: "https://chat.whatsapp.com/Ij7GEOEkGJK9DCY2LDPFj8",
-  email: "mailto:organizers@cicainfo.com",
+  scores: site.scores,
+  rules: site.rules,
+  bylaws: site.bylaws,
+  facebook: site.facebook,
+  youtube: site.youtube,
+  whatsapp: site.whatsapp,
+  email: `mailto:${site.email}`,
 }
 
 export type RegistrationStatus = "open" | "closed" | "upcoming" | "tbc"

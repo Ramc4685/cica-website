@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { CapsuleLink } from "@/components/ui/capsule-link"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { communityLinks } from "@/lib/content"
 import { seasonEvents as allEvents, venues as allVenues, type SeasonEvent, type Venue } from "@/lib/season"
 import { cn } from "@/lib/utils"
@@ -24,6 +25,7 @@ export function UpcomingSeason({ events = allEvents, venues = allVenues, tag = "
   const venueName = (id?: string) => venues.find(venue => venue.id === id)?.name
   return <section className={cn(shared.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <OrganizerEditLink section="season" label="events" />
     {sorted.length === 0
       ? <div className={styles.empty}>
           <p className={styles.emptyTitle}>Season dates are announced by organizers.</p>

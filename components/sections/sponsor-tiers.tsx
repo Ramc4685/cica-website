@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { SectionIntro } from "@/components/ui/section-intro"
+import { OrganizerEditLink } from "@/components/organizer-edit-link"
 import { sponsorTiers as allTiers, type SponsorTier } from "@/lib/season"
 import { cn } from "@/lib/utils"
 import { TierCard, TierCardStack } from "./tier-card"
@@ -30,6 +31,7 @@ export function SponsorTiers({ tiers = allTiers, tag = "Ways to partner", title 
   if (tiers.length === 0) return null
   return <section className={cn(styles.section, "page-shell", className)} aria-labelledby={headingId}>
     <SectionIntro tag={tag} title={title} subtitle={subtitle} id={headingId} reveal />
+    <OrganizerEditLink section="sponsors" label="sponsorship tiers" />
     <TierCardStack label="Sponsorship tiers">
       {tiers.map(tier => <TierCard key={tier.id} id={`tier-${tier.id}`} title={tier.name} summary={tier.summary}
         featured={tier.id === "premium"} bullets={tier.benefits} bulletsLabel="What’s included"

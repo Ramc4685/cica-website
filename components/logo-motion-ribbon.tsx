@@ -5,13 +5,11 @@ import { cplSponsors, cplTeams } from "@/lib/brand-assets"
 import { useSiteMotion } from "@/components/site-motion"
 
 // Small (<8KB) derivatives from public/images/logos-sm/; the tiles render at 62px.
-const logos = [
-  ...["main", "tournaments", "mains", "cpl", "mini", "indoor", "100"].map(id => `/images/logos-sm/cica-logo-${id}.webp`),
-  ...cplTeams.map(team => `/images/logos-sm/teams/${team.id}.webp`),
-  ...cplSponsors.map(sponsor => `/images/logos-sm/sponsors/${sponsor.id}.webp`),
-]
+const identities = ["main", "tournaments", "mains", "cpl", "mini", "indoor", "100"].map(id => `/images/logos-sm/cica-logo-${id}.webp`)
+const teamLogos = cplTeams.map(team => team.small)
+const sponsorLogos = cplSponsors.map(sponsor => sponsor.small)
 // Interleave identities, teams and sponsors so each group is visible throughout the flow.
-const flow = Array.from({ length: 8 }, (_, i) => [logos[i % 7], logos[7 + i], logos[15 + i]]).flat()
+const flow = Array.from({ length: Math.max(8, teamLogos.length, sponsorLogos.length) }, (_, i) => [identities[i % identities.length], teamLogos[i % teamLogos.length], sponsorLogos[i % sponsorLogos.length]].filter((src): src is string => Boolean(src))).flat()
 const path = "M-650 145 C-350 145 -120 145 0 110 C145 -20 310 225 545 135 S935 45 1240 120 C1550 145 1750 145 1950 145"
 /** Alternating tile tilt, in degrees. */
 const tilt = (i: number) => (i % 2 === 0 ? -8 : 11) + (i % 3) * 2

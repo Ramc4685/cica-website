@@ -3,6 +3,7 @@ import Image from "next/image"
 import { ArrowUpRight, Facebook, Youtube, MessageCircle } from "lucide-react"
 import { FooterCta } from "@/components/footer-cta"
 import { communityLinks } from "@/lib/content"
+import { SUGGEST_UPDATE_HREF } from "@/lib/cms"
 
 const columns = [
   {
@@ -77,6 +78,8 @@ export function Footer() {
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Central Illinois Cricket Association</span>
         <Link href="/privacy/">Privacy &amp; data</Link>
+        <Link href={SUGGEST_UPDATE_HREF}>Suggest an update</Link>
+        <Link href="/admin/" className="organizer-login">Organizer login</Link>
         <span>Rooted in community since 1998.</span>
       </div>
     </div>
