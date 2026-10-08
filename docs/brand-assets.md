@@ -16,7 +16,7 @@ The 21 PNGs are seven identities in transparent, blue-background and yellow-back
 | CICA 100 | cricket association-16.png | 17 / 18 | cica-logo-100.webp | cica-logo-100-blue.webp / -yellow.webp |
 | CICA main identity | cricket association-19.png | 20 / 21 | cica-logo-main.webp | cica-logo-main-blue.webp / -yellow.webp |
 
-Matching JPGs and the `CICA files` subset duplicate this artwork. The logo family appears on Gallery; relevant identities appear on tournament cards, global branding and the home hero. CICA 100 is presented as supplied artwork, not as an asserted currently open competition.
+Matching JPGs and the `CICA files` subset duplicate this artwork. The transparent logos appear on Gallery, the navigation, the footer and the moving logo ribbon; all three treatments form the About page wall (`components/sections/logo-family-wall.tsx`). The identity list is `cicaIdentities` in `lib/brand-assets.ts`, kept in code rather than in Pages CMS. CICA 100 is presented as supplied artwork, not as an asserted currently open competition.
 
 ## CPL team identities
 
@@ -33,7 +33,7 @@ The source filenames and artwork were visually inspected. Each original/transfor
 | Techie Brains Legends | TechieBrains.jpg | techie-brains-legends.webp |
 | Parke Regency Thalaivas | Thalaivas.jpg | parke-regency-thalaivas.webp |
 
-Team names use one canonical title-case spelling across the site (artwork filenames may differ). Display identifies the supplied CPL team collection; current teams, registration and fixtures remain the organizers’ / CricClubs’ responsibility.
+These committed logos are the starting entries in `content/teams.json`, where organizers can rename teams or upload new logos in Pages CMS (uploads go to `content/uploads/logos/`). Every committed team and sponsor logo also has a small tile copy under `public/images/logos-sm/`. Team names use one canonical title-case spelling across the site (artwork filenames may differ). Display identifies the supplied CPL team collection; current teams, registration and fixtures remain the organizers’ / CricClubs’ responsibility.
 
 ## CPL sponsor artwork
 
@@ -48,11 +48,12 @@ Team names use one canonical title-case spelling across the site (artwork filena
 | My Craft Barn | myCraftbarn.png | my-craft-barn.webp |
 | Parke Regency Hotel & Conference Center | Parke-Regency-transformed.jpeg | parke-regency.webp |
 | Techie Brains Inc. | TechieBrains-unYEJin7m-transformed.jpeg | techie-brains.webp |
+| Lumin Innovations (premium sponsor) | supplied separately; see [community-imagery.md](community-imagery.md#premium-sponsor-logo) | lumin-innovations.webp |
 
-Bloom Barista has two supplied treatments of one business; the primary horizontal treatment is displayed once in sponsor strips. The alternate derivative is retained for future use. Business website links were not invented or inferred from artwork. Sponsor display describes the supplied CPL sponsor collection, without asserting current contracts, tiers or benefits.
+Which sponsors appear, and where, is edited in `content/sponsors.json` (`premiumSponsors` and `cplSponsors`). Bloom Barista has two supplied treatments of one business; the primary horizontal treatment is displayed once in sponsor strips. The alternate derivative is not referenced anywhere and is kept for future use. Business website links were not invented or inferred from artwork. Sponsor display describes the supplied CPL sponsor collection, without asserting current contracts, tiers or benefits.
 
 ## Photos / video
 
-No community photography was supplied in the inventoried image collection. The `Adv` video folder contains advertising files and is not automatically treated as match footage. Gallery links to the existing official social channels; the hero cricket drawing remains explicitly decorative.
+This artwork collection contained no community photography; the photographs supplied later are documented in [community-imagery.md](community-imagery.md). The `Adv` video folder contains advertising files and is not treated as match footage.
 
-The 1200×630 social sharing card is a composed CICA brand card, not a community photograph. Original files stay outside the public export; compact derivatives are served by the existing static deployment.
+The 1200×630 social sharing card (`public/images/cica-social.webp`) is a composed CICA brand card, not a community photograph. Original files stay outside the repository; only the WebP derivatives are committed.

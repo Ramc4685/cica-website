@@ -31,3 +31,9 @@ next-env.d.ts
 # generated media derivatives and manifest (scripts/build-media.mjs)
 /public/_media/
 /lib/generated/
+
+# local tool and agent output
+/.playwright-mcp/
+/.serena/
+/.claude/worktrees/
+/.swc/

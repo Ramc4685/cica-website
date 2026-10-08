@@ -25,15 +25,15 @@ Updates requests are manually handled. This is not an automated newsletter servi
 
 ## Managing stored records
 
-`scripts/forms-records.php` lists, exports or deletes records by reference over SSH. It is not deployed to the web root. Pipe it to PHP on the host:
+`scripts/forms-records.php` lists, exports or deletes records by reference over SSH. It is not deployed to the web root. Pipe it to PHP on the host (SSH uses port 21098; the host is the `NAMECHEAP_SSH_HOST` value in [deploy/CI.md](../../deploy/CI.md)):
 
 ```sh
-ssh cicanrkn@HOST php -- list < scripts/forms-records.php
-ssh cicanrkn@HOST php -- export REFERENCE < scripts/forms-records.php
-ssh cicanrkn@HOST php -- delete REFERENCE < scripts/forms-records.php
+ssh -p 21098 cicanrkn@HOST php -- list < scripts/forms-records.php
+ssh -p 21098 cicanrkn@HOST php -- export REFERENCE < scripts/forms-records.php
+ssh -p 21098 cicanrkn@HOST php -- delete REFERENCE < scripts/forms-records.php
 ```
 
-`list` prints reference, time, form type and file only (no personal fields). `export` prints one record to the terminal. `delete` removes the record from the live file and archives; the notification email in the organizer inbox must be deleted separately. Use `--dir=PATH` to point at a test directory.
+`list` prints reference, time, form type and file only (no personal fields). `export` prints one record to the terminal. `delete` removes the record from the live file and archives; the notification email in the organizer inbox must be deleted separately. The default directory is production's `/home/cicanrkn/.cica-forms`; add `--dir=/home/cicanrkn/.cica-forms-staging` for staging records, or any other path for a test directory.
 
 ## Verification and operation
 
