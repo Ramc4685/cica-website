@@ -32,9 +32,9 @@ describe('nextTabIndex', () => {
 
 describe('buildChampionHighlights', () => {
   it('derives pills only from recorded seasons', () => {
-    // Mains: Spartans CC won 2026 (first Mains title); Moghals lead outright with three titles.
+    // Mains: Spartans CC won 2026 (first Mains title); Moghals and Sarkaar tie on three titles, so no leader pill.
     expect(buildChampionHighlights(byId('mains')).pills).toEqual([
-      '2026 champion', 'Runner-up: Mavericks', 'Most titles: Moghals ×3', '14 seasons recorded',
+      '2026 champion', 'Runner-up: Mavericks', '17 seasons recorded',
     ])
     expect(buildChampionHighlights(byId('cpl-outdoor')).pills).toEqual([
       '2026 champion', 'Runner-up: Bloom Events Eagles', '2nd CPL Outdoor title', '2 seasons recorded',

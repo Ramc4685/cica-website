@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Champions: add the 2025 and 2026 results for CICA Mains (with Division 2 in the notes), CICA Indoor, CPL Outdoor, Mini and Challengers, add the new CICA Baywood Cup (recreation league, from 2025) as a competition and tournament card, and rename Spartans to Spartans CC.
+- Champions: add the 2025 and 2026 results for CICA Mains (with Division 2 in the notes), CICA Indoor, CPL Outdoor, Mini and Challengers, add the new CICA Baywood Cup (recreation league, from 2025) as a competition and tournament card, set CPL Indoor (CIPL) 2025 to Bloom Events Eagles over Techie Brains Legends, add CICA Mains winners for 2009–2011, and rename Spartans to Spartans CC.
 - Rewrite the README and maintainer docs as a handoff guide covering setup, deploys, forms and content editing, and ignore local tool output (`.playwright-mcp/`, `.serena/`, `.claude/worktrees/`, `.swc/`).
 - Gallery now shows all 29 community photographs (up from 10): the 10 photos that only appeared in the home page banner, plus 9 new photos from the supplied collection. Four of the new photos also join the home page banner.
 - Make the home page banner photo choice easy to find: the Pages CMS section is now "Photos (Gallery and home page banner)" with a "Show in the home page banner" tick box, and /admin/ explains how to add a banner photo and no longer says edits wait for owner approval.

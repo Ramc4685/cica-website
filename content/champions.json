@@ -64,6 +64,18 @@
         {
           "season": 2012,
           "champion": "Sarkaar"
+        },
+        {
+          "season": 2011,
+          "champion": "Sarkaar"
+        },
+        {
+          "season": 2010,
+          "champion": "Sarkaar"
+        },
+        {
+          "season": 2009,
+          "champion": "Achanak"
         }
       ]
     },
@@ -122,8 +134,8 @@
       "records": [
         {
           "season": 2025,
-          "champion": "Techie Brains Legends",
-          "runnerUp": "Bloom Barista Bulls"
+          "champion": "Bloom Events Eagles",
+          "runnerUp": "Techie Brains Legends"
         },
         {
           "season": 2023,
