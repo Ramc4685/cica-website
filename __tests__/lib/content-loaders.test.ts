@@ -8,7 +8,7 @@ import { communityPhotos, heroPhoto, heroPhotos, photoById } from '@/lib/communi
 
 describe('content loaders', () => {
   it('keep champion records', () => {
-    expect(competitions.find(c => c.id === 'mains')?.records[0]).toMatchObject({ season: 2024, champion: 'BloomBoys' })
+    expect(competitions.find(c => c.id === 'mains')?.records[0]).toMatchObject({ season: 2026, champion: 'Spartans CC' })
   })
   it('build photos with derivative dimensions and preserve order', () => {
     expect(heroPhoto.id).toBe('outdoor-award')

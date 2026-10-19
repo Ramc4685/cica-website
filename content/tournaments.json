@@ -53,6 +53,19 @@
       }
     },
     {
+      "id": "baywood-cup",
+      "name": "CICA Baywood Cup",
+      "setting": "Outdoor",
+      "logo": "/images/cica-logo-tournaments.webp",
+      "description": "CICA’s recreation league, started in 2025. Champions are recorded from 2025.",
+      "registrationStatus": "tbc",
+      "format": {
+        "overs": "tbc",
+        "ballType": "tbc",
+        "squadSize": "tbc"
+      }
+    },
+    {
       "id": "cica-indoor",
       "name": "CICA Indoor",
       "setting": "Indoor",
