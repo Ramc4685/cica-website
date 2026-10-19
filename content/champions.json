@@ -8,14 +8,12 @@
         {
           "season": 2026,
           "champion": "Spartans CC",
-          "runnerUp": "Mavericks",
-          "notes": "Division 1. Division 2: Gujarat Warriors won, Thunder Strikers runners-up."
+          "runnerUp": "Mavericks"
         },
         {
           "season": 2025,
           "champion": "Hunters",
-          "runnerUp": "United Springfield",
-          "notes": "Super10 (Division 1). Plate (Division 2): Dream Crew won, Archrivals runners-up."
+          "runnerUp": "United Springfield"
         },
         {
           "season": 2024,
@@ -132,6 +130,11 @@
       "id": "cpl-indoor",
       "title": "CIPL",
       "records": [
+        {
+          "season": 2026,
+          "champion": "Bloom Events Eagles",
+          "runnerUp": "Techie Brains Legends"
+        },
         {
           "season": 2025,
           "champion": "Techie Brains Legends",
