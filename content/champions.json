@@ -130,12 +130,17 @@
     },
     {
       "id": "cpl-indoor",
-      "title": "CPL Indoor",
+      "title": "CIPL",
       "records": [
         {
           "season": 2025,
           "champion": "Bloom Events Eagles",
           "runnerUp": "Techie Brains Legends"
+        },
+        {
+          "season": 2024,
+          "champion": "Techie Brains Legends",
+          "runnerUp": "Bloom Barista Bulls"
         },
         {
           "season": 2023,
@@ -146,7 +151,7 @@
     },
     {
       "id": "cpl-outdoor",
-      "title": "CPL Outdoor",
+      "title": "CPL",
       "records": [
         {
           "season": 2026,

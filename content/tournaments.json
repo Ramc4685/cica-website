@@ -15,7 +15,7 @@
     },
     {
       "id": "cpl-outdoor",
-      "name": "CPL Outdoor",
+      "name": "CPL",
       "setting": "Outdoor",
       "logo": "/images/cica-logo-cpl.webp",
       "description": "The outdoor edition of the Cricket Premier League, with teams named for their sponsors.",
@@ -80,7 +80,7 @@
     },
     {
       "id": "cpl-indoor",
-      "name": "CPL Indoor",
+      "name": "CIPL",
       "setting": "Indoor",
       "logo": "/images/cica-logo-cpl.webp",
       "description": "The indoor edition of the Cricket Premier League, with teams named for their sponsors.",

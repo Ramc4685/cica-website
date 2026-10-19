@@ -37,7 +37,7 @@ describe('buildChampionHighlights', () => {
       '2026 champion', 'Runner-up: Mavericks', '17 seasons recorded',
     ])
     expect(buildChampionHighlights(byId('cpl-outdoor')).pills).toEqual([
-      '2026 champion', 'Runner-up: Bloom Events Eagles', '2nd CPL Outdoor title', '2 seasons recorded',
+      '2026 champion', 'Runner-up: Bloom Events Eagles', '2nd CPL title', '2 seasons recorded',
     ])
   })
   it('skips a leader on a tie and returns nothing for empty competitions', () => {
@@ -85,7 +85,7 @@ describe('ChampionsShowcase', () => {
 
   it('compact variant lists only recorded competitions and links to the archive', () => {
     render(<ChampionsShowcase competitions={fixture} variant="compact" headingId="recent" />)
-    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['CICA Mains', 'CICA Indoor', 'CPL Indoor', 'CPL Outdoor', 'Challengers', 'CICA Baywood Cup'])
+    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['CICA Mains', 'CICA Indoor', 'CIPL', 'CPL', 'Challengers', 'CICA Baywood Cup'])
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /See every champion/ }).getAttribute('href')).toMatch(/^\/champions\/?$/)
     expect(screen.getByRole('region', { name: /trophy/ })).toBeInTheDocument()
