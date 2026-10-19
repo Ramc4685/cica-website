@@ -134,11 +134,6 @@
       "records": [
         {
           "season": 2025,
-          "champion": "Bloom Events Eagles",
-          "runnerUp": "Techie Brains Legends"
-        },
-        {
-          "season": 2024,
           "champion": "Techie Brains Legends",
           "runnerUp": "Bloom Barista Bulls"
         },
@@ -157,6 +152,11 @@
           "season": 2026,
           "champion": "Techie Brains Legends",
           "runnerUp": "Bloom Events Eagles"
+        },
+        {
+          "season": 2025,
+          "champion": "Techie Brains Legends",
+          "runnerUp": "Craftbarn Challengers"
         },
         {
           "season": 2024,
