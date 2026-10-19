@@ -6,6 +6,18 @@
       "title": "CICA Mains",
       "records": [
         {
+          "season": 2026,
+          "champion": "Spartans CC",
+          "runnerUp": "Mavericks",
+          "notes": "Division 1. Division 2: Gujarat Warriors won, Thunder Strikers runners-up."
+        },
+        {
+          "season": 2025,
+          "champion": "Hunters",
+          "runnerUp": "United Springfield",
+          "notes": "Super10 (Division 1). Plate (Division 2): Dream Crew won, Archrivals runners-up."
+        },
+        {
           "season": 2024,
           "champion": "BloomBoys"
         },
@@ -52,6 +64,18 @@
         {
           "season": 2012,
           "champion": "Sarkaar"
+        },
+        {
+          "season": 2011,
+          "champion": "Sarkaar"
+        },
+        {
+          "season": 2010,
+          "champion": "Sarkaar"
+        },
+        {
+          "season": 2009,
+          "champion": "Achanak"
         }
       ]
     },
@@ -60,13 +84,18 @@
       "title": "CICA Indoor",
       "records": [
         {
+          "season": 2026,
+          "champion": "BloomBoys",
+          "runnerUp": "Spartans CC"
+        },
+        {
           "season": 2025,
           "champion": "Hunters",
           "runnerUp": "Bloom Bulls"
         },
         {
           "season": 2024,
-          "champion": "Spartans",
+          "champion": "Spartans CC",
           "runnerUp": "Bloom Bulls"
         },
         {
@@ -75,7 +104,7 @@
         },
         {
           "season": 2021,
-          "champion": "Spartans"
+          "champion": "Spartans CC"
         },
         {
           "season": 2019,
@@ -87,11 +116,11 @@
         },
         {
           "season": 2017,
-          "champion": "Spartans"
+          "champion": "Spartans CC"
         },
         {
           "season": 2016,
-          "champion": "Spartans"
+          "champion": "Spartans CC"
         },
         {
           "season": 2015,
@@ -101,10 +130,15 @@
     },
     {
       "id": "cpl-indoor",
-      "title": "CPL Indoor",
+      "title": "CIPL",
       "records": [
         {
           "season": 2025,
+          "champion": "Bloom Events Eagles",
+          "runnerUp": "Techie Brains Legends"
+        },
+        {
+          "season": 2024,
           "champion": "Techie Brains Legends",
           "runnerUp": "Bloom Barista Bulls"
         },
@@ -117,8 +151,13 @@
     },
     {
       "id": "cpl-outdoor",
-      "title": "CPL Outdoor",
+      "title": "CPL",
       "records": [
+        {
+          "season": 2026,
+          "champion": "Techie Brains Legends",
+          "runnerUp": "Bloom Events Eagles"
+        },
         {
           "season": 2024,
           "champion": "Techie Brains Legends",
@@ -129,12 +168,45 @@
     {
       "id": "mini",
       "title": "Mini Tournament",
-      "records": []
+      "records": [
+        {
+          "season": 2026,
+          "champion": "Rising Titans",
+          "runnerUp": "Kings XI"
+        },
+        {
+          "season": 2025,
+          "champion": "Chowrasta Archrivals",
+          "runnerUp": "Rising Titans"
+        }
+      ]
     },
     {
       "id": "challengers",
       "title": "Challengers",
-      "records": []
+      "records": [
+        {
+          "season": 2026,
+          "champion": "Renegades",
+          "runnerUp": "BloNo Eagles"
+        }
+      ]
+    },
+    {
+      "id": "baywood-cup",
+      "title": "CICA Baywood Cup",
+      "records": [
+        {
+          "season": 2026,
+          "champion": "Knights",
+          "runnerUp": "Jaguars"
+        },
+        {
+          "season": 2025,
+          "champion": "Knights",
+          "runnerUp": "Royal Challengers Bloomington"
+        }
+      ]
     }
   ]
 }

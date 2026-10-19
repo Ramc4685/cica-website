@@ -1,7 +1,7 @@
 import championsFile from "@/content/champions.json"
 import { championsFileSchema, parseContent } from "@/lib/content-schema"
 
-export type CompetitionId = "mains" | "cica-indoor" | "cpl-indoor" | "cpl-outdoor" | "mini" | "challengers"
+export type CompetitionId = "mains" | "cica-indoor" | "cpl-indoor" | "cpl-outdoor" | "mini" | "challengers" | "baywood-cup"
 
 export interface ChampionRecord {
   season: number

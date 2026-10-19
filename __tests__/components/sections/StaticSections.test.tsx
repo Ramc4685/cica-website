@@ -21,8 +21,8 @@ describe('CompetitionCards', () => {
     expect(screen.getAllByText('Registration details from organizers')).toHaveLength(tournaments.length)
     const mains = screen.getByRole('article', { name: 'CICA Mains' })
     expect(mains).toHaveAttribute('id', 'cica-mains')
-    expect(within(mains).getByText('BloomBoys')).toBeInTheDocument()
-    expect(within(screen.getByRole('article', { name: 'Mini Tournament' })).getByText('Being confirmed with organizers')).toBeInTheDocument()
+    expect(within(mains).getByText('Spartans CC')).toBeInTheDocument()
+    expect(within(screen.getByRole('article', { name: 'Mini Tournament' })).getByText('Rising Titans')).toBeInTheDocument()
   })
   it('shows confirmed registration and format facts, with an external register link', () => {
     render(<CompetitionCards tournaments={[{ ...tournaments[0], registrationStatus: 'open', registrationUrl: 'https://example.org/register', registrationDeadline: '2027-03-01', format: { overs: 20, ballType: 'leather', squadSize: 'tbc' } }]} variant="page" />)

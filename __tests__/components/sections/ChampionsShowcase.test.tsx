@@ -12,6 +12,10 @@ jest.mock('@/lib/media', () => ({
 }))
 
 const byId = (id: string) => competitions.find(c => c.id === id)!
+// Live data with Mains runners-up removed and Mini emptied, so these UI paths stay covered as results are added.
+const fixture: Competition[] = competitions.map(c => c.id === 'mains'
+  ? { ...c, records: c.records.map(({ runnerUp: _runnerUp, ...r }) => r) }
+  : c.id === 'mini' ? { ...c, records: [] } : c)
 
 describe('nextTabIndex', () => {
   it('wraps arrows and jumps with Home/End', () => {
@@ -28,18 +32,18 @@ describe('nextTabIndex', () => {
 
 describe('buildChampionHighlights', () => {
   it('derives pills only from recorded seasons', () => {
-    // Mains: BloomBoys won 2024 and 2017; Moghals lead outright with three titles.
+    // Mains: Spartans CC won 2026 (first Mains title); Moghals and Sarkaar tie on three titles, so no leader pill.
     expect(buildChampionHighlights(byId('mains')).pills).toEqual([
-      '2024 champion', '2nd CICA Mains title', 'Most titles: Moghals ×3', '12 seasons recorded',
+      '2026 champion', 'Runner-up: Mavericks', '17 seasons recorded',
     ])
     expect(buildChampionHighlights(byId('cpl-outdoor')).pills).toEqual([
-      '2024 champion', 'Runner-up: Bloom Events Eagles', '1 season recorded',
+      '2026 champion', 'Runner-up: Bloom Events Eagles', '2nd CPL title', '2 seasons recorded',
     ])
   })
   it('skips a leader on a tie and returns nothing for empty competitions', () => {
     const tied: Competition = { id: 'mini', title: 'Mini', records: [{ season: 2024, champion: 'A' }, { season: 2023, champion: 'B' }, { season: 2022, champion: 'C' }, { season: 2021, champion: 'B' }, { season: 2020, champion: 'C' }] }
     expect(buildChampionHighlights(tied).pills).toEqual(['2024 champion', '5 seasons recorded'])
-    expect(buildChampionHighlights(byId('mini'))).toEqual({ latest: null, pills: [] })
+    expect(buildChampionHighlights({ ...tied, records: [] })).toEqual({ latest: null, pills: [] })
   })
   it('formats ordinals', () => {
     expect([1, 2, 3, 4, 11, 12, 13, 21, 22, 112].map(ordinal)).toEqual(['1st', '2nd', '3rd', '4th', '11th', '12th', '13th', '21st', '22nd', '112th'])
@@ -66,7 +70,7 @@ describe('ChampionsShowcase', () => {
   })
 
   it('shows the archive table, hides an unrecorded runner-up column and flags empty seasons honestly', () => {
-    render(<ChampionsShowcase />)
+    render(<ChampionsShowcase competitions={fixture} />)
     const mains = screen.getByRole('tabpanel')
     const table = within(mains).getByRole('table')
     expect(within(table).queryByRole('columnheader', { name: 'Runner-up' })).not.toBeInTheDocument()
@@ -80,8 +84,8 @@ describe('ChampionsShowcase', () => {
   })
 
   it('compact variant lists only recorded competitions and links to the archive', () => {
-    render(<ChampionsShowcase variant="compact" headingId="recent" />)
-    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['CICA Mains', 'CICA Indoor', 'CPL Indoor', 'CPL Outdoor'])
+    render(<ChampionsShowcase competitions={fixture} variant="compact" headingId="recent" />)
+    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['CICA Mains', 'CICA Indoor', 'CIPL', 'CPL', 'Challengers', 'CICA Baywood Cup'])
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /See every champion/ }).getAttribute('href')).toMatch(/^\/champions\/?$/)
     expect(screen.getByRole('region', { name: /trophy/ })).toBeInTheDocument()
@@ -94,7 +98,7 @@ describe('ChampionsShowcase photos', () => {
       ? { ...c, records: [{ ...c.records[0], photo: { src: '/uploads/champions/team.jpg', alt: 'Test alt text' } }, ...c.records.slice(1)] } : c)
     render(<ChampionsShowcase competitions={withPhoto} />)
     expect(screen.getByRole('img', { name: 'Test alt text' })).toBeInTheDocument()
-    expect(screen.getByText(/2024 champions: BloomBoys/)).toBeInTheDocument()
+    expect(screen.getByText(/2026 champions: Spartans CC/)).toBeInTheDocument()
   })
   it('renders no champion photos when no record has one', () => {
     const { container } = render(<ChampionsShowcase />)

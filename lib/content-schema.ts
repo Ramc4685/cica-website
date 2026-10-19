@@ -25,7 +25,7 @@ export const championPhotoSchema = z.object({
 export const championsFileSchema = z.object({
   recordsUpdated: optionalIsoDate,
   competitions: z.array(z.object({
-    id: z.enum(["mains", "cica-indoor", "cpl-indoor", "cpl-outdoor", "mini", "challengers"]),
+    id: z.enum(["mains", "cica-indoor", "cpl-indoor", "cpl-outdoor", "mini", "challengers", "baywood-cup"]),
     title: text(80),
     records: z.array(z.object({
       season: z.number().int().min(1998).max(2100),
