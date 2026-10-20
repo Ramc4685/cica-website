@@ -37,7 +37,7 @@ describe('buildChampionHighlights', () => {
       '2026 champion', 'Runner-up: Mavericks', '17 seasons recorded',
     ])
     expect(buildChampionHighlights(byId('cpl-outdoor')).pills).toEqual([
-      '2026 champion', 'Runner-up: Bloom Events Eagles', '2nd CPL title', '2 seasons recorded',
+      '2026 champion', 'Runner-up: Bloom Events Eagles', '3rd CPL title', '3 seasons recorded',
     ])
   })
   it('skips a leader on a tie and returns nothing for empty competitions', () => {
