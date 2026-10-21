@@ -1,5 +1,11 @@
 {
-  "events": [],
-  "announcements": [],
-  "voices": []
+  "announcements": [
+    {
+      "title": "Register for CPL",
+      "date": "2026-10-21",
+      "body": "🏏🔥 CPL Indoor – Only 5 Spots Left!\n\nJust 5 spots remain! 🏆\n\n🏏 8 Teams | 104 Players\n🔨 Player Auction: 3rd Week of October\n📅 Matches Begin: November 1\n\n🔥 Grab your spot before registration fills up!\n\n👉 Register Now:\nhttps://www.zeffy.com/en-US/ticketing/2027-cica-indoor-premier-league-player-registration\n\nSee you at the CPL auction! 🏏🏆",
+      "url": "https://www.zeffy.com/en-US/ticketing/2027-cica-indoor-premier-league-player-registration",
+      "id": "CIPL2026"
+    }
+  ]
 }
