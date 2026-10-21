@@ -17,19 +17,23 @@
         },
         {
           "season": 2024,
-          "champion": "BloomBoys"
+          "champion": "BloomBoys",
+          "runnerUp": "Hunters"
         },
         {
           "season": 2023,
-          "champion": "Bloom Bulls"
+          "champion": "Bloom Bulls",
+          "runnerUp": "Moghals"
         },
         {
           "season": 2022,
-          "champion": "Peoria Marvels"
+          "champion": "Peoria Marvels",
+          "runnerUp": "BloomBoys"
         },
         {
           "season": 2021,
-          "champion": "Moghals"
+          "champion": "Moghals",
+          "runnerUp": "BloomBoys"
         },
         {
           "season": 2019,
