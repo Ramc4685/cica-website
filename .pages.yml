@@ -80,6 +80,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example season-opener. Must be unique."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -121,18 +124,27 @@ content:
             label: Competition ID (optional)
             description: "The internal ID of the tournament, for example cica-mains."
             type: string
+            pattern:
+              regex: '^(?:[a-z0-9]+(?:-[a-z0-9]+)*)?$'
+              message: "Leave blank, or use lowercase letters and numbers joined by hyphens, for example cica-mains."
             options:
               maxlength: 80
           - name: venueId
             label: Venue ID (optional)
             description: "Leave blank unless the website maintainer gave you one."
             type: string
+            pattern:
+              regex: '^(?:[a-z0-9]+(?:-[a-z0-9]+)*)?$'
+              message: "Leave blank, or use lowercase letters and numbers joined by hyphens, for example cica-mains."
             options:
               maxlength: 80
           - name: id
             label: Short ID
             description: "Lowercase words joined by hyphens, for example opening-day. Must be unique."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -175,6 +187,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example priya-family. Must be unique."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -272,6 +287,9 @@ content:
             label: Internal ID (set by the website maintainer)
             description: "Do not change."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             readonly: true
           - name: setting
             label: Setting (set by the website maintainer)
@@ -371,6 +389,9 @@ content:
             label: Internal ID (set by the website maintainer)
             description: "Do not change."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             readonly: true
 
   - name: photos
@@ -430,6 +451,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example family-picnic. Never change an existing ID, the site uses some of them."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -489,6 +513,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example lumin. Never change an existing ID."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -519,6 +546,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example bloom-barista. Never change an existing ID."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -556,6 +586,9 @@ content:
             label: Short ID (do not change)
             description: "The website uses this to pre-select the option on the sponsor form."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             readonly: true
 
   - name: teams
@@ -591,6 +624,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example bloom-barista-bulls. Never change an existing ID."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -655,6 +691,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens, for example baywood. Never change an existing ID; events refer to it."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80
@@ -813,6 +852,9 @@ content:
             label: Short ID
             description: "Lowercase words joined by hyphens. Do not change an existing ID."
             type: string
+            pattern:
+              regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+              message: "Use lowercase letters and numbers joined by hyphens, with no spaces, for example cipl-2026."
             required: true
             options:
               maxlength: 80

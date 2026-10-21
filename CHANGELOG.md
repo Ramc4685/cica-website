@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Pages CMS now rejects a Short ID (and an event's competition or venue ID) that isn't lowercase words joined by hyphens before saving, so an ID like `CIPL2026` can no longer stop every deploy on `main`.
 - Champions: add the 2025 and 2026 results for CICA Mains, CICA Indoor, CPL Outdoor, Mini and Challengers, add the new CICA Baywood Cup (recreation league, from 2025) as a competition and tournament card, rename CPL Indoor and CPL Outdoor to CIPL and CPL, add CPL 2025 (Techie Brains Legends over Craftbarn Challengers) and CIPL 2026 (Bloom Events Eagles over Techie Brains Legends), add CICA Mains winners for 2009–2011 and runners-up for 2021–2024, and rename Spartans to Spartans CC.
 - Rewrite the README and maintainer docs as a handoff guide covering setup, deploys, forms and content editing, and ignore local tool output (`.playwright-mcp/`, `.serena/`, `.claude/worktrees/`, `.swc/`).
 - Gallery now shows all 29 community photographs (up from 10): the 10 photos that only appeared in the home page banner, plus 9 new photos from the supplied collection. Four of the new photos also join the home page banner.
